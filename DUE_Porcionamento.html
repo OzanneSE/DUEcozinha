@@ -1,0 +1,1278 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Porcionamento & Quantidades — DUE</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,600&family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #F8F7F3;
+  --bg2: #EFEDE5;
+  --bg3: #E5E2D6;
+  --white: #FFFFFF;
+  --border: #DDD9CC;
+  --border2: #C8C4B4;
+  --text: #111009;
+  --text2: #3A3730;
+  --muted: #7A7668;
+  --gold: #6B5010;
+  --gold-bg: #FBF5E0;
+  --gold-border: #C8A830;
+  --gold-mid: #9A7820;
+  --red: #7A1515;
+  --red-bg: #FDF0F0;
+  --red-border: #CC4444;
+  --green: #1A5020;
+  --green-bg: #EFF8EF;
+  --green-border: #4A9A4A;
+  --sidebar-w: 240px;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  display: flex;
+}
+
+/* ── SIDEBAR ── */
+.sidebar {
+  width: var(--sidebar-w);
+  min-height: 100vh;
+  background: #F2F0E8;
+  position: fixed;
+  top: 0; left: 0;
+  display: flex;
+  flex-direction: column;
+  z-index: 100;
+  overflow-y: auto;
+}
+
+.sidebar-logo {
+  padding: 28px 24px 20px;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+
+.due-mark {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 28px;
+  font-weight: 700;
+  letter-spacing: 6px;
+  color: #C8A830;
+}
+
+.sidebar-doc {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: rgba(255,255,255,0.35);
+  margin-top: 4px;
+}
+
+.sidebar-section {
+  padding: 8px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+
+.sidebar-label {
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: rgba(255,255,255,0.3);
+  padding: 10px 24px 4px;
+}
+
+.sidebar-nav a {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 24px;
+  color: rgba(255,255,255,0.5);
+  text-decoration: none;
+  font-size: 12px;
+  font-weight: 500;
+  transition: all .2s;
+  border-left: 2px solid transparent;
+}
+
+.sidebar-nav a:hover, .sidebar-nav a.active {
+  color: #C8A830;
+  background: rgba(200,168,48,0.08);
+  border-left-color: #C8A830;
+}
+
+.sidebar-footer {
+  margin-top: auto;
+  padding: 16px 24px;
+  border-top: 1px solid rgba(255,255,255,0.06);
+}
+
+.sidebar-footer .vr {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  color: rgba(255,255,255,0.25);
+}
+
+/* ── MAIN ── */
+.main { margin-left: var(--sidebar-w); flex: 1; }
+
+/* ── PAGE HEADER ── */
+.page-header {
+  background: var(--text);
+  padding: 48px 52px 40px;
+  color: #fff;
+  position: relative;
+  overflow: hidden;
+}
+
+.page-header::before {
+  content: '⊡';
+  position: absolute;
+  right: 40px; top: 20px;
+  font-size: 160px;
+  color: rgba(200,168,48,0.06);
+  pointer-events: none;
+}
+
+.header-eyebrow {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 4px;
+  color: rgba(200,168,48,0.6);
+  margin-bottom: 12px;
+}
+
+.header-h1 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 44px;
+  font-weight: 700;
+  color: #fff;
+  line-height: 1.1;
+  margin-bottom: 16px;
+}
+
+.header-meta {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.header-pill {
+  padding: 4px 14px;
+  border-radius: 4px;
+  font-size: 11px;
+  background: rgba(255,255,255,0.08);
+  color: rgba(255,255,255,0.6);
+  border: 1px solid rgba(255,255,255,0.12);
+}
+
+.header-pill strong { color: #C8A830; }
+
+/* ── SECTIONS ── */
+.section {
+  padding: 44px 52px;
+  border-bottom: 1px solid var(--border);
+  scroll-margin-top: 24px;
+}
+
+.section:last-child { border-bottom: none; }
+
+.sec-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 6px;
+}
+
+.sec-sub {
+  font-size: 13px;
+  color: var(--muted);
+  margin-bottom: 28px;
+  line-height: 1.5;
+}
+
+/* ── CALCULATOR ── */
+.calc-box {
+  background: var(--text);
+  border-radius: 12px;
+  padding: 36px;
+  color: #fff;
+  margin-bottom: 28px;
+}
+
+.calc-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 20px;
+  font-weight: 700;
+  color: #C8A830;
+  margin-bottom: 4px;
+}
+
+.calc-sub {
+  font-size: 12px;
+  color: rgba(255,255,255,0.4);
+  margin-bottom: 28px;
+}
+
+.calc-inputs {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 16px;
+  margin-bottom: 32px;
+}
+
+.input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.input-label {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: rgba(255,255,255,0.4);
+}
+
+.calc-input {
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-family: 'DM Mono', monospace;
+  font-size: 20px;
+  font-weight: 500;
+  color: #C8A830;
+  width: 100%;
+  outline: none;
+  transition: border .2s;
+}
+
+.calc-input:focus { border-color: #C8A830; }
+
+.calc-results {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 10px;
+  padding-top: 24px;
+  border-top: 1px solid rgba(255,255,255,0.08);
+}
+
+.result-card {
+  background: rgba(255,255,255,0.06);
+  border-radius: 8px;
+  padding: 14px;
+}
+
+.result-label {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: rgba(255,255,255,0.4);
+  margin-bottom: 4px;
+}
+
+.result-value {
+  font-family: 'DM Mono', monospace;
+  font-size: 22px;
+  font-weight: 500;
+  color: #fff;
+  line-height: 1;
+}
+
+.result-unit {
+  font-size: 11px;
+  color: rgba(255,255,255,0.4);
+  margin-top: 2px;
+}
+
+/* ── MODEL EXPLAINER ── */
+.model-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 10px;
+  margin-bottom: 28px;
+}
+
+.model-card {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 14px 16px;
+}
+
+.model-day {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 4px;
+}
+
+.model-service {
+  font-size: 11px;
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+.model-covers {
+  font-family: 'DM Mono', monospace;
+  font-size: 13px;
+  color: var(--gold);
+  font-weight: 600;
+  margin-top: 4px;
+}
+
+/* ── INGREDIENTS TABLE ── */
+.purchases-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 12px;
+}
+
+.purchase-cat {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.purchase-cat-header {
+  background: var(--text);
+  color: rgba(255,255,255,0.9);
+  padding: 10px 16px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.purchase-cat-header .cat-icon { color: #C8A830; font-size: 14px; }
+
+.purchase-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 9px 16px;
+  border-bottom: 1px solid var(--border);
+  gap: 8px;
+}
+
+.purchase-row:last-child { border-bottom: none; }
+
+.purchase-name { font-size: 13px; color: var(--text2); flex: 1; }
+.purchase-qty {
+  font-family: 'DM Mono', monospace;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text);
+  white-space: nowrap;
+}
+
+.purchase-unit { font-size: 11px; color: var(--muted); }
+
+/* ── DISHES ── */
+.dish-filter {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+
+.fchip {
+  padding: 6px 16px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  border: 1px solid var(--border2);
+  background: var(--white);
+  color: var(--muted);
+  cursor: pointer;
+  transition: all .2s;
+}
+
+.fchip.active, .fchip:hover {
+  background: var(--text);
+  color: #C8A830;
+  border-color: var(--text);
+}
+
+.dish-accordion {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  overflow: hidden;
+  margin-bottom: 8px;
+  background: var(--white);
+}
+
+.dish-acc-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 18px;
+  cursor: pointer;
+  transition: background .15s;
+}
+
+.dish-acc-header:hover { background: var(--bg2); }
+
+.dish-code {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  color: var(--muted);
+  background: var(--bg2);
+  padding: 3px 8px;
+  border-radius: 4px;
+  flex-shrink: 0;
+}
+
+.dish-info { flex: 1; }
+
+.dish-name-acc {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text);
+  line-height: 1.2;
+}
+
+.dish-resp {
+  font-size: 11px;
+  color: var(--muted);
+  margin-top: 2px;
+}
+
+.dish-price-acc {
+  font-family: 'DM Mono', monospace;
+  font-size: 13px;
+  color: var(--gold);
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.dish-cmv {
+  font-size: 11px;
+  color: var(--muted);
+  text-align: right;
+  white-space: nowrap;
+}
+
+.dish-arr {
+  color: var(--muted);
+  font-size: 14px;
+  transition: transform .2s;
+}
+
+.dish-accordion.open .dish-arr { transform: rotate(180deg); }
+
+.dish-acc-body {
+  display: none;
+  border-top: 1px solid var(--border);
+}
+
+.dish-accordion.open .dish-acc-body { display: block; }
+
+.dish-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+
+.dish-table th {
+  text-align: left;
+  padding: 8px 18px;
+  background: var(--bg2);
+  color: var(--muted);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-weight: 600;
+}
+
+.dish-table td {
+  padding: 8px 18px;
+  border-bottom: 1px solid var(--border);
+  color: var(--text2);
+}
+
+.dish-table tr:last-child td { border-bottom: none; }
+.dish-table .mono { font-family: 'DM Mono', monospace; color: var(--text); }
+.dish-table .base-ref { color: var(--gold-mid); font-style: italic; }
+.dish-table .obs { color: var(--muted); font-size: 11px; }
+
+.dish-totals {
+  display: flex;
+  gap: 20px;
+  padding: 12px 18px;
+  background: var(--bg2);
+  border-top: 1px solid var(--border);
+  flex-wrap: wrap;
+}
+
+.dish-total-item { display: flex; flex-direction: column; gap: 2px; }
+.dish-total-label { font-size: 10px; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); }
+.dish-total-value { font-family: 'DM Mono', monospace; font-size: 14px; font-weight: 600; color: var(--text); }
+
+.cat-divider {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--gold);
+  padding: 16px 0 8px;
+  border-bottom: 2px solid var(--border);
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.cat-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+
+/* ── ALERTS ── */
+.alert {
+  border-radius: 8px;
+  padding: 12px 16px;
+  margin: 16px 0;
+  font-size: 13px;
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  line-height: 1.5;
+}
+
+.alert-gold { background: var(--gold-bg); border: 1px solid var(--gold-border); color: var(--gold); }
+.alert-red { background: var(--red-bg); border: 1px solid var(--red-border); color: var(--red); }
+.alert-green { background: var(--green-bg); border: 1px solid var(--green-border); color: var(--green); }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 900px) {
+  .sidebar { width: 56px; }
+  .sidebar .sidebar-logo .due-mark,
+  .sidebar-label, .sidebar-nav a span:not(.icon),
+  .sidebar-footer, .sidebar-doc { display: none; }
+  .sidebar-nav a { padding: 12px; justify-content: center; }
+  .main { margin-left: 56px; }
+  .page-header, .section { padding: 24px; }
+  .calc-inputs { grid-template-columns: 1fr 1fr; }
+}
+
+/* ── LIGHT SIDEBAR OVERRIDE ── */
+.sidebar { background: #F2F0E8 !important; border-right: 1px solid #DDD9CC !important; }
+.sidebar .due-mark, .sidebar .s-due { color: #6A4E10 !important; }
+.sidebar .sidebar-doc, .sidebar .s-sub { color: #8A8676 !important; }
+.sidebar-label, .s-label { color: #8A8676 !important; }
+.sidebar-nav a, .s-nav a { color: #5A5748 !important; border-left-color: transparent !important; }
+.sidebar-nav a:hover, .s-nav a:hover,
+.sidebar-nav a.active, .s-nav a.active { color: #6A4E10 !important; background: rgba(106,78,16,0.08) !important; border-left-color: #B89020 !important; }
+.sidebar-nav a .badge, .s-nav a .badge { color: #8A8676 !important; }
+.sidebar-footer, .s-footer { color: #8A8676 !important; border-top-color: #DDD9CC !important; }
+.sidebar-section { border-bottom-color: #DDD9CC !important; }
+.sidebar-logo, .s-logo { border-bottom-color: #DDD9CC !important; }
+
+/* ── LIGHT PAGE HEADER OVERRIDE ── */
+.page-header, .hero {
+  background: #F2F0E8 !important;
+  color: #111009 !important;
+}
+.page-header .header-eyebrow, .page-header .h-eye, .hero .hero-eyebrow {
+  color: #9A7820 !important;
+}
+.page-header .header-h1, .page-header .h-title, .hero .hero-title {
+  color: #111009 !important;
+}
+.page-header .header-h1 span, .hero .hero-title span { color: #6A4E10 !important; }
+.page-header .header-pill, .hero .hero-intro { 
+  background: rgba(0,0,0,0.04) !important; 
+  border-color: rgba(0,0,0,0.08) !important; 
+  color: #5A5748 !important;
+}
+.page-header .header-pill strong { color: #6A4E10 !important; }
+.calc-box {
+  background: #F2F0E8 !important;
+  color: #111009 !important;
+  border: 1px solid #DDD9CC !important;
+}
+.calc-title { color: #6A4E10 !important; }
+.calc-sub { color: #8A8676 !important; }
+.calc-input { 
+  background: #FFFFFF !important; 
+  border-color: #C8C4B4 !important; 
+  color: #6A4E10 !important;
+}
+.result-card { background: rgba(0,0,0,0.04) !important; }
+.result-label { color: #6A6552 !important; }
+.result-value { color: #111009 !important; }
+.result-unit { color: #8A8676 !important; }
+.purchase-cat-header { background: #3A3728 !important; color: rgba(255,255,255,0.9) !important; }
+/* Receitas dark header */
+.page-header::before { display: none; }
+
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <div class="due-mark">DUE</div>
+    <div class="sidebar-doc">Porcionamento</div>
+  </div>
+  <div class="sidebar-section">
+    <div class="sidebar-label">Planejamento</div>
+    <nav class="sidebar-nav">
+      <a href="#modelo"><span class="icon">◎</span><span>Modelo Semanal</span></a>
+      <a href="#calculadora"><span class="icon">⊞</span><span>Calculadora</span></a>
+      <a href="#compras"><span class="icon">⊕</span><span>Lista de Compras</span></a>
+    </nav>
+  </div>
+  <div class="sidebar-section">
+    <div class="sidebar-label">Por Prato</div>
+    <nav class="sidebar-nav">
+      <a href="#executivo"><span class="icon">☀</span><span>Menu Executivo</span></a>
+      <a href="#entradas"><span class="icon">◇</span><span>Entradas</span></a>
+      <a href="#principals"><span class="icon">★</span><span>Principais</span></a>
+      <a href="#massas"><span class="icon">⊡</span><span>Massas</span></a>
+      <a href="#sobremesas"><span class="icon">◐</span><span>Sobremesas</span></a>
+    </nav>
+  </div>
+  <div class="sidebar-footer">
+    <div class="vr">v3.0 · Abril 2026</div>
+  </div>
+</aside>
+
+<main class="main">
+
+  <!-- PAGE HEADER -->
+  <div class="page-header">
+    <div class="header-eyebrow">DUE Restaurante · Operação · Cozinha</div>
+    <h1 class="header-h1">Porcionamento &<br>Quantidades Semanais</h1>
+    <div class="header-meta">
+      <div class="header-pill"><strong>64</strong> covers / serviço</div>
+      <div class="header-pill"><strong>10</strong> serviços / semana</div>
+      <div class="header-pill"><strong>640</strong> covers / semana (casa cheia)</div>
+      <div class="header-pill"><strong>19</strong> pratos no cardápio</div>
+    </div>
+  </div>
+
+  <!-- MODELO SEMANAL -->
+  <section id="modelo">
+    <div class="sec-title">Modelo de Operação Semanal</div>
+    <div class="sec-sub">Casa cheia = 64 covers por serviço. 10 serviços por semana (domingo fechado). Total: 640 covers/semana.</div>
+
+    <div class="model-grid">
+      <div class="model-card">
+        <div class="model-day">Segunda-feira</div>
+        <div class="model-service">🌙 Jantar (Turno B)</div>
+        <div class="model-covers">64 covers</div>
+      </div>
+      <div class="model-card">
+        <div class="model-day">Terça-feira</div>
+        <div class="model-service">☀ Almoço (Turno A)</div>
+        <div class="model-covers">64 covers</div>
+      </div>
+      <div class="model-card" style="border-color:var(--gold-border)">
+        <div class="model-day">Quarta-feira</div>
+        <div class="model-service">☀ Almoço + 🌙 Jantar</div>
+        <div class="model-covers">128 covers</div>
+      </div>
+      <div class="model-card" style="border-color:var(--gold-border)">
+        <div class="model-day">Quinta-feira</div>
+        <div class="model-service">☀ Almoço + 🌙 Jantar</div>
+        <div class="model-covers">128 covers</div>
+      </div>
+      <div class="model-card" style="border-color:var(--gold-border)">
+        <div class="model-day">Sexta-feira</div>
+        <div class="model-service">☀ Almoço + 🌙 Jantar</div>
+        <div class="model-covers">128 covers</div>
+      </div>
+      <div class="model-card" style="border-color:var(--gold-border)">
+        <div class="model-day">Sábado</div>
+        <div class="model-service">☀ Almoço + 🌙 Jantar</div>
+        <div class="model-covers">128 covers</div>
+      </div>
+      <div class="model-card" style="opacity:0.4">
+        <div class="model-day" style="color:var(--muted)">Domingo</div>
+        <div class="model-service">FECHADO</div>
+        <div class="model-covers" style="color:var(--muted)">—</div>
+      </div>
+    </div>
+
+    <div class="alert alert-gold">
+      <span>◈</span>
+      <div><strong>Distribuição assumida:</strong> Menu Executivo (almoço) = 40% dos covers de almoço = 5 serviços × 64 × 40% = <strong>128 pratos executivos/semana</strong>. À la carte: 60% do almoço + 100% do jantar. Ajuste os multiplicadores na calculadora para sua realidade.</div>
+    </div>
+  </section>
+
+  <!-- CALCULADORA -->
+  <section id="calculadora">
+    <div class="sec-title">Calculadora de Compras</div>
+    <div class="sec-sub">Ajuste os covers esperados e veja as quantidades brutas dos principais insumos automaticamente.</div>
+
+    <div class="calc-box">
+      <div class="calc-title">Parâmetros da Semana</div>
+      <div class="calc-sub">Todos os valores são em bruto (antes do fator de correção). Adicione 15% de margem de segurança para imprevistos.</div>
+
+      <div class="calc-inputs">
+        <div class="input-group">
+          <label class="input-label">Covers / Serviço (máx 64)</label>
+          <input class="calc-input" type="number" id="coversInput" value="64" min="1" max="80" oninput="calcular()">
+        </div>
+        <div class="input-group">
+          <label class="input-label">Serviços / Semana</label>
+          <input class="calc-input" type="number" id="servicosInput" value="10" min="1" max="14" oninput="calcular()">
+        </div>
+        <div class="input-group">
+          <label class="input-label">% Entradas (de covers)</label>
+          <input class="calc-input" type="number" id="entradasPct" value="55" min="0" max="100" oninput="calcular()">
+        </div>
+        <div class="input-group">
+          <label class="input-label">% Sobremesas (de covers)</label>
+          <input class="calc-input" type="number" id="sobremesasPct" value="35" min="0" max="100" oninput="calcular()">
+        </div>
+      </div>
+
+      <div style="margin-bottom:16px;font-size:11px;color:rgba(255,255,255,0.4);text-transform:uppercase;letter-spacing:1px">Quantidades Brutas Estimadas / Semana</div>
+      <div class="calc-results" id="calcResults">
+        <!-- populated by JS -->
+      </div>
+    </div>
+  </section>
+
+  <!-- LISTA DE COMPRAS -->
+  <section id="compras">
+    <div class="sec-title">Lista de Compras Estruturada</div>
+    <div class="sec-sub">Baseada em 640 covers/semana (casa cheia). Valores brutos com FC aplicado. Adicione 10-15% de margem de segurança.</div>
+
+    <div class="purchases-grid" id="purchasesGrid">
+      <!-- populated by JS -->
+    </div>
+  </section>
+
+  <!-- MENU EXECUTIVO -->
+  <section id="executivo">
+    <div class="sec-title">Por Prato — Gramaturage Completo</div>
+    <div class="sec-sub">Fichas técnicas reais. Qtd Bruta = quantidade a comprar. Qtd Líquida = quantidade no prato finalizado.</div>
+
+    <div class="dish-filter">
+      <div class="fchip active" onclick="filterDishes('all',this)">Todos</div>
+      <div class="fchip" onclick="filterDishes('executivo',this)">☀ Executivo</div>
+      <div class="fchip" onclick="filterDishes('entrada-fria',this)">Entradas Frias</div>
+      <div class="fchip" onclick="filterDishes('entrada-quente',this)">Entradas Quentes</div>
+      <div class="fchip" onclick="filterDishes('principal-carne',this)">Carnes</div>
+      <div class="fchip" onclick="filterDishes('principal-peixe',this)">Peixes</div>
+      <div class="fchip" onclick="filterDishes('principal-massa',this)">Massas</div>
+      <div class="fchip" onclick="filterDishes('sobremesa',this)">Sobremesas</div>
+    </div>
+
+    <div id="dishContainer"><!-- populated by JS --></div>
+  </section>
+
+</main>
+
+<script>
+// ═══ DISH DATA ═══
+const dishes = [
+  {
+    id:'P01', code:'P01', cat:'entrada-fria', nome:'Tiradito de Peixe + Leite de Tigre Sergipano',
+    preco:68, cmv:'20.9%', tempo:'10-12min', resp:'Aux Frios', porcoes_semana: 90,
+    ingredientes:[
+      {nome:'Peixe Branco (Tiradito)',un:'kg',qtdLiq:0.12,fc:1.20,qtdBruta:0.144,obs:'Lâminas finas'},
+      {nome:'B15 Cura Rápida Peixes',un:'kg',qtdLiq:0.005,fc:1,qtdBruta:0.005,obs:'Cura 5min'},
+      {nome:'B17 Leite de Tigre Sergipano',un:'lt',qtdLiq:0.05,fc:1,qtdBruta:0.05,obs:'Base'},
+      {nome:'Macaxeira Descascada',un:'kg',qtdLiq:0.03,fc:1,qtdBruta:0.03,obs:'Chips fritos'},
+      {nome:'Microgreens',un:'kg',qtdLiq:0.005,fc:1,qtdBruta:0.005,obs:'Decoração'},
+      {nome:'Azeite de Oliva',un:'lt',qtdLiq:0.005,fc:1,qtdBruta:0.005,obs:'Finalização'},
+    ],
+    custoTotal: 14.21, precoVenda: 68
+  },
+  {
+    id:'P02', code:'P02', cat:'entrada-fria', nome:'Burrata + Camarão Confitado + Pesto Sergipano',
+    preco:105, cmv:'34.8%', tempo:'8-10min', resp:'Aux Frios', porcoes_semana: 75,
+    ingredientes:[
+      {nome:'Burrata',un:'und',qtdLiq:1,fc:1,qtdBruta:1,obs:'125g'},
+      {nome:'B20 Camarão Confitado',un:'kg',qtdLiq:0.08,fc:1,qtdBruta:0.08,obs:'~5 camarões'},
+      {nome:'B07 Pesto Sergipano',un:'lt',qtdLiq:0.03,fc:1,qtdBruta:0.03,obs:'Base'},
+      {nome:'Tomate Cereja',un:'kg',qtdLiq:0.04,fc:1,qtdBruta:0.04,obs:'Confitados'},
+      {nome:'Redução Balsâmico',un:'lt',qtdLiq:0.005,fc:1,qtdBruta:0.005,obs:'Finalização'},
+    ],
+    custoTotal: 33.03, precoVenda: 105
+  },
+  {
+    id:'P03', code:'P03', cat:'entrada-fria', nome:'Tartar do Sertão + Sagu Crocante + Gema Curada',
+    preco:58, cmv:'14.7%', tempo:'12-15min', resp:'Aux Frios', porcoes_semana: 80,
+    ingredientes:[
+      {nome:'Carne do Sol Dessalgada',un:'kg',qtdLiq:0.12,fc:1,qtdBruta:0.12,obs:'Brunoise'},
+      {nome:'Sagu',un:'kg',qtdLiq:0.03,fc:1,qtdBruta:0.03,obs:'Crocante frito'},
+      {nome:'Ovo (gema curada 48h)',un:'und',qtdLiq:1,fc:1,qtdBruta:1,obs:'D-1'},
+      {nome:'Cebola Roxa',un:'kg',qtdLiq:0.015,fc:1.1,qtdBruta:0.017,obs:'Brunoise'},
+      {nome:'Mostarda Dijon',un:'kg',qtdLiq:0.005,fc:1,qtdBruta:0.005,obs:''},
+      {nome:'Chips de Mandioca',un:'kg',qtdLiq:0.02,fc:1,qtdBruta:0.02,obs:''},
+    ],
+    custoTotal: 8.50, precoVenda: 58
+  },
+  {
+    id:'P06', code:'P06', cat:'entrada-quente', nome:'Croqueta de Polvo DUE + Aioli',
+    preco:58, cmv:'25.2%', tempo:'8-10min', resp:'Aux Quente', porcoes_semana: 110,
+    ingredientes:[
+      {nome:'B11 Polvo Cozido (D-1)',un:'kg',qtdLiq:0.15,fc:1,qtdBruta:0.15,obs:'~3 croquetas'},
+      {nome:'B22 Empanamento DUE',un:'kg',qtdLiq:0.04,fc:1,qtdBruta:0.04,obs:''},
+      {nome:'Queijo Coalho Defumado',un:'kg',qtdLiq:0.02,fc:1,qtdBruta:0.02,obs:'Recheio'},
+      {nome:'B08 Aioli de Páprica',un:'lt',qtdLiq:0.04,fc:1,qtdBruta:0.04,obs:'Base'},
+      {nome:'Ovo',un:'und',qtdLiq:0.5,fc:1,qtdBruta:0.5,obs:'Empanamento'},
+    ],
+    custoTotal: 14.63, precoVenda: 58
+  },
+  {
+    id:'P07', code:'P07', cat:'entrada-quente', nome:'Taco Sergipano de Camarão',
+    preco:49, cmv:'20.9%', tempo:'15min', resp:'Aux Quente', porcoes_semana: 100,
+    ingredientes:[
+      {nome:'Camarão',un:'kg',qtdLiq:0.12,fc:1.25,qtdBruta:0.15,obs:'Grelhado'},
+      {nome:'Farinha de Trigo',un:'kg',qtdLiq:0.04,fc:1,qtdBruta:0.04,obs:'Tortilha ×3'},
+      {nome:'Farinha de Cuscuz',un:'kg',qtdLiq:0.015,fc:1,qtdBruta:0.015,obs:'Tortilha'},
+      {nome:'B27 Creme de Abacate',un:'lt',qtdLiq:0.06,fc:1,qtdBruta:0.06,obs:'Base'},
+      {nome:'B26 Picles de Maxixe',un:'kg',qtdLiq:0.03,fc:1,qtdBruta:0.03,obs:'Base'},
+      {nome:'B25 Azeite Vermelho DUE',un:'lt',qtdLiq:0.015,fc:1,qtdBruta:0.015,obs:'Base'},
+    ],
+    custoTotal: 10.27, precoVenda: 49
+  },
+  {
+    id:'P08', code:'P08', cat:'entrada-quente', nome:'Toast de Costela + Milho Tostado',
+    preco:52, cmv:'15.1%', tempo:'10min', resp:'Aux Quente', porcoes_semana: 90,
+    ingredientes:[
+      {nome:'B12 Costela Desfiada (D-1)',un:'kg',qtdLiq:0.10,fc:1,qtdBruta:0.10,obs:'Base'},
+      {nome:'Pão Italiano',un:'kg',qtdLiq:0.06,fc:1,qtdBruta:0.06,obs:'2 fatias'},
+      {nome:'Milho Verde',un:'kg',qtdLiq:0.05,fc:1,qtdBruta:0.05,obs:'Tostado'},
+      {nome:'Cream Cheese',un:'kg',qtdLiq:0.02,fc:1,qtdBruta:0.02,obs:''},
+      {nome:'Microgreens',un:'kg',qtdLiq:0.003,fc:1,qtdBruta:0.003,obs:''},
+    ],
+    custoTotal: 7.83, precoVenda: 52
+  },
+  {
+    id:'P11', code:'P11', cat:'entrada-quente', nome:'Frutos do Mar Tempurá + Vinagrete Manga',
+    preco:79, cmv:'13.8%', tempo:'12min', resp:'Aux Quente', porcoes_semana: 80,
+    ingredientes:[
+      {nome:'Camarão',un:'kg',qtdLiq:0.08,fc:1.25,qtdBruta:0.10,obs:''},
+      {nome:'Lulas',un:'kg',qtdLiq:0.06,fc:1,qtdBruta:0.06,obs:''},
+      {nome:'B23 Massa Tempurá DUE',un:'lt',qtdLiq:0.08,fc:1,qtdBruta:0.08,obs:'Preparar na hora'},
+      {nome:'B19 Vinagrete Tropical',un:'lt',qtdLiq:0.04,fc:1,qtdBruta:0.04,obs:'Base'},
+      {nome:'B13 Marinada Cítrica',un:'lt',qtdLiq:0.02,fc:1,qtdBruta:0.02,obs:''},
+    ],
+    custoTotal: 10.93, precoVenda: 79
+  },
+  {
+    id:'P13', code:'P13', cat:'principal-carne', nome:'Filé Alto com Crosta de Ervas + Xerém Cremoso',
+    preco:125, cmv:'15.1%', tempo:'20-25min', resp:'Cozinheiro', porcoes_semana: 65,
+    ingredientes:[
+      {nome:'Filé Mignon',un:'kg',qtdLiq:0.22,fc:1.10,qtdBruta:0.242,obs:'Ponto: malpassado'},
+      {nome:'B14 Dry Rub DUE',un:'kg',qtdLiq:0.008,fc:1,qtdBruta:0.008,obs:'8g/porção'},
+      {nome:'B06 Demi-Glace',un:'lt',qtdLiq:0.03,fc:1,qtdBruta:0.03,obs:'Batch semanal'},
+      {nome:'Xerém de Milho',un:'kg',qtdLiq:0.08,fc:1,qtdBruta:0.08,obs:'Cremoso'},
+      {nome:'Manteiga Sergipana',un:'kg',qtdLiq:0.015,fc:1,qtdBruta:0.015,obs:''},
+    ],
+    custoTotal: 18.88, precoVenda: 125
+  },
+  {
+    id:'P14', code:'P14', cat:'principal-carne', nome:'Coxa de Pato Confitada + Purê de Mandioquinha',
+    preco:139, cmv:'21.9%', tempo:'15-18min', resp:'Cozinheiro', porcoes_semana: 45,
+    ingredientes:[
+      {nome:'B21 Coxa Pato Confit (D-1)',un:'und',qtdLiq:1,fc:1,qtdBruta:1,obs:'~200g · 2 dias antes'},
+      {nome:'B06 Demi-Glace',un:'lt',qtdLiq:0.03,fc:1,qtdBruta:0.03,obs:''},
+      {nome:'Mandioquinha',un:'kg',qtdLiq:0.12,fc:1.15,qtdBruta:0.138,obs:'Purê'},
+      {nome:'Castanha de Caju',un:'kg',qtdLiq:0.015,fc:1,qtdBruta:0.015,obs:'Farofa'},
+      {nome:'Tangerina',un:'kg',qtdLiq:0.04,fc:1.2,qtdBruta:0.048,obs:'Confit'},
+    ],
+    custoTotal: 30.40, precoVenda: 139
+  },
+  {
+    id:'P15', code:'P15', cat:'principal-carne', nome:'Carré de Cordeiro + Pappardelle Trufado ★',
+    preco:165, cmv:'27.6%', tempo:'22-25min', resp:'Cozinheiro', porcoes_semana: 55,
+    ingredientes:[
+      {nome:'Carré de Cordeiro',un:'kg',qtdLiq:0.28,fc:1.20,qtdBruta:0.336,obs:'~3 costelas · rosado'},
+      {nome:'B10 Pappardelle Fresca (D-1)',un:'kg',qtdLiq:0.12,fc:1,qtdBruta:0.12,obs:'2-3min'},
+      {nome:'Azeite Trufado',un:'lt',qtdLiq:0.005,fc:1,qtdBruta:0.005,obs:'Finalização'},
+      {nome:'B06 Demi-Glace',un:'lt',qtdLiq:0.03,fc:1,qtdBruta:0.03,obs:''},
+      {nome:'Manteiga',un:'kg',qtdLiq:0.01,fc:1,qtdBruta:0.01,obs:''},
+    ],
+    custoTotal: 45.52, precoVenda: 165
+  },
+  {
+    id:'P16', code:'P16', cat:'principal-carne', nome:'Flat Iron + Rigatoni + Fonduta Parmesão',
+    preco:115, cmv:'19.8%', tempo:'18-22min', resp:'Cozinheiro', porcoes_semana: 65,
+    ingredientes:[
+      {nome:'Flat Iron',un:'kg',qtdLiq:0.20,fc:1.10,qtdBruta:0.22,obs:'Ao ponto'},
+      {nome:'Rigatoni',un:'kg',qtdLiq:0.10,fc:1,qtdBruta:0.10,obs:'8-10min'},
+      {nome:'B01 Molho Pomodoro',un:'lt',qtdLiq:0.06,fc:1,qtdBruta:0.06,obs:''},
+      {nome:'B02 Béchamel (Fonduta)',un:'lt',qtdLiq:0.04,fc:1,qtdBruta:0.04,obs:'Banho-maria'},
+      {nome:'Parmesão',un:'kg',qtdLiq:0.015,fc:1,qtdBruta:0.015,obs:'Ralado na hora'},
+    ],
+    custoTotal: 22.80, precoVenda: 115
+  },
+  {
+    id:'P17', code:'P17', cat:'principal-carne', nome:'Filé do Sertão + Rubacão Sergipano',
+    preco:119, cmv:'11.1%', tempo:'20-25min', resp:'Cozinheiro', porcoes_semana: 60,
+    ingredientes:[
+      {nome:'Carne do Sol',un:'kg',qtdLiq:0.18,fc:1.15,qtdBruta:0.207,obs:'Dessalgar D-0'},
+      {nome:'Arroz Agulhinha',un:'kg',qtdLiq:0.08,fc:1,qtdBruta:0.08,obs:'Rubacão'},
+      {nome:'Feijão Branco / Fradinho',un:'kg',qtdLiq:0.06,fc:1,qtdBruta:0.06,obs:'Rubacão'},
+      {nome:'Queijo Coalho',un:'kg',qtdLiq:0.03,fc:1,qtdBruta:0.03,obs:''},
+      {nome:'Manteiga de Garrafa',un:'lt',qtdLiq:0.015,fc:1,qtdBruta:0.015,obs:''},
+      {nome:'Couve-folha',un:'mç',qtdLiq:0.02,fc:1,qtdBruta:0.02,obs:'Crocante'},
+    ],
+    custoTotal: 13.18, precoVenda: 119
+  },
+  {
+    id:'P18', code:'P18', cat:'principal-peixe', nome:'Robalo com Pele Crocante + Mousseline de Banana',
+    preco:118, cmv:'23.1%', tempo:'18-22min', resp:'Cozinheiro', porcoes_semana: 70,
+    ingredientes:[
+      {nome:'Robalo (filé)',un:'kg',qtdLiq:0.18,fc:1.30,qtdBruta:0.234,obs:'PELE CROCANTE'},
+      {nome:'Banana-da-Terra',un:'kg',qtdLiq:0.10,fc:1.15,qtdBruta:0.115,obs:'Mousseline'},
+      {nome:'Creme de Leite Fresco',un:'lt',qtdLiq:0.03,fc:1,qtdBruta:0.03,obs:''},
+      {nome:'Maxixe',un:'kg',qtdLiq:0.06,fc:1,qtdBruta:0.06,obs:'Grelhado'},
+      {nome:'B09 Azeite Verde',un:'lt',qtdLiq:0.01,fc:1,qtdBruta:0.01,obs:'Finalização'},
+    ],
+    custoTotal: 27.28, precoVenda: 118
+  },
+  {
+    id:'P19', code:'P19', cat:'principal-peixe', nome:'Arroz de Polvo DUE ★ — Assinatura do Chef',
+    preco:145, cmv:'16.5%', tempo:'20-25min', resp:'Cozinheiro + Chef', porcoes_semana: 75,
+    ingredientes:[
+      {nome:'B11 Polvo Cozido (D-1)',un:'kg',qtdLiq:0.15,fc:1,qtdBruta:0.15,obs:'Tentáculos grelhados'},
+      {nome:'Arroz Arbóreo',un:'kg',qtdLiq:0.10,fc:1,qtdBruta:0.10,obs:'18min'},
+      {nome:'B16 Bisque de Crustáceos',un:'lt',qtdLiq:0.08,fc:1,qtdBruta:0.08,obs:'Base'},
+      {nome:'B05 Fumet de Peixe',un:'lt',qtdLiq:0.12,fc:1,qtdBruta:0.12,obs:''},
+      {nome:'Parmesão',un:'kg',qtdLiq:0.01,fc:1,qtdBruta:0.01,obs:'Ralado na hora'},
+      {nome:'Vinho Branco',un:'lt',qtdLiq:0.02,fc:1,qtdBruta:0.02,obs:''},
+    ],
+    custoTotal: 23.87, precoVenda: 145
+  },
+  {
+    id:'P21', code:'P21', cat:'principal-massa', nome:'Pappardelle DUE + Frutos do Mar + Bisque',
+    preco:110, cmv:'11.8%', tempo:'15-18min', resp:'Aux Quente + Cozinheiro', porcoes_semana: 55,
+    ingredientes:[
+      {nome:'B10 Pappardelle Fresca (D-1)',un:'kg',qtdLiq:0.12,fc:1,qtdBruta:0.12,obs:'2-3min'},
+      {nome:'Camarão',un:'kg',qtdLiq:0.08,fc:1.25,qtdBruta:0.10,obs:'Salteado'},
+      {nome:'Lulas',un:'kg',qtdLiq:0.04,fc:1,qtdBruta:0.04,obs:''},
+      {nome:'Mexilhões',un:'kg',qtdLiq:0.04,fc:1.30,qtdBruta:0.052,obs:''},
+      {nome:'B16 Bisque de Crustáceos',un:'lt',qtdLiq:0.08,fc:1,qtdBruta:0.08,obs:'Base'},
+      {nome:'Azeite Trufado',un:'lt',qtdLiq:0.005,fc:1,qtdBruta:0.005,obs:'Finalização'},
+    ],
+    custoTotal: 13.00, precoVenda: 110
+  },
+  {
+    id:'P22', code:'P22', cat:'principal-massa', nome:'Rigatoni com Ragù de Costela + Parmesão',
+    preco:89, cmv:'13.2%', tempo:'12-15min', resp:'Aux Quente + Cozinheiro', porcoes_semana: 60,
+    ingredientes:[
+      {nome:'Rigatoni',un:'kg',qtdLiq:0.12,fc:1,qtdBruta:0.12,obs:'Al dente 8-10min'},
+      {nome:'B12 Costela Desfiada (D-1)',un:'kg',qtdLiq:0.12,fc:1,qtdBruta:0.12,obs:'Ragù'},
+      {nome:'B01 Molho Pomodoro',un:'lt',qtdLiq:0.08,fc:1,qtdBruta:0.08,obs:''},
+      {nome:'Parmesão',un:'kg',qtdLiq:0.015,fc:1,qtdBruta:0.015,obs:'RALADO NA HORA'},
+    ],
+    custoTotal: 11.74, precoVenda: 89
+  },
+  {
+    id:'P27', code:'P27', cat:'sobremesa', nome:'Pannacota de Baunilha + Goiaba Verde + Suspiro',
+    preco:42, cmv:'15.6%', tempo:'Pré-montada', resp:'Aux Frios', porcoes_semana: 75,
+    ingredientes:[
+      {nome:'Creme de Leite Fresco',un:'lt',qtdLiq:0.12,fc:1,qtdBruta:0.12,obs:''},
+      {nome:'Leite',un:'lt',qtdLiq:0.06,fc:1,qtdBruta:0.06,obs:''},
+      {nome:'Gelatina',un:'kg',qtdLiq:0.003,fc:1,qtdBruta:0.003,obs:'Ponto exato'},
+      {nome:'Baunilha (fava)',un:'und',qtdLiq:0.1,fc:1,qtdBruta:0.1,obs:'1/10 fava'},
+      {nome:'Goiaba Verde',un:'kg',qtdLiq:0.05,fc:1,qtdBruta:0.05,obs:'Confitada'},
+      {nome:'Suspiro',un:'kg',qtdLiq:0.01,fc:1,qtdBruta:0.01,obs:'Artesanal'},
+      {nome:'Framboesa',un:'kg',qtdLiq:0.015,fc:1,qtdBruta:0.015,obs:'Fresca'},
+    ],
+    custoTotal: 6.56, precoVenda: 42
+  },
+  {
+    id:'P28', code:'P28', cat:'sobremesa', nome:'Ganache de Chocolate 70% + Laranja + Suspiro',
+    preco:45, cmv:'14.6%', tempo:'Pré-montada', resp:'Aux Frios', porcoes_semana: 70,
+    ingredientes:[
+      {nome:'Chocolate 70%',un:'kg',qtdLiq:0.06,fc:1,qtdBruta:0.06,obs:'Belga'},
+      {nome:'Creme de Leite Fresco',un:'lt',qtdLiq:0.04,fc:1,qtdBruta:0.04,obs:''},
+      {nome:'Laranja Bahia',un:'kg',qtdLiq:0.04,fc:1.2,qtdBruta:0.048,obs:'Confit + suco'},
+      {nome:'Suspiro',un:'kg',qtdLiq:0.01,fc:1,qtdBruta:0.01,obs:'Crocante'},
+      {nome:'Flor de Sal',un:'kg',qtdLiq:0.001,fc:1,qtdBruta:0.001,obs:'Finalização'},
+    ],
+    custoTotal: 6.59, precoVenda: 45
+  },
+  {
+    id:'P30', code:'P30', cat:'sobremesa', nome:'Cheesecake Artesanal + Frutas Vermelhas + Farofa Avelã',
+    preco:52, cmv:'14.3%', tempo:'Pré-montada', resp:'Aux Frios', porcoes_semana: 70,
+    ingredientes:[
+      {nome:'Cream Cheese',un:'kg',qtdLiq:0.08,fc:1,qtdBruta:0.08,obs:''},
+      {nome:'Biscoito (base)',un:'kg',qtdLiq:0.03,fc:1,qtdBruta:0.03,obs:''},
+      {nome:'Morango',un:'kg',qtdLiq:0.03,fc:1,qtdBruta:0.03,obs:'Calda'},
+      {nome:'Mirtilo',un:'kg',qtdLiq:0.01,fc:1,qtdBruta:0.01,obs:''},
+      {nome:'Avelã',un:'kg',qtdLiq:0.01,fc:1,qtdBruta:0.01,obs:'Farofa'},
+    ],
+    custoTotal: 7.44, precoVenda: 52
+  },
+];
+
+// executivo dishes (simplified)
+const executivoDishes = [
+  { id:'EX1', code:'EX', cat:'executivo', nome:'Robalo Território', preco:59, cmv:'~18%', tempo:'18-20min', resp:'Cozinheiro', porcoes_semana:22,
+    ingredientes:[{nome:'Robalo',un:'kg',qtdLiq:0.18,fc:1.30,qtdBruta:0.234,obs:'Grelhado azeite verde'},{nome:'Banana-da-Terra',un:'kg',qtdLiq:0.08,fc:1.15,qtdBruta:0.092,obs:'Purê rústico'},{nome:'Maxixe',un:'kg',qtdLiq:0.05,fc:1,qtdBruta:0.05,obs:'Na chapa'},{nome:'B19 Vinagrete Tropical',un:'lt',qtdLiq:0.04,fc:1,qtdBruta:0.04,obs:''}], custoTotal: 10.8, precoVenda:59 },
+  { id:'EX2', code:'EX', cat:'executivo', nome:'Frango Tucupi & Jambu', preco:59, cmv:'~20%', tempo:'22-25min', resp:'Cozinheiro', porcoes_semana:22,
+    ingredientes:[{nome:'Peito de Frango',un:'kg',qtdLiq:0.18,fc:1.1,qtdBruta:0.198,obs:'75°C interno · D.Rub'},{nome:'Tucupi',un:'lt',qtdLiq:0.06,fc:1,qtdBruta:0.06,obs:'Redução'},{nome:'Jambu',un:'kg',qtdLiq:0.02,fc:1,qtdBruta:0.02,obs:'⚡ Avisar adormecimento'},{nome:'Macaxeira',un:'kg',qtdLiq:0.10,fc:1.2,qtdBruta:0.12,obs:'Murra'}], custoTotal: 11.5, precoVenda:59 },
+  { id:'EX3', code:'EX', cat:'executivo', nome:'Salada Morna de Camarão', preco:59, cmv:'~18%', tempo:'12-15min', resp:'Aux', porcoes_semana:22,
+    ingredientes:[{nome:'Camarão',un:'kg',qtdLiq:0.12,fc:1.25,qtdBruta:0.15,obs:'Salteado'},{nome:'Macaxeira',un:'kg',qtdLiq:0.06,fc:1.2,qtdBruta:0.072,obs:'Dourada'},{nome:'B26 Picles Maxixe',un:'kg',qtdLiq:0.03,fc:1,qtdBruta:0.03,obs:''},{nome:'Microgreens',un:'kg',qtdLiq:0.005,fc:1,qtdBruta:0.005,obs:''},{nome:'Castanha de Caju',un:'kg',qtdLiq:0.01,fc:1,qtdBruta:0.01,obs:'Tostada'}], custoTotal: 10.2, precoVenda:59 },
+  { id:'EX4', code:'EX', cat:'executivo', nome:'Arroz do Sertão Verde — Vegano', preco:59, cmv:'~8%', tempo:'12-15min', resp:'Cozinheiro', porcoes_semana:20,
+    ingredientes:[{nome:'Arroz Agulhinha',un:'kg',qtdLiq:0.10,fc:1,qtdBruta:0.10,obs:''},{nome:'Feijão Verde',un:'kg',qtdLiq:0.06,fc:1,qtdBruta:0.06,obs:''},{nome:'B27 Creme de Abacate',un:'lt',qtdLiq:0.06,fc:1,qtdBruta:0.06,obs:''},{nome:'B26 Picles Maxixe',un:'kg',qtdLiq:0.03,fc:1,qtdBruta:0.03,obs:''}], custoTotal: 4.8, precoVenda:59 },
+  { id:'EX5', code:'EX', cat:'executivo', nome:'Rigatoni da Nonna', preco:59, cmv:'~13%', tempo:'12-15min', resp:'Aux Quente', porcoes_semana:22,
+    ingredientes:[{nome:'Rigatoni',un:'kg',qtdLiq:0.12,fc:1,qtdBruta:0.12,obs:'Al dente'},{nome:'B12 Costela Desfiada (D-1)',un:'kg',qtdLiq:0.10,fc:1,qtdBruta:0.10,obs:'Ragù'},{nome:'B01 Molho Pomodoro',un:'lt',qtdLiq:0.08,fc:1,qtdBruta:0.08,obs:''},{nome:'Parmesão',un:'kg',qtdLiq:0.015,fc:1,qtdBruta:0.015,obs:'Ralado na hora'}], custoTotal: 7.5, precoVenda:59 },
+  { id:'EX6', code:'EX', cat:'executivo', nome:'Arroz de Sol DUE', preco:59, cmv:'~15%', tempo:'15-18min', resp:'Cozinheiro', porcoes_semana:20,
+    ingredientes:[{nome:'Carne do Sol',un:'kg',qtdLiq:0.15,fc:1.15,qtdBruta:0.173,obs:'Dessalgar D-0'},{nome:'Arroz Agulhinha',un:'kg',qtdLiq:0.10,fc:1,qtdBruta:0.10,obs:'Caldoso'},{nome:'Manteiga de Garrafa',un:'lt',qtdLiq:0.02,fc:1,qtdBruta:0.02,obs:''},{nome:'Queijo Coalho',un:'kg',qtdLiq:0.04,fc:1,qtdBruta:0.04,obs:'Maçaricado'}], custoTotal: 8.5, precoVenda:59 },
+];
+
+const allDishes = [...executivoDishes, ...dishes];
+let dishFilter = 'all';
+
+// ═══ CALCULATOR ═══
+function calcular() {
+  const covers = parseFloat(document.getElementById('coversInput').value) || 64;
+  const servicos = parseFloat(document.getElementById('servicosInput').value) || 10;
+  const entPct = parseFloat(document.getElementById('entradasPct').value) / 100 || 0.55;
+  const sobPct = parseFloat(document.getElementById('sobremesasPct').value) / 100 || 0.35;
+
+  const totalCovers = covers * servicos;
+  const almocosServicos = Math.ceil(servicos / 2);
+  const executivoCovers = almocosServicos * covers * 0.40;
+
+  // Key ingredients
+  const fileMignon = (65 + 5 * 0.22 + executivoCovers * 0.05) * covers / 64 * (servicos / 10);
+  const flatIron = 65 * covers / 64 * (servicos / 10) * 0.22;
+  const carre = 55 * covers / 64 * (servicos / 10) * 0.336;
+  const robalo = (70 + 22) * covers / 64 * (servicos / 10) * 0.234;
+  const polvoB = (110 + 75) * covers / 64 * (servicos / 10) * 0.15;
+  const pato = 45 * covers / 64 * (servicos / 10);
+  const carneSol = (80 + 60 + executivoCovers * 0.15 / covers * covers) * covers / 64 * (servicos / 10) * 0.18;
+  const camarao = (100 * 0.15 + 80 * 0.10 + 55 * 0.10 + 75 * 0.08) * covers / 64 * (servicos / 10);
+  const lulas = (80 * 0.06 + 55 * 0.04) * covers / 64 * (servicos / 10);
+  const rigatoni = (65 * 0.10 + 60 * 0.12 + 22 * 0.12) * covers / 64 * (servicos / 10);
+  const pappardelle = (55 * 0.12 + 55 * 0.12) * covers / 64 * (servicos / 10);
+  const bisque = (75 * 0.08 + 55 * 0.08) * covers / 64 * (servicos / 10);
+  const costela = (90 * 0.10 + 60 * 0.12 + 22 * 0.10) * covers / 64 * (servicos / 10);
+  const demiglacea = (65 + 45 + 55 + 65 + 60) * covers / 64 * (servicos / 10) * 0.03;
+  const framboesa = 75 * covers / 64 * (servicos / 10) * 0.015;
+  const chocolate = 70 * covers / 64 * (servicos / 10) * 0.06;
+  const creamCheese = 70 * covers / 64 * (servicos / 10) * 0.08;
+
+  const results = [
+    { label: 'Total Covers', value: Math.round(totalCovers), unit: 'covers/semana' },
+    { label: 'Filé Mignon', value: (fileMignon * covers / 64).toFixed(1), unit: 'kg bruto' },
+    { label: 'Flat Iron', value: (flatIron).toFixed(1), unit: 'kg bruto' },
+    { label: 'Carré Cordeiro', value: (carre).toFixed(1), unit: 'kg bruto' },
+    { label: 'Robalo', value: (robalo).toFixed(1), unit: 'kg bruto' },
+    { label: 'Polvo (bruto→cozido)', value: (polvoB / 0.8).toFixed(1), unit: 'kg bruto' },
+    { label: 'Pato (coxas)', value: Math.round(pato), unit: 'unidades' },
+    { label: 'Carne do Sol', value: (carneSol).toFixed(1), unit: 'kg' },
+    { label: 'Camarão (total)', value: (camarao).toFixed(1), unit: 'kg bruto' },
+    { label: 'Lulas', value: (lulas).toFixed(1), unit: 'kg' },
+    { label: 'Rigatoni', value: (rigatoni).toFixed(1), unit: 'kg seco' },
+    { label: 'Pappardelle (massa)', value: (pappardelle).toFixed(1), unit: 'kg fresca' },
+    { label: 'Bisque (produzir)', value: (bisque).toFixed(1), unit: 'lt' },
+    { label: 'Costela (bruta)', value: (costela / 1.5 * 2.5).toFixed(1), unit: 'kg bruto' },
+    { label: 'Demi-Glace', value: (demiglacea).toFixed(1), unit: 'lt' },
+    { label: 'Chocolate 70%', value: (chocolate).toFixed(1), unit: 'kg' },
+  ];
+
+  document.getElementById('calcResults').innerHTML = results.map(r => `
+    <div class="result-card">
+      <div class="result-label">${r.label}</div>
+      <div class="result-value">${r.value}</div>
+      <div class="result-unit">${r.unit}</div>
+    </div>
+  `).join('');
+}
+
+// ═══ PURCHASES LIST ═══
+function renderPurchases() {
+  const cats = [
+    { name: 'Proteínas', icon: '🥩', items: [
+      { nome: 'Filé Mignon', qty: '15–19', unit: 'kg/semana' },
+      { nome: 'Flat Iron', qty: '14–17', unit: 'kg/semana' },
+      { nome: 'Carré de Cordeiro', qty: '18–22', unit: 'kg/semana' },
+      { nome: 'Robalo (filé)', qty: '18–22', unit: 'kg/semana' },
+      { nome: 'Polvo (bruto)', qty: '26–32', unit: 'kg/semana' },
+      { nome: 'Coxa de Pato', qty: '44–56', unit: 'und/semana' },
+      { nome: 'Carne do Sol', qty: '18–24', unit: 'kg/semana' },
+    ]},
+    { name: 'Frutos do Mar', icon: '🦐', items: [
+      { nome: 'Camarão (total)', qty: '28–36', unit: 'kg bruto/semana' },
+      { nome: 'Lulas', qty: '8–12', unit: 'kg/semana' },
+      { nome: 'Mexilhões', qty: '6–10', unit: 'kg bruto/semana' },
+    ]},
+    { name: 'Massas & Carboidratos', icon: '🍝', items: [
+      { nome: 'Farinha de Trigo (massa)', qty: '5–8', unit: 'kg/semana' },
+      { nome: 'Ovos (massa+outros)', qty: '80–120', unit: 'und/semana' },
+      { nome: 'Rigatoni seco', qty: '14–18', unit: 'kg/semana' },
+      { nome: 'Arroz Arbóreo', qty: '7–10', unit: 'kg/semana' },
+      { nome: 'Arroz Agulhinha', qty: '10–14', unit: 'kg/semana' },
+    ]},
+    { name: 'Laticínios', icon: '🧀', items: [
+      { nome: 'Burrata', qty: '60–90', unit: 'und/semana' },
+      { nome: 'Parmesão (peça)', qty: '5–8', unit: 'kg/semana' },
+      { nome: 'Cream Cheese', qty: '5–7', unit: 'kg/semana' },
+      { nome: 'Manteiga', qty: '3–5', unit: 'kg/semana' },
+      { nome: 'Creme de Leite Fresco', qty: '6–9', unit: 'lt/semana' },
+    ]},
+    { name: 'Hortifruti', icon: '🥬', items: [
+      { nome: 'Banana-da-Terra', qty: '10–14', unit: 'kg/semana' },
+      { nome: 'Maxixe (fresco)', qty: '12–18', unit: 'kg/semana' },
+      { nome: 'Abacate', qty: '6–9', unit: 'kg/semana' },
+      { nome: 'Microgreens', qty: '0.8–1.2', unit: 'kg/semana' },
+      { nome: 'Mandioquinha', qty: '7–10', unit: 'kg/semana' },
+      { nome: 'Tomate Cereja', qty: '3–5', unit: 'kg/semana' },
+    ]},
+    { name: 'Confeitaria', icon: '🍮', items: [
+      { nome: 'Chocolate 70%', qty: '4–6', unit: 'kg/semana' },
+      { nome: 'Framboesa fresca', qty: '1.2–1.8', unit: 'kg/semana' },
+      { nome: 'Morango', qty: '2–3', unit: 'kg/semana' },
+      { nome: 'Avelã', qty: '0.6–1.0', unit: 'kg/semana' },
+      { nome: 'Suspiro artesanal', qty: '0.7–1.0', unit: 'kg/semana' },
+    ]},
+    { name: 'Azeites & Líquidos', icon: '🫙', items: [
+      { nome: 'Azeite de Oliva', qty: '5–8', unit: 'lt/semana' },
+      { nome: 'Azeite Trufado', qty: '0.3–0.5', unit: 'lt/semana' },
+      { nome: 'Manteiga de Garrafa', qty: '1.5–2.5', unit: 'lt/semana' },
+      { nome: 'Tucupi', qty: '2–4', unit: 'lt/semana' },
+      { nome: 'Vinho Branco (cozinha)', qty: '4–6', unit: 'lt/semana' },
+    ]},
+  ];
+
+  document.getElementById('purchasesGrid').innerHTML = cats.map(c => `
+    <div class="purchase-cat">
+      <div class="purchase-cat-header">
+        <span>${c.name}</span>
+        <span class="cat-icon">${c.icon}</span>
+      </div>
+      ${c.items.map(i => `
+        <div class="purchase-row">
+          <div class="purchase-name">${i.nome}</div>
+          <div>
+            <div class="purchase-qty">${i.qty}</div>
+            <div class="purchase-unit">${i.unit}</div>
+          </div>
+        </div>
+      `).join('')}
+    </div>
+  `).join('');
+}
+
+// ═══ DISHES ═══
+function filterDishes(cat, el) {
+  dishFilter = cat;
+  document.querySelectorAll('.fchip').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  renderDishes();
+}
+
+function toggleDish(id) {
+  const el = document.getElementById('dish-' + id);
+  el.classList.toggle('open');
+}
+
+const catOrder = ['executivo','entrada-fria','entrada-quente','principal-carne','principal-peixe','principal-massa','sobremesa'];
+const catNames = {
+  executivo: '☀ Menu Executivo — R$59',
+  'entrada-fria': '🧊 Entradas Frias',
+  'entrada-quente': '🔥 Entradas Quentes',
+  'principal-carne': '🥩 Principais — Carnes',
+  'principal-peixe': '🐟 Principais — Peixes',
+  'principal-massa': '🍝 Principais — Massas',
+  sobremesa: '🍮 Sobremesas'
+};
+
+function renderDishes() {
+  const filtered = dishFilter === 'all' ? allDishes : allDishes.filter(d => d.cat === dishFilter);
+  const groups = {};
+  catOrder.forEach(c => { groups[c] = filtered.filter(d => d.cat === c); });
+
+  document.getElementById('dishContainer').innerHTML = Object.entries(groups)
+    .filter(([, items]) => items.length > 0)
+    .map(([cat, items]) => `
+      <div class="cat-divider">${catNames[cat]}</div>
+      ${items.map(d => `
+        <div class="dish-accordion" id="dish-${d.id}">
+          <div class="dish-acc-header" onclick="toggleDish('${d.id}')">
+            <div class="dish-code">${d.code}</div>
+            <div class="dish-info">
+              <div class="dish-name-acc">${d.nome}</div>
+              <div class="dish-resp">${d.resp} · ${d.tempo} · ~${d.porcoes_semana} porções/semana</div>
+            </div>
+            <div style="text-align:right;flex-shrink:0">
+              <div class="dish-price-acc">R$ ${d.preco}</div>
+              <div class="dish-cmv">CMV ${d.cmv}</div>
+            </div>
+            <div class="dish-arr">▼</div>
+          </div>
+          <div class="dish-acc-body">
+            <table class="dish-table">
+              <thead>
+                <tr>
+                  <th>Ingrediente</th>
+                  <th>Qtd Líquida</th>
+                  <th>FC</th>
+                  <th>Qtd Bruta</th>
+                  <th>Un</th>
+                  <th>Observação</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${d.ingredientes.map(i => `
+                  <tr>
+                    <td class="${i.nome.startsWith('B') ? 'base-ref' : ''}">${i.nome}</td>
+                    <td class="mono">${i.qtdLiq}</td>
+                    <td class="mono">${i.fc}</td>
+                    <td class="mono" style="font-weight:700">${i.qtdBruta}</td>
+                    <td>${i.un}</td>
+                    <td class="obs">${i.obs}</td>
+                  </tr>
+                `).join('')}
+              </tbody>
+            </table>
+            <div class="dish-totals">
+              <div class="dish-total-item">
+                <div class="dish-total-label">Custo Total / Porção</div>
+                <div class="dish-total-value">R$ ${d.custoTotal.toFixed(2)}</div>
+              </div>
+              <div class="dish-total-item">
+                <div class="dish-total-label">Preço de Venda</div>
+                <div class="dish-total-value">R$ ${d.precoVenda}</div>
+              </div>
+              <div class="dish-total-item">
+                <div class="dish-total-label">CMV</div>
+                <div class="dish-total-value">${d.cmv}</div>
+              </div>
+              <div class="dish-total-item">
+                <div class="dish-total-label">Porções estimadas/semana</div>
+                <div class="dish-total-value">~${d.porcoes_semana}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      `).join('')}
+    `).join('');
+}
+
+// ═══ INIT ═══
+document.addEventListener('DOMContentLoaded', () => {
+  calcular();
+  renderPurchases();
+  renderDishes();
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,1429 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Manual do Auxiliar — DUE Restaurante</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,600&family=DM+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #FAFAF7;
+  --bg2: #F3F2EC;
+  --bg3: #ECEAE0;
+  --border: #DDD9CC;
+  --border2: #C8C4B4;
+  --text: #111009;
+  --text2: #3A3730;
+  --muted: #7A7668;
+  --muted2: #9A9488;
+  --gold: #7A5E10;
+  --gold-bg: #F5EED4;
+  --gold-border: #C8A830;
+  --red: #8B1A1A;
+  --red-bg: #FCEAEA;
+  --red-border: #D44;
+  --green: #1A5A1A;
+  --green-bg: #EAF4EA;
+  --green-border: #4A8A4A;
+  --amber: #6B4A00;
+  --amber-bg: #FFF8E0;
+  --amber-border: #D4A020;
+  --tab-h: 64px;
+  --max-w: 600px;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  font-size: 15px;
+  line-height: 1.6;
+  -webkit-text-size-adjust: 100%;
+}
+
+/* ── LAYOUT ── */
+.app {
+  max-width: var(--max-w);
+  margin: 0 auto;
+  min-height: 100vh;
+  background: var(--bg);
+  position: relative;
+  box-shadow: 0 0 40px rgba(0,0,0,0.08);
+}
+
+/* ── HEADER ── */
+.app-header {
+  background: var(--text);
+  color: #fff;
+  padding: 20px 20px 18px;
+  position: sticky;
+  top: 0;
+  z-index: 50;
+}
+
+.header-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.due-logo {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: 5px;
+  color: #C8A830;
+}
+
+.header-tag {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: rgba(255,255,255,0.5);
+  background: rgba(255,255,255,0.08);
+  padding: 3px 10px;
+  border-radius: 20px;
+}
+
+.header-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: #fff;
+  line-height: 1.2;
+}
+
+.header-sub {
+  font-size: 12px;
+  color: rgba(255,255,255,0.55);
+  margin-top: 2px;
+}
+
+/* ── TAB NAV ── */
+.tab-nav {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: var(--max-w);
+  background: #fff;
+  border-top: 1px solid var(--border);
+  display: flex;
+  height: var(--tab-h);
+  z-index: 100;
+  box-shadow: 0 -4px 16px rgba(0,0,0,0.06);
+}
+
+.tab-btn {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  color: var(--muted);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 10px;
+  font-weight: 500;
+  transition: all .2s;
+  padding: 8px 4px;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.tab-btn .icon { font-size: 20px; line-height: 1; }
+.tab-btn.active { color: var(--gold); }
+.tab-btn.active .icon { font-size: 22px; }
+
+/* ── CONTENT ── */
+.content {
+  padding-bottom: calc(var(--tab-h) + 16px);
+}
+
+.tab-page { display: none; }
+.tab-page.active { display: block; }
+
+/* ── SECTIONS ── */
+.section {
+  padding: 20px;
+  border-bottom: 1px solid var(--border);
+}
+
+.section:last-child { border-bottom: none; }
+
+.section-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 4px;
+}
+
+.section-sub {
+  font-size: 12px;
+  color: var(--muted);
+  margin-bottom: 16px;
+}
+
+/* ── ALERTS ── */
+.alert {
+  border-radius: 10px;
+  padding: 14px 16px;
+  margin: 12px 0;
+  font-size: 14px;
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  line-height: 1.5;
+}
+
+.alert-icon { font-size: 18px; flex-shrink: 0; }
+
+.alert-red { background: var(--red-bg); border: 1px solid var(--red-border); color: var(--red); }
+.alert-amber { background: var(--amber-bg); border: 1px solid var(--amber-border); color: var(--amber); }
+.alert-gold { background: var(--gold-bg); border: 1px solid var(--gold-border); color: var(--gold); }
+.alert-green { background: var(--green-bg); border: 1px solid var(--green-border); color: var(--green); }
+
+/* ── CARDS ── */
+.card {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 10px;
+}
+
+.card-title {
+  font-weight: 700;
+  font-size: 14px;
+  color: var(--text);
+  margin-bottom: 6px;
+}
+
+.card-body { font-size: 13px; color: var(--text2); line-height: 1.5; }
+
+/* ── PILL TAGS ── */
+.pill {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: .5px;
+}
+
+.pill-frios { background: #E8F4FF; color: #1A5080; border: 1px solid #9AC8F0; }
+.pill-quente { background: #FFF0E8; color: #7A2A00; border: 1px solid #F0A080; }
+.pill-shared { background: var(--gold-bg); color: var(--gold); border: 1px solid var(--gold-border); }
+.pill-red { background: var(--red-bg); color: var(--red); border: 1px solid var(--red-border); }
+.pill-d1 { background: #FFF0E8; color: #7A2A00; border: 1px solid #F09060; }
+
+/* ── SCHEDULE ── */
+.schedule-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+  background: #fff;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+}
+
+.schedule-table th {
+  background: var(--text);
+  color: rgba(255,255,255,0.8);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  padding: 10px 12px;
+  font-weight: 600;
+  text-align: left;
+}
+
+.schedule-table td {
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--border);
+  vertical-align: middle;
+}
+
+.schedule-table tr:last-child td { border-bottom: none; }
+
+.sched-day { font-weight: 700; color: var(--text); font-size: 13px; }
+.sched-time { font-family: 'DM Mono', monospace; font-size: 12px; color: var(--text2); }
+.sched-folga { color: var(--muted); font-size: 12px; font-style: italic; }
+.sched-highlight { color: var(--gold); font-weight: 600; }
+.sched-overlap { font-size: 10px; color: var(--muted); margin-top: 2px; }
+
+/* ── DISH CARDS ── */
+.dish-card {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 14px 16px;
+  margin-bottom: 8px;
+}
+
+.dish-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.dish-name {
+  font-weight: 700;
+  font-size: 15px;
+  color: var(--text);
+  flex: 1;
+}
+
+.dish-price {
+  font-family: 'DM Mono', monospace;
+  font-size: 12px;
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+.dish-desc {
+  font-size: 13px;
+  color: var(--text2);
+  line-height: 1.5;
+  margin-bottom: 8px;
+}
+
+.dish-meta {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.dish-critical {
+  font-size: 12px;
+  color: var(--red);
+  font-weight: 600;
+  margin-top: 6px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* ── FILTER BAR ── */
+.filter-bar {
+  position: sticky;
+  top: 86px;
+  z-index: 40;
+  background: var(--bg);
+  border-bottom: 1px solid var(--border);
+  padding: 10px 16px;
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.filter-bar::-webkit-scrollbar { display: none; }
+
+.filter-chip {
+  white-space: nowrap;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  border: 1px solid var(--border2);
+  background: #fff;
+  color: var(--muted);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: all .2s;
+}
+
+.filter-chip.active {
+  background: var(--text);
+  color: #fff;
+  border-color: var(--text);
+}
+
+/* ── CHECKLIST ── */
+.checklist-progress {
+  background: var(--bg2);
+  border-radius: 10px;
+  padding: 14px 16px;
+  margin-bottom: 16px;
+}
+
+.progress-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.progress-label { font-size: 13px; font-weight: 600; color: var(--text); }
+.progress-pct { font-family: 'DM Mono', monospace; font-size: 13px; color: var(--gold); font-weight: 600; }
+
+.progress-bar {
+  height: 8px;
+  background: var(--border);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--gold-border), #8B7020);
+  border-radius: 4px;
+  transition: width .4s ease;
+}
+
+.cl-group-title {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: var(--muted);
+  font-weight: 600;
+  padding: 12px 0 6px;
+}
+
+.cl-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--border);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.cl-item:active { background: var(--bg2); }
+
+.cl-check {
+  width: 22px;
+  height: 22px;
+  border: 2px solid var(--border2);
+  border-radius: 6px;
+  flex-shrink: 0;
+  margin-top: 2px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all .2s;
+}
+
+.cl-item.done .cl-check {
+  background: var(--green);
+  border-color: var(--green);
+}
+
+.cl-check-mark {
+  color: #fff;
+  font-size: 13px;
+  display: none;
+}
+
+.cl-item.done .cl-check-mark { display: block; }
+
+.cl-text { flex: 1; }
+.cl-main { font-size: 14px; color: var(--text); font-weight: 500; transition: color .2s; }
+.cl-item.done .cl-main { color: var(--muted); text-decoration: line-through; }
+.cl-sub { font-size: 12px; color: var(--muted); margin-top: 2px; line-height: 1.4; }
+.cl-time { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--gold); flex-shrink: 0; padding-top: 4px; font-weight: 500; }
+
+.btn-reset {
+  width: 100%;
+  padding: 12px;
+  border-radius: 10px;
+  border: 1px solid var(--border2);
+  background: #fff;
+  color: var(--text2);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 16px;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* ── BASES RECIPE ── */
+.base-search {
+  width: 100%;
+  padding: 12px 16px;
+  border: 1px solid var(--border2);
+  border-radius: 10px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  color: var(--text);
+  background: #fff;
+  margin-bottom: 12px;
+  outline: none;
+  -webkit-appearance: none;
+}
+
+.base-search:focus { border-color: var(--gold-border); }
+
+.recipe-card {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  margin-bottom: 10px;
+  overflow: hidden;
+}
+
+.recipe-card.d1-card { border-left: 3px solid var(--red-border); }
+
+.recipe-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.recipe-header:active { background: var(--bg2); }
+
+.recipe-id {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  color: var(--muted);
+  background: var(--bg2);
+  padding: 4px 8px;
+  border-radius: 6px;
+  flex-shrink: 0;
+}
+
+.recipe-name {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text);
+  flex: 1;
+  line-height: 1.2;
+}
+
+.recipe-arrow { color: var(--muted); font-size: 14px; transition: transform .2s; }
+.recipe-card.open .recipe-arrow { transform: rotate(180deg); }
+
+.recipe-uso {
+  font-size: 11px;
+  color: var(--muted);
+  padding: 0 16px 10px;
+  border-bottom: 1px solid var(--border);
+}
+
+.recipe-body {
+  display: none;
+  padding: 16px;
+}
+
+.recipe-card.open .recipe-body { display: block; }
+
+.recipe-meta-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.recipe-meta-item {
+  background: var(--bg2);
+  border-radius: 8px;
+  padding: 10px 12px;
+}
+
+.recipe-meta-label { font-size: 10px; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); margin-bottom: 3px; }
+.recipe-meta-value { font-size: 13px; font-weight: 600; color: var(--text); }
+
+.ingredients-label {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--muted);
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.ingredient-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--border);
+  gap: 8px;
+}
+
+.ingredient-row:last-child { border-bottom: none; }
+
+.ingredient-name { font-size: 13px; color: var(--text); flex: 1; }
+.ingredient-qty { font-family: 'DM Mono', monospace; font-size: 12px; color: var(--text2); }
+.ingredient-unit { font-size: 11px; color: var(--muted); min-width: 24px; text-align: right; }
+
+.preparo-label {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--muted);
+  font-weight: 600;
+  margin: 14px 0 8px;
+}
+
+.preparo-text {
+  background: var(--bg2);
+  border-radius: 8px;
+  padding: 14px;
+  font-size: 14px;
+  color: var(--text);
+  line-height: 1.7;
+  white-space: pre-line;
+}
+
+/* ── RULES ── */
+.rule-card {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 10px;
+}
+
+.rule-num {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 44px;
+  font-weight: 700;
+  color: var(--border2);
+  line-height: 1;
+  flex-shrink: 0;
+  width: 36px;
+  text-align: center;
+}
+
+.rule-title { font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: .5px; color: var(--gold); margin-bottom: 5px; }
+.rule-desc { font-size: 13px; color: var(--text2); line-height: 1.5; }
+
+/* ── COMM CARDS ── */
+.comm-card {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 14px 16px;
+  margin-bottom: 8px;
+}
+
+.comm-term {
+  font-family: 'DM Mono', monospace;
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--text);
+  margin-bottom: 4px;
+}
+
+.comm-desc { font-size: 13px; color: var(--text2); margin-bottom: 6px; }
+.comm-resp { font-size: 12px; color: var(--gold); font-weight: 600; }
+
+/* ── TEMP ZONES ── */
+.temp-zone {
+  display: grid;
+  grid-template-columns: 90px 1fr;
+  gap: 12px;
+  padding: 12px 16px;
+  border-radius: 10px;
+  margin-bottom: 8px;
+  align-items: center;
+}
+
+.tz-range { font-family: 'DM Mono', monospace; font-size: 14px; font-weight: 600; }
+.tz-desc { font-size: 13px; line-height: 1.4; }
+
+.tz-perigo { background: var(--red-bg); border: 1px solid var(--red-border); color: var(--red); }
+.tz-frio { background: #EAF0FA; border: 1px solid #9AB8E0; color: #1A3A6A; }
+.tz-cozimento { background: var(--amber-bg); border: 1px solid var(--amber-border); color: var(--amber); }
+
+/* ── ALERGEN ── */
+.alergen-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 12px 14px;
+  margin-bottom: 8px;
+}
+
+.alergen-badge {
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 700;
+  background: var(--red-bg);
+  border: 1px solid var(--red-border);
+  color: var(--red);
+  white-space: nowrap;
+  flex-shrink: 0;
+  min-width: 90px;
+  text-align: center;
+}
+
+.alergen-pratos { font-size: 13px; color: var(--text2); line-height: 1.5; }
+
+/* ── DIVIDERS ── */
+h3.sub-head {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text);
+  margin: 20px 0 12px;
+  padding-bottom: 6px;
+  border-bottom: 2px solid var(--border);
+}
+
+p { color: var(--text2); font-size: 14px; line-height: 1.6; margin-bottom: 10px; }
+strong { color: var(--text); }
+
+/* ── LIGHT SIDEBAR OVERRIDE ── */
+.sidebar { background: #F2F0E8 !important; border-right: 1px solid #DDD9CC !important; }
+.sidebar .due-mark, .sidebar .s-due { color: #6A4E10 !important; }
+.sidebar .sidebar-doc, .sidebar .s-sub { color: #8A8676 !important; }
+.sidebar-label, .s-label { color: #8A8676 !important; }
+.sidebar-nav a, .s-nav a { color: #5A5748 !important; border-left-color: transparent !important; }
+.sidebar-nav a:hover, .s-nav a:hover,
+.sidebar-nav a.active, .s-nav a.active { color: #6A4E10 !important; background: rgba(106,78,16,0.08) !important; border-left-color: #B89020 !important; }
+.sidebar-nav a .badge, .s-nav a .badge { color: #8A8676 !important; }
+.sidebar-footer, .s-footer { color: #8A8676 !important; border-top-color: #DDD9CC !important; }
+.sidebar-section { border-bottom-color: #DDD9CC !important; }
+.sidebar-logo, .s-logo { border-bottom-color: #DDD9CC !important; }
+
+/* ── LIGHT PAGE HEADER OVERRIDE ── */
+.page-header, .hero {
+  background: #F2F0E8 !important;
+  color: #111009 !important;
+}
+.page-header .header-eyebrow, .page-header .h-eye, .hero .hero-eyebrow {
+  color: #9A7820 !important;
+}
+.page-header .header-h1, .page-header .h-title, .hero .hero-title {
+  color: #111009 !important;
+}
+.page-header .header-h1 span, .hero .hero-title span { color: #6A4E10 !important; }
+.page-header .header-pill, .hero .hero-intro { 
+  background: rgba(0,0,0,0.04) !important; 
+  border-color: rgba(0,0,0,0.08) !important; 
+  color: #5A5748 !important;
+}
+.page-header .header-pill strong { color: #6A4E10 !important; }
+.calc-box {
+  background: #F2F0E8 !important;
+  color: #111009 !important;
+  border: 1px solid #DDD9CC !important;
+}
+.calc-title { color: #6A4E10 !important; }
+.calc-sub { color: #8A8676 !important; }
+.calc-input { 
+  background: #FFFFFF !important; 
+  border-color: #C8C4B4 !important; 
+  color: #6A4E10 !important;
+}
+.result-card { background: rgba(0,0,0,0.04) !important; }
+.result-label { color: #6A6552 !important; }
+.result-value { color: #111009 !important; }
+.result-unit { color: #8A8676 !important; }
+.purchase-cat-header { background: #3A3728 !important; color: rgba(255,255,255,0.9) !important; }
+/* Receitas dark header */
+.page-header::before { display: none; }
+
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- HEADER -->
+  <div class="app-header">
+    <div class="header-top">
+      <div class="due-logo">DUE</div>
+      <div class="header-tag">Manual do Auxiliar</div>
+    </div>
+    <div class="header-title">Franciele · Beatriz</div>
+    <div class="header-sub">Turno A &amp; Turno B · Frios + Quente · Abertura Abril 2026</div>
+  </div>
+
+  <!-- CONTENT -->
+  <div class="content">
+
+    <!-- ══ TAB: HOME ══ -->
+    <div class="tab-page active" id="tab-home">
+
+      <div class="section">
+        <div class="section-title">Sua Função no DUE</div>
+        <div class="section-sub">Ambivalente — cobre Frios e Quente conforme o turno</div>
+
+        <div class="alert alert-gold">
+          <span class="alert-icon">◈</span>
+          <div>Você e sua parceira são <strong>ambivalentes</strong>. Ambas dominam Frios e Quente. Nas folgas de segunda e terça em que só uma está na casa, você cobre tudo.</div>
+        </div>
+
+        <div class="card" style="border-left:3px solid #1A5080">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+            <span class="pill pill-frios">Frios</span>
+            <div class="card-title" style="margin-bottom:0">Garde Manger + Sobremesas</div>
+          </div>
+          <div class="card-body">Tiradito, Burrata, Tartar do Sertão, Pannacota, Ganache, Cheesecake. Cortes de precisão, senso estético, controle de temperatura obsessivo. Mise en place impecável às 11:15.</div>
+        </div>
+
+        <div class="card" style="border-left:3px solid #7A2A00">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+            <span class="pill pill-quente">Quente</span>
+            <div class="card-title" style="margin-bottom:0">Frituras + Massas + Apoio</div>
+          </div>
+          <div class="card-body">Croqueta de Polvo, Taco Sergipano, Toast de Costela, Tempurá, Pappardelle, Rigatoni. O cargo mais sobrecarregado da brigada — multitarefa real no pico.</div>
+        </div>
+
+        <div class="alert alert-red" style="margin-top:4px">
+          <span class="alert-icon">!</span>
+          <div>No turno da noite, a auxiliar <strong>acumula Frios E Quente</strong>. Isso SÓ funciona com mise en place 100% pronto antes das 18h e todas as sobremesas pré-montadas.</div>
+        </div>
+      </div>
+
+      <!-- EQUIPE -->
+      <div class="section">
+        <h3 class="sub-head">Equipe & Horários</h3>
+        <p style="margin-bottom:12px">Escala <strong>5×2, 44h semanais</strong>. Horário partido é exceção, nunca regra.</p>
+
+        <table class="schedule-table">
+          <thead>
+            <tr>
+              <th>Dia</th>
+              <th>Franciele (A)</th>
+              <th>Beatriz (B)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span class="sched-day">Segunda</span></td>
+              <td><span class="sched-folga">FOLGA</span></td>
+              <td><span class="sched-time sched-highlight">09:00–18:00</span><div class="sched-overlap">Solo na casa</div></td>
+            </tr>
+            <tr>
+              <td><span class="sched-day">Terça</span></td>
+              <td><span class="sched-time">09:00–18:00</span><div class="sched-overlap">Int. 12:30</div></td>
+              <td><span class="sched-folga">FOLGA</span></td>
+            </tr>
+            <tr>
+              <td><span class="sched-day">Quarta</span></td>
+              <td><span class="sched-time">09:00–19:00</span></td>
+              <td><span class="sched-time sched-highlight">14:00–23:30</span></td>
+            </tr>
+            <tr>
+              <td><span class="sched-day">Quinta</span></td>
+              <td><span class="sched-time">09:00–19:00</span></td>
+              <td><span class="sched-time sched-highlight">14:00–23:30</span></td>
+            </tr>
+            <tr>
+              <td><span class="sched-day">Sexta</span></td>
+              <td><span class="sched-time">09:00–19:00</span></td>
+              <td><span class="sched-time sched-highlight">14:00–23:30</span></td>
+            </tr>
+            <tr>
+              <td><span class="sched-day">Sábado</span></td>
+              <td><span class="sched-time">09:00–19:00</span></td>
+              <td><span class="sched-time sched-highlight">14:00–23:30</span></td>
+            </tr>
+            <tr>
+              <td><span class="sched-day" style="color:var(--muted)">Domingo</span></td>
+              <td colspan="2" style="text-align:center"><span class="sched-folga">FECHADO — Folga Coletiva</span></td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="alert alert-amber" style="margin-top:12px">
+          <span class="alert-icon">⚠</span>
+          <div><strong>Beatriz — Qua a Sáb:</strong> Você chega às 16:10 e o jantar abre às 18h. São 110 minutos. O mise en place tem que estar 100% pronto às 17:45. Sobremesas pré-montadas antes das 17:45, sem exceção.</div>
+        </div>
+      </div>
+
+      <!-- PONTOS CRÍTICOS POR ESTAÇÃO -->
+      <div class="section">
+        <h3 class="sub-head">Competências por Estação</h3>
+
+        <div class="card" style="border-left:3px solid #1A5080;margin-bottom:10px">
+          <span class="pill pill-frios" style="margin-bottom:10px;display:inline-block">Frios</span>
+          <div style="display:flex;flex-direction:column;gap:8px;font-size:13px;color:var(--text2)">
+            <div>🔪 <strong>Cortes de precisão:</strong> Tiradito em lâminas uniformes, Tartar em brunoise perfeita.</div>
+            <div>👁 <strong>Senso estético:</strong> Entradas frias são 80% visuais. Corte ruim = prato destruído.</div>
+            <div>🍰 <strong>Confeitaria básica:</strong> Ponto de gelatina (pannacota), porcionamento de ganache, textura do cheesecake.</div>
+            <div>🌡 <strong>Temperatura obsessiva:</strong> Peixe cru, burrata, camarão confitado — margem zero.</div>
+            <div>⏰ <strong>Sobremesas PRÉ-MONTADAS:</strong> Pannacota e cheesecake no prato antes do serviço abrir.</div>
+          </div>
+        </div>
+
+        <div class="card" style="border-left:3px solid #7A2A00">
+          <span class="pill pill-quente" style="margin-bottom:10px;display:inline-block">Quente</span>
+          <div style="display:flex;flex-direction:column;gap:8px;font-size:13px;color:var(--text2)">
+            <div>🍳 <strong>Fritura perfeita:</strong> Óleo a 180°C. Croqueta dourada sem queimar. Tempurá crocante.</div>
+            <div>🍝 <strong>Massas al dente:</strong> Pappardelle fresca 2-3min. Rigatoni 8-10min. Cronometrar mentalmente.</div>
+            <div>⚡ <strong>Multitarefa real:</strong> No pico: fritar + soltar massa + saltear camarão + montar. 4 ações simultâneas.</div>
+            <div>🧹 <strong>Limpeza contínua:</strong> Óleo respinga, farinha espalha. Bancada suja = acidente em 30min.</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ══ TAB: CARDÁPIO ══ -->
+    <div class="tab-page" id="tab-cardapio">
+
+      <div class="filter-bar" id="cardapioFilters">
+        <div class="filter-chip active" onclick="filterCardapio('all',this)">Todos</div>
+        <div class="filter-chip" onclick="filterCardapio('frios',this)">Frios</div>
+        <div class="filter-chip" onclick="filterCardapio('quente',this)">Quente</div>
+        <div class="filter-chip" onclick="filterCardapio('executivo',this)">Executivo</div>
+        <div class="filter-chip" onclick="filterCardapio('sobremesas',this)">Sobremesas</div>
+        <div class="filter-chip" onclick="filterCardapio('kids',this)">Kids</div>
+      </div>
+
+      <div class="section" style="padding-top:14px">
+        <div id="cardapioList"><!-- populated by JS --></div>
+      </div>
+    </div>
+
+    <!-- ══ TAB: MISE EN PLACE ══ -->
+    <div class="tab-page" id="tab-mise">
+
+      <div class="section">
+        <div class="section-title">Mise en Place</div>
+        <div class="section-sub">Turno A — Rafael / Turno B — Edmar. Nada abre sem checklist completo.</div>
+
+        <div class="checklist-progress">
+          <div class="progress-header">
+            <div class="progress-label">Progresso do turno</div>
+            <div class="progress-pct" id="auxPct">0%</div>
+          </div>
+          <div class="progress-bar">
+            <div class="progress-fill" id="auxFill" style="width:0%"></div>
+          </div>
+        </div>
+
+        <div id="auxChecklist"><!-- populated by JS --></div>
+
+        <button class="btn-reset" onclick="resetAuxChecklist()">↺ Reiniciar turno</button>
+
+        <h3 class="sub-head" style="margin-top:24px">Virada de Turno — 16:10 a 17:55</h3>
+        <div class="alert alert-red">
+          <span class="alert-icon">!</span>
+          <div><strong>Beatriz:</strong> Você tem 110 minutos. Se o mise en place não estiver 100% às 17:45 — o serviço não abre em condições.</div>
+        </div>
+
+        <div id="viradaChecklist"><!-- populated by JS --></div>
+        <button class="btn-reset" style="margin-top:8px" onclick="resetVirada()">↺ Reiniciar virada</button>
+      </div>
+    </div>
+
+    <!-- ══ TAB: BASES ══ -->
+    <div class="tab-page" id="tab-bases">
+
+      <div class="section">
+        <div class="section-title">Livro de Bases</div>
+        <div class="section-sub">25 fichas técnicas · Toque para expandir · D-1 = produção obrigatória no dia anterior</div>
+
+        <input type="text" class="base-search" id="auxBaseSearch" placeholder="Buscar base ou ingrediente..." oninput="filterAuxBases(this.value)">
+
+        <div style="display:flex;gap:6px;overflow-x:auto;margin-bottom:14px;padding-bottom:4px">
+          <div style="display:flex;gap:6px;flex-shrink:0">
+            <div class="filter-chip active" style="font-size:11px" onclick="filterBaseTag('all',this)">Todas</div>
+            <div class="filter-chip" style="font-size:11px" onclick="filterBaseTag('d1',this)">⚑ D-1</div>
+            <div class="filter-chip" style="font-size:11px" onclick="filterBaseTag('caldos',this)">Caldos</div>
+            <div class="filter-chip" style="font-size:11px" onclick="filterBaseTag('molhos',this)">Molhos</div>
+            <div class="filter-chip" style="font-size:11px" onclick="filterBaseTag('proteinas',this)">Proteínas</div>
+            <div class="filter-chip" style="font-size:11px" onclick="filterBaseTag('massas',this)">Massas</div>
+            <div class="filter-chip" style="font-size:11px" onclick="filterBaseTag('conservas',this)">Conservas</div>
+          </div>
+        </div>
+
+        <div id="auxBasesGrid"><!-- populated by JS --></div>
+      </div>
+    </div>
+
+    <!-- ══ TAB: REGRAS ══ -->
+    <div class="tab-page" id="tab-regras">
+
+      <div class="section">
+        <div class="section-title">Comunicação de Cozinha</div>
+        <div class="section-sub">Nunca adivinhe — comunique sempre</div>
+
+        <div class="comm-card" style="border-left:3px solid var(--gold-border)">
+          <div class="comm-term">OUVIDO</div>
+          <div class="comm-desc">Quando receber comanda ou instrução do cozinheiro ou François</div>
+          <div class="comm-resp">→ Confirma que entendeu. Obrigatório responder.</div>
+        </div>
+        <div class="comm-card" style="border-left:3px solid var(--gold-border)">
+          <div class="comm-term">NA BOQUETA, MESA [X]</div>
+          <div class="comm-desc">Quando seu prato está pronto para o pass</div>
+          <div class="comm-resp">→ Ação imediata do pass. Nunca em silêncio.</div>
+        </div>
+        <div class="comm-card" style="border-left:3px solid var(--red-border)">
+          <div class="comm-term">FALTANDO [X]</div>
+          <div class="comm-desc">Quando ingrediente estiver acabando</div>
+          <div class="comm-resp">→ Avisar AGORA, não quando acabar.</div>
+        </div>
+        <div class="comm-card" style="border-left:3px solid var(--red-border)">
+          <div class="comm-term">EIGHTY-SIX [prato]</div>
+          <div class="comm-desc">Base acabou — prato sai do cardápio</div>
+          <div class="comm-resp">→ Comunicar ao salão imediatamente.</div>
+        </div>
+        <div class="comm-card">
+          <div class="comm-term">BEHIND</div>
+          <div class="comm-desc">Passando por trás de alguém</div>
+          <div class="comm-resp">→ Quem está à frente se afasta.</div>
+        </div>
+        <div class="comm-card">
+          <div class="comm-term">HOT</div>
+          <div class="comm-desc">Passando com panela ou frigideira quente</div>
+          <div class="comm-resp">→ Todos abrem caminho.</div>
+        </div>
+        <div class="comm-card">
+          <div class="comm-term">FIRING</div>
+          <div class="comm-desc">Começando a preparar a comanda</div>
+          <div class="comm-resp">→ Estações relacionadas iniciam simultaneamente.</div>
+        </div>
+      </div>
+
+      <div class="section">
+        <h3 class="sub-head">Controle Visual de Bases</h3>
+        <div class="temp-zone" style="background:var(--green-bg);border:1px solid var(--green-border);color:var(--green)">
+          <div class="tz-range">+70%</div>
+          <div class="tz-desc">OK — continuar normalmente</div>
+        </div>
+        <div class="temp-zone" style="background:var(--amber-bg);border:1px solid var(--amber-border);color:var(--amber)">
+          <div class="tz-range">30–70%</div>
+          <div class="tz-desc">Avisar garçom para não empurrar o prato</div>
+        </div>
+        <div class="temp-zone tz-perigo">
+          <div class="tz-range">-30%</div>
+          <div class="tz-desc"><strong>TIRAR DO CARDÁPIO</strong> — comunicar salão agora</div>
+        </div>
+      </div>
+
+      <div class="section">
+        <h3 class="sub-head">Segurança Alimentar — HACCP</h3>
+
+        <div class="temp-zone tz-perigo" style="margin-bottom:8px">
+          <div class="tz-range">5°–65°C</div>
+          <div class="tz-desc"><strong>Zona de Perigo</strong> — nunca manter alimento aqui por mais de 2h</div>
+        </div>
+        <div class="temp-zone tz-frio" style="margin-bottom:8px">
+          <div class="tz-range">&lt;5°C</div>
+          <div class="tz-desc"><strong>Refrigeração segura</strong> — câmaras e pista fria sempre nessa faixa</div>
+        </div>
+        <div class="temp-zone tz-cozimento">
+          <div class="tz-range">75°C+</div>
+          <div class="tz-desc"><strong>Aves e suínos</strong> — atingir 75°C no ponto mais espesso</div>
+        </div>
+
+        <h3 class="sub-head">Alérgenos — Saber de Cor</h3>
+        <div class="alergen-card">
+          <div class="alergen-badge">Glúten</div>
+          <div class="alergen-pratos">Pappardelle, Rigatoni, Croqueta (empanamento), Toast, Tempurá</div>
+        </div>
+        <div class="alergen-card">
+          <div class="alergen-badge">Crustáceos</div>
+          <div class="alergen-pratos">Bisque, Taco Camarão, Pappardelle DUE, Burrata (camarão confitado)</div>
+        </div>
+        <div class="alergen-card">
+          <div class="alergen-badge">Peixes</div>
+          <div class="alergen-pratos">Tiradito, Robalo, Arroz de Polvo, Pappardelle DUE (bisque)</div>
+        </div>
+        <div class="alergen-card">
+          <div class="alergen-badge">Laticínios</div>
+          <div class="alergen-pratos">Burrata, Fonduta, Ganache, Pannacota, Cheesecake, Rigatoni, Xerém</div>
+        </div>
+        <div class="alergen-card">
+          <div class="alergen-badge">Ovos</div>
+          <div class="alergen-pratos">Tartar (gema curada 48h), Aioli, massa fresca Pappardelle</div>
+        </div>
+        <div class="alergen-card" style="border-left:3px solid #8B4FA0">
+          <div class="alergen-badge" style="background:#F5EAF8;color:#6A2A8A;border-color:#C080D0">Jambu ⚡</div>
+          <div class="alergen-pratos">Frango Tucupi & Jambu — <strong style="color:var(--red)">AVISAR SEMPRE:</strong> causa formigamento/adormecimento na língua. Normal, mas surpreende.</div>
+        </div>
+      </div>
+
+      <div class="section">
+        <h3 class="sub-head">8 Regras de Ouro</h3>
+        <div id="auxRegras"><!-- populated by JS --></div>
+      </div>
+    </div>
+
+  </div><!-- /content -->
+
+  <!-- BOTTOM TAB NAV -->
+  <nav class="tab-nav">
+    <button class="tab-btn active" onclick="switchTab('home',this)">
+      <span class="icon">⊞</span>
+      <span>Início</span>
+    </button>
+    <button class="tab-btn" onclick="switchTab('cardapio',this)">
+      <span class="icon">◇</span>
+      <span>Cardápio</span>
+    </button>
+    <button class="tab-btn" onclick="switchTab('mise',this)">
+      <span class="icon">☑</span>
+      <span>Mise</span>
+    </button>
+    <button class="tab-btn" onclick="switchTab('bases',this)">
+      <span class="icon">⊕</span>
+      <span>Bases</span>
+    </button>
+    <button class="tab-btn" onclick="switchTab('regras',this)">
+      <span class="icon">★</span>
+      <span>Regras</span>
+    </button>
+  </nav>
+
+</div><!-- /app -->
+
+<script>
+// ═══ TAB NAVIGATION ═══
+function switchTab(id, btn) {
+  document.querySelectorAll('.tab-page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + id).classList.add('active');
+  btn.classList.add('active');
+  window.scrollTo(0, 0);
+}
+
+// ═══ CARDÁPIO DATA ═══
+const cardapioData = [
+  // EXECUTIVO
+  { cat: 'executivo', nome: 'Robalo Território', preco: '★ R$59', desc: 'Lombo grelhado em azeite verde, purê rústico de banana-da-terra, maxixe na chapa e vinagrete de pimenta de cheiro.', estacao: 'shared', critico: 'Mesma técnica do Robalo à la carte' },
+  { cat: 'executivo', nome: 'Frango Tucupi & Jambu', preco: '★ R$59', desc: 'Peito marinado em Dry Rub DUE, redução de tucupi, macaxeira murra e jambu.', estacao: 'shared', critico: '⚡ AVISAR: jambu adormece a língua (normal)' },
+  { cat: 'executivo', nome: 'Salada Morna de Camarão', preco: '★ R$59', desc: 'Camarões salteados, microgreens locais, macaxeira dourada, picles de maxixe e castanha tostada.', estacao: 'frios', critico: null },
+  { cat: 'executivo', nome: 'Arroz do Sertão Verde', preco: '★ R$59', desc: 'Arroz com feijão verde, creme de abacate, sementes de girassol, picles de maxixe e microgreens. Vegano.', estacao: 'frios', critico: null },
+  { cat: 'executivo', nome: 'Rigatoni da Nonna', preco: '★ R$59', desc: 'Ragù de costela desfiada 12h, pomodoro reduzido e parmesão 12 meses ralado na hora.', estacao: 'quente', critico: 'Parmesão RALADO NA HORA. Nunca pré-ralado.' },
+  { cat: 'executivo', nome: 'Arroz de Sol DUE', preco: '★ R$59', desc: 'Arroz caldoso de carne do sol, manteiga de garrafa, coalho maçaricado e couve crocante.', estacao: 'quente', critico: 'Carne do sol: dessalgar D-1' },
+
+  // ENTRADAS FRIAS
+  { cat: 'frios', nome: 'Tiradito de Peixe', preco: 'R$68', desc: 'Lâminas do peixe do dia no leite de tigre sergipano, chips de macaxeira e microgreens.', estacao: 'frios', critico: 'Lâminas uniformes. Leite de tigre gelado até o serviço.' },
+  { cat: 'frios', nome: 'Burrata', preco: 'R$105', desc: 'Burrata artesanal, camarão confitado, pesto sergipano de castanhas e tomates confit.', estacao: 'frios', critico: 'Temperatura da burrata: nunca gelada, nunca quente. Camarão confitado: D-0.' },
+  { cat: 'frios', nome: 'Tartar do Sertão', preco: 'R$58', desc: 'Carne do sol em brunoise, gema curada 48h, sagu crocante e chips de mandioca.', estacao: 'frios', critico: 'Brunoise perfeita. Gema curada 48h — produção D-1.' },
+
+  // ENTRADAS QUENTES
+  { cat: 'quente', nome: 'Croqueta de Polvo DUE', preco: 'R$58', desc: 'Polvo cozido em pressão, empanamento exclusivo, recheio de coalho defumado e aioli de páprica.', estacao: 'quente', critico: 'Polvo D-1. Óleo 180°C. Dourado sem queimar.' },
+  { cat: 'quente', nome: 'Taco Sergipano de Camarão', preco: 'R$49', desc: 'Tortilha de cuscuz com cúrcuma, camarão grelhado, creme de abacate e picles de maxixe.', estacao: 'quente', critico: 'Montagem na hora. Creme de abacate: preparar próximo ao serviço.' },
+  { cat: 'quente', nome: 'Toast de Costela', preco: 'R$52', desc: 'Pão de batata tostado, costela desfiada 12h, milho tostado, queijo fresco regional e microgreens.', estacao: 'quente', critico: 'Costela D-1. Pão tostado na hora.' },
+
+  // INTERMEDIÁRIO
+  { cat: 'quente', nome: 'Frutos do Mar Tempurá', preco: 'R$79', desc: 'Camarões e lulas em massa tempurá com nori, vinagrete de manga tropical e teriyaki de hibisco.', estacao: 'quente', critico: 'Massa tempurá: preparar na hora, NÃO sobremisturar. Óleo 180°C.' },
+
+  // MASSAS
+  { cat: 'quente', nome: 'Pappardelle DUE', preco: 'R$110', desc: 'Massa fresca em bisque de crustáceos, camarão, lulas e mexilhões grelhados, azeite trufado.', estacao: 'quente', critico: 'Al dente 2-3min. Coordenar com Cozinheiro (bisque). Frutos do mar salteados na hora.' },
+  { cat: 'quente', nome: 'Rigatoni com Ragù de Costela', preco: 'R$89', desc: 'Costela desfiada lentamente envolvendo o rigatoni num ragù que cheira a domingo. Parmesão ralado na hora.', estacao: 'quente', critico: 'Al dente 8-10min. Parmesão RALADO NA HORA.' },
+
+  // KIDS
+  { cat: 'kids', nome: 'Rigatoni na Manteiga de Garrafa', preco: 'R$38', desc: 'Rigatoni al dente, manteiga de garrafa e parmesão ralado na hora.', estacao: 'quente', critico: null },
+  { cat: 'kids', nome: 'Frango Grelhado', preco: 'R$38', desc: 'Peito de frango grelhado, arroz branco e couve crocante.', estacao: 'shared', critico: '75°C interno. Sem rosa no centro.' },
+
+  // SOBREMESAS
+  { cat: 'sobremesas', nome: 'Pannacota de Baunilha', preco: 'R$42', desc: 'Textura sedosa, goiaba verde confitada, suspiro artesanal e framboesas frescas.', estacao: 'frios', critico: 'PRÉ-MONTADA no prato antes do serviço. Ponto de gelatina exato.' },
+  { cat: 'sobremesas', nome: 'Ganache de Chocolate 70%', preco: 'R$45', desc: 'Ganache belga, laranja confit, suspiro crocante e flor de sal.', estacao: 'frios', critico: 'PRÉ-MONTADA. Temperagem correta. Porcionamento uniforme.' },
+  { cat: 'sobremesas', nome: 'Cheesecake Artesanal', preco: 'R$52', desc: 'Creme de queijo aveludado, calda de frutas vermelhas e farofa de avelã tostada.', estacao: 'frios', critico: 'PRÉ-MONTADA. Textura da base: não pode estar empapada.' },
+];
+
+const estacoesLabels = { frios: 'Frios', quente: 'Quente', shared: 'Ambos' };
+const estacoesClass = { frios: 'pill-frios', quente: 'pill-quente', shared: 'pill-shared' };
+const catLabels = { frios: '🧊 Entradas Frias', quente: '🔥 Quentes & Massas', executivo: '☀ Menu Executivo', sobremesas: '🍮 Sobremesas', kids: '👶 Kids' };
+
+let currentCardapioFilter = 'all';
+
+function renderCardapio() {
+  const list = document.getElementById('cardapioList');
+  if (!list) return;
+  const filtered = currentCardapioFilter === 'all' ? cardapioData : cardapioData.filter(d => d.cat === currentCardapioFilter);
+
+  // Group by category
+  const groups = {};
+  filtered.forEach(d => {
+    if (!groups[d.cat]) groups[d.cat] = [];
+    groups[d.cat].push(d);
+  });
+
+  list.innerHTML = Object.entries(groups).map(([cat, dishes]) => `
+    <div style="margin-bottom:20px">
+      <div style="font-size:11px;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);font-weight:700;margin-bottom:10px;padding-bottom:6px;border-bottom:2px solid var(--border)">${catLabels[cat] || cat}</div>
+      ${dishes.map(d => `
+        <div class="dish-card">
+          <div class="dish-header">
+            <div class="dish-name">${d.nome}</div>
+            <div class="dish-price">${d.preco}</div>
+          </div>
+          <div class="dish-desc">${d.desc}</div>
+          <div class="dish-meta">
+            <span class="pill ${estacoesClass[d.estacao]}">${estacoesLabels[d.estacao]}</span>
+          </div>
+          ${d.critico ? `<div class="dish-critical">⚑ ${d.critico}</div>` : ''}
+        </div>
+      `).join('')}
+    </div>
+  `).join('');
+}
+
+function filterCardapio(cat, el) {
+  currentCardapioFilter = cat;
+  document.querySelectorAll('#cardapioFilters .filter-chip').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  renderCardapio();
+}
+
+// ═══ CHECKLIST DATA ═══
+const auxChecklistData = [
+  { time: '08:30', main: 'Higiene pessoal, montar estação frios', sub: 'Touca, mãos lavadas, uniforme limpo', group: 'Abertura 08:30' },
+  { time: '08:30', main: 'Ligar fritadeiras e verificar óleos', sub: 'Temperatura de trabalho: 180°C', group: 'Abertura 08:30' },
+  { time: '08:45', main: 'Mise en place frios — cortes, marinadas, tartar', sub: 'Tiradito: lâminas uniformes · Tartar: brunoise · Burrata: temperatura', group: 'Mise en Place 08:45' },
+  { time: '08:45', main: 'Mise en place quente — empanamentos, molhos base', sub: 'Empanamento DUE separado · Bisque a iniciar (Cozinheiro)', group: 'Mise en Place 08:45' },
+  { time: '09:00', main: 'Porcionar peixes crus, lavar folhas, curar gemas', sub: 'Gemas curadas 48h — se vencendo, iniciar novas', group: 'Produção 09:00' },
+  { time: '09:00', main: 'Pré-cozinhar componentes, organizar massas', sub: 'Rigatoni porcionado · Pappardelle fresca D-1 verificada', group: 'Produção 09:00' },
+  { time: '10:00', main: 'PRÉ-MONTAR sobremesas — Pannacota no prato', sub: 'Pannacota + cheesecake montados antes do almoço', group: 'Produção 10:00' },
+  { time: '10:00', main: 'PRÉ-MONTAR Ganache — porcionamento', sub: 'Suspiros separados · Laranja confit separada', group: 'Produção 10:00' },
+  { time: '10:00', main: 'Aquecer bases em banho-maria', sub: 'Bisque, ragù, fonduta — tudo ativo antes do serviço', group: 'Produção 10:00' },
+  { time: '10:45', main: '⏸ Intervalo — retorno 11:15', sub: 'Todas as estações seguras antes de sair', group: 'Intervalo 10:45' },
+  { time: '11:15', main: 'Conferência final frios — reportar "FRIOS OK"', sub: 'Cada componente dos 9 pratos verificado pelo cozinheiro', group: 'Conferência Final 11:15' },
+  { time: '11:15', main: 'Conferência final quente — reportar "QUENTE OK"', sub: 'Fritadeira a 180°C · Massas organizadas · Bisque em temp.', group: 'Conferência Final 11:15' },
+  { time: '11:30', main: '🍽 SERVIÇO ALMOÇO', sub: 'Estação pronta. Comunicação ativa. Mise en place sagrado.', group: 'Serviço 11:30' },
+];
+
+const viradaData = [
+  { time: '16:10', main: 'Receber briefing da Equipe A', sub: 'D-1 ok? Bases ok? Incidentes? Ingredientes faltando?', group: 'Virada 16:10' },
+  { time: '16:20', main: 'Verificar bases críticas (bisque, ragù, mousseline, demi-glace)', sub: 'Abaixo de 50% = produzir AGORA', group: 'Virada 16:10' },
+  { time: '17:00', main: 'Trocar óleo das fritadeiras se almoço foi pesado', sub: 'Óleo escuro ou fumacento = troca obrigatória', group: 'Reposição 17:00' },
+  { time: '17:30', main: 'Repor mise en place frios completo', sub: 'Entradas frias, componentes consumidos no almoço', group: 'Reposição 17:00' },
+  { time: '17:45', main: 'PRÉ-MONTAR TODAS as sobremesas', sub: 'Pannacota + cheesecake no prato. Ganache porcionada. Suspiros separados.', group: 'Reposição 17:00' },
+  { time: '17:45', main: 'Fritadeira a 180°C confirmada', sub: 'Temperatura ativa antes de abrir', group: 'Reposição 17:00' },
+  { time: '17:55', main: '⏸ Intervalo equipe B — retorno 17:45', sub: 'Mise en place deve estar 100% pronto antes', group: 'Intervalo' },
+  { time: '18:00', main: '🌙 SERVIÇO JANTAR', sub: 'François confere pessoalmente. Se faltou algo: 15min para resolver.', group: 'Serviço 18:00' },
+];
+
+let auxCheckState = {}, viradaState = {};
+
+function renderAuxChecklist() {
+  const container = document.getElementById('auxChecklist');
+  const groups = {};
+  auxChecklistData.forEach((item, i) => {
+    if (!groups[item.group]) groups[item.group] = [];
+    groups[item.group].push({ ...item, i });
+  });
+
+  container.innerHTML = Object.entries(groups).map(([group, items]) => `
+    <div>
+      <div class="cl-group-title">${group}</div>
+      ${items.map(item => `
+        <div class="cl-item ${auxCheckState[item.i] ? 'done' : ''}" onclick="toggleAuxCheck(${item.i})">
+          <div class="cl-check"><span class="cl-check-mark">✓</span></div>
+          <div class="cl-text">
+            <div class="cl-main">${item.main}</div>
+            <div class="cl-sub">${item.sub}</div>
+          </div>
+          <div class="cl-time">${item.time}</div>
+        </div>
+      `).join('')}
+    </div>
+  `).join('');
+  updateAuxProgress();
+}
+
+function renderViradaChecklist() {
+  const container = document.getElementById('viradaChecklist');
+  if (!container) return;
+  const groups = {};
+  viradaData.forEach((item, i) => {
+    if (!groups[item.group]) groups[item.group] = [];
+    groups[item.group].push({ ...item, i });
+  });
+
+  container.innerHTML = Object.entries(groups).map(([group, items]) => `
+    <div>
+      <div class="cl-group-title">${group}</div>
+      ${items.map(item => `
+        <div class="cl-item ${viradaState[item.i] ? 'done' : ''}" onclick="toggleVirada(${item.i})">
+          <div class="cl-check"><span class="cl-check-mark">✓</span></div>
+          <div class="cl-text">
+            <div class="cl-main">${item.main}</div>
+            <div class="cl-sub">${item.sub}</div>
+          </div>
+          <div class="cl-time">${item.time}</div>
+        </div>
+      `).join('')}
+    </div>
+  `).join('');
+}
+
+function toggleAuxCheck(i) {
+  auxCheckState[i] = !auxCheckState[i];
+  try { localStorage.setItem('due_aux_check', JSON.stringify(auxCheckState)); } catch(e){}
+  renderAuxChecklist();
+}
+
+function toggleVirada(i) {
+  viradaState[i] = !viradaState[i];
+  try { localStorage.setItem('due_virada', JSON.stringify(viradaState)); } catch(e){}
+  renderViradaChecklist();
+}
+
+function resetAuxChecklist() { auxCheckState = {}; try{localStorage.removeItem('due_aux_check');}catch(e){} renderAuxChecklist(); }
+function resetVirada() { viradaState = {}; try{localStorage.removeItem('due_virada');}catch(e){} renderViradaChecklist(); }
+
+function updateAuxProgress() {
+  const total = auxChecklistData.length;
+  const done = Object.values(auxCheckState).filter(Boolean).length;
+  const pct = Math.round((done / total) * 100);
+  document.getElementById('auxPct').textContent = `${done}/${total} — ${pct}%`;
+  document.getElementById('auxFill').style.width = `${pct}%`;
+}
+
+// ═══ BASES DATA ═══
+const auxBasesData = [
+  { id:'B01', name:'Molho Pomodoro', tags:['molhos'], rendimento:'5 litros', validade:'5 dias refrigerado', d1:false, uso:'Rigatoni, Flat Iron', custo:47.59, custoPorUnit:9.52, unidade:'lt', ingredientes:[{nome:'Tomate',un:'kg',qtd:6},{nome:'Cebola',un:'kg',qtd:0.5},{nome:'Alho',un:'kg',qtd:0.1},{nome:'Cenoura',un:'kg',qtd:0.25},{nome:'Manjericão',un:'mc',qtd:0.05},{nome:'Azeite de Oliva',un:'lt',qtd:0.2},{nome:'Açúcar',un:'kg',qtd:0.05}], preparo:'Refogar cebola+alho+cenoura. Adicionar tomate, cozinhar 40min fogo baixo. Finalizar manjericão e azeite.' },
+  { id:'B02', name:'Molho Béchamel', tags:['molhos'], rendimento:'3 litros', validade:'3 dias refrigerado', d1:false, uso:'Lasanhas, gratinados, fonduta', custo:25.19, custoPorUnit:8.40, unidade:'lt', ingredientes:[{nome:'Leite de Vaca',un:'lt',qtd:3},{nome:'Manteiga',un:'kg',qtd:0.25},{nome:'Farinha de Trigo',un:'kg',qtd:0.25},{nome:'Cebola',un:'kg',qtd:0.1},{nome:'Noz Moscada',un:'kg',qtd:0.005}], preparo:'Roux: manteiga+farinha 3min. Leite aos poucos. Cebola piqué. Cozinhar 20min. Noz moscada.' },
+  { id:'B03', name:'Caldo de Camarão', tags:['caldos'], rendimento:'2 litros', validade:'3 dias ou congelar', d1:false, uso:'Risotos, molhos frutos do mar', custo:61.60, custoPorUnit:30.80, unidade:'lt', ingredientes:[{nome:'Camarão',un:'kg',qtd:1},{nome:'Cebola',un:'kg',qtd:0.3},{nome:'Tomate',un:'kg',qtd:0.3},{nome:'Alho',un:'kg',qtd:0.05},{nome:'Vinho Branco',un:'lt',qtd:0.3},{nome:'Azeite de Oliva',un:'lt',qtd:0.1},{nome:'Cenoura',un:'kg',qtd:0.15}], preparo:'Torrar cascas no azeite. Mirepoix, vinho. Água 3L, cozinhar 1h. Coar, reduzir até 2L.' },
+  { id:'B04', name:'Caldo de Legumes', tags:['caldos'], rendimento:'5 litros', validade:'5 dias ou congelar', d1:false, uso:'Risotos, sopas, molhos', custo:13.84, custoPorUnit:2.77, unidade:'lt', ingredientes:[{nome:'Cebola',un:'kg',qtd:0.5},{nome:'Cenoura',un:'kg',qtd:0.4},{nome:'Alho-Poró',un:'kg',qtd:0.3},{nome:'Salsão',un:'kg',qtd:0.3},{nome:'Alho',un:'kg',qtd:0.05},{nome:'Tomilho',un:'mc',qtd:0.01},{nome:'Louro',un:'mc',qtd:0.005}], preparo:'Suar vegetais sem dourar. Água 6L. Cozinhar 1h30 fogo baixo. Coar, reduzir até 5L.' },
+  { id:'B05', name:'Fumet de Peixe', tags:['caldos'], rendimento:'2 litros', validade:'3 dias refrigerado', d1:false, uso:'Arroz de Polvo, risotos', custo:8.88, custoPorUnit:4.44, unidade:'lt', ingredientes:[{nome:'Aparas de Peixe',un:'kg',qtd:1},{nome:'Cebola',un:'kg',qtd:0.2},{nome:'Alho-Poró',un:'kg',qtd:0.15},{nome:'Vinho Branco',un:'lt',qtd:0.3},{nome:'Louro',un:'mc',qtd:0.003},{nome:'Salsinha',un:'mc',qtd:0.02}], preparo:'Suar cebola+poró. Espinhas, vinho. Água 3L. 30min fogo baixo. Coar delicadamente.' },
+  { id:'B06', name:'Demi-Glace Real', tags:['molhos','d1'], rendimento:'1 litro', validade:'5 dias ou congelar', d1:true, uso:'Filé Alto, Flat Iron, Carré, Pato', custo:3.04, custoPorUnit:3.04, unidade:'lt', ingredientes:[{nome:'Ossobuco',un:'kg',qtd:2},{nome:'Cebola',un:'kg',qtd:0.3},{nome:'Cenoura',un:'kg',qtd:0.2},{nome:'Tomate',un:'kg',qtd:0.2},{nome:'Vinho Tinto',un:'lt',qtd:0.5},{nome:'Tomilho',un:'mc',qtd:0.01},{nome:'Louro',un:'mc',qtd:0.005}], preparo:'Assar ossos 200°C. Mirepoix, ossos, vinho, ervas. Água 5L. 6-8h fogo baixo. Reduzir a 1L. Batch semanal: Segunda e Quinta.' },
+  { id:'B07', name:'Pesto Sergipano', tags:['molhos'], rendimento:'0.5 litro', validade:'7 dias com azeite', d1:false, uso:'Burrata, finalizações', custo:27.71, custoPorUnit:55.43, unidade:'lt', ingredientes:[{nome:'Manjericão',un:'mc',qtd:0.15},{nome:'Pinhão',un:'kg',qtd:0.08},{nome:'Parmesão',un:'kg',qtd:0.12},{nome:'Alho',un:'kg',qtd:0.03},{nome:'Azeite de Oliva',un:'lt',qtd:0.25}], preparo:'Processar manjericão+pinhão+alho. Parmesão. Azeite aos poucos até emulsionar.' },
+  { id:'B08', name:'Aioli de Páprica', tags:['molhos'], rendimento:'0.5 litro', validade:'5 dias refrigerado', d1:false, uso:'Croqueta de Polvo DUE', custo:6.44, custoPorUnit:12.88, unidade:'lt', ingredientes:[{nome:'Ovo',un:'und',qtd:0.2},{nome:'Óleo de Soja',un:'lt',qtd:0.4},{nome:'Alho',un:'kg',qtd:0.03},{nome:'Limão',un:'kg',qtd:0.03},{nome:'Mostarda Dijon',un:'kg',qtd:0.02}], preparo:'Gemas+mostarda+alho. Óleo em fio até emulsionar. Limão e sal. Preparar até 10:30.' },
+  { id:'B09', name:'Azeite Verde Aromático', tags:['molhos'], rendimento:'0.3 litro', validade:'3 dias refrigerado', d1:false, uso:'Peixes, Filé Alto, finalizações', custo:14.16, custoPorUnit:47.19, unidade:'lt', ingredientes:[{nome:'Salsinha',un:'mc',qtd:0.05},{nome:'Coentro',un:'mc',qtd:0.05},{nome:'Manjericão',un:'mc',qtd:0.03},{nome:'Alho',un:'kg',qtd:0.015},{nome:'Azeite de Oliva',un:'lt',qtd:0.25}], preparo:'Branquear ervas 30seg. Resfriar em gelo. Secar. Bater com alho+azeite. Coar fino.' },
+  { id:'B10', name:'Massa Pappardelle Fresca', tags:['massas','d1'], rendimento:'1 kg', validade:'2 dias ou congelar', d1:true, uso:'Pappardelle DUE, Carré de Cordeiro', custo:4.90, custoPorUnit:4.90, unidade:'kg', ingredientes:[{nome:'Farinha de Trigo',un:'kg',qtd:0.6},{nome:'Ovo',un:'und',qtd:0.4},{nome:'Azeite de Oliva',un:'lt',qtd:0.02}], preparo:'Vulcão de farinha. Ovos no centro. Sovar 10min. Descansar 30min. Laminar e cortar 2cm. Al dente 2-3min.' },
+  { id:'B11', name:'Polvo Cozido', tags:['proteinas','d1'], rendimento:'0.8 kg', validade:'3 dias refrigerado', d1:true, uso:'Croqueta de Polvo DUE, Arroz de Polvo DUE ★', custo:103.15, custoPorUnit:128.93, unidade:'kg', ingredientes:[{nome:'Polvo',un:'kg',qtd:1},{nome:'Cebola',un:'kg',qtd:0.15},{nome:'Louro',un:'mc',qtd:0.005},{nome:'Alho',un:'kg',qtd:0.03},{nome:'Vinho Branco',un:'lt',qtd:0.2}], preparo:'Pressão: polvo+cebola+louro+alho+água. 45-60min. Esfriar na pressão. Limpar tentáculos. QUA→QUI / SEX→SÁB.' },
+  { id:'B12', name:'Costela Desfiada', tags:['proteinas','d1'], rendimento:'1.5 kg', validade:'4 dias refrigerado', d1:true, uso:'Toast de Costela, Rigatoni Ragù, Rigatoni Nonna', custo:73.25, custoPorUnit:48.83, unidade:'kg', ingredientes:[{nome:'Costela Bovina',un:'kg',qtd:2.5},{nome:'Cebola',un:'kg',qtd:0.3},{nome:'Cenoura',un:'kg',qtd:0.2},{nome:'Alho',un:'kg',qtd:0.05},{nome:'Vinho Tinto',un:'lt',qtd:0.3},{nome:'Tomilho',un:'mc',qtd:0.01}], preparo:'Pressão: costela+vegetais+vinho+água 90min. Desfiar. Reduzir caldo para ragù. DOM→SEG / QUA→QUI.' },
+  { id:'B13', name:'Marinada Cítrica Universal', tags:['conservas'], rendimento:'0.5 litro', validade:'3 dias refrigerado', d1:false, uso:'Frutos do Mar Tempurá, peixes', custo:9.33, custoPorUnit:18.66, unidade:'lt', ingredientes:[{nome:'Limão Tahiti',un:'kg',qtd:0.1},{nome:'Limão Siciliano',un:'kg',qtd:0.05},{nome:'Azeite de Oliva',un:'lt',qtd:0.15},{nome:'Alho',un:'kg',qtd:0.015},{nome:'Gengibre',un:'kg',qtd:0.01},{nome:'Coentro',un:'mc',qtd:0.02},{nome:'Pimenta de Cheiro',un:'kg',qtd:0.005}], preparo:'Sucos+raspas de limão. Alho+gengibre+pimenta. Azeite em fio. Coentro por último. Descansar 30min.' },
+  { id:'B14', name:'Dry Rub DUE', tags:['conservas'], rendimento:'0.5 kg', validade:'30 dias fechado', d1:false, uso:'Frango Tucupi & Jambu, filé mignon', custo:9.78, custoPorUnit:19.57, unidade:'kg', ingredientes:[{nome:'Sal',un:'kg',qtd:0.15},{nome:'Pimenta do Reino',un:'kg',qtd:0.05},{nome:'Páprica Picante',un:'kg',qtd:0.06},{nome:'Páprica Defumada',un:'kg',qtd:0.06},{nome:'Alho',un:'kg',qtd:0.05},{nome:'Cúrcuma',un:'kg',qtd:0.03},{nome:'Açúcar Mascavo',un:'kg',qtd:0.05},{nome:'Coentro',un:'mc',qtd:0.03},{nome:'Tomilho',un:'mc',qtd:0.02}], preparo:'Misturar todos os secos. Peneirar. Armazenar em pote fechado. Usar 8-12g por porção.' },
+  { id:'B15', name:'Cura Rápida Peixes Crus', tags:['conservas'], rendimento:'0.3 kg', validade:'15 dias fechado', d1:false, uso:'Tiradito de Peixe, ceviches', custo:1.69, custoPorUnit:5.64, unidade:'kg', ingredientes:[{nome:'Sal',un:'kg',qtd:0.15},{nome:'Açúcar Cristal',un:'kg',qtd:0.1},{nome:'Limão Siciliano',un:'kg',qtd:0.03},{nome:'Pimenta do Reino',un:'kg',qtd:0.02}], preparo:'Misturar sal+açúcar (3:2). Raspas de limão+pimenta. Usar 5g por porção. Curar 3-5min. Retirar excesso antes de servir.' },
+  { id:'B16', name:'Bisque de Crustáceos', tags:['caldos'], rendimento:'2 litros', validade:'5 dias / 30 dias congelado', d1:false, uso:'Arroz de Polvo DUE, Pappardelle DUE, Taco Sergipano', custo:16.65, custoPorUnit:8.32, unidade:'lt', ingredientes:[{nome:'Camarão (cascas)',un:'kg',qtd:0.2},{nome:'Cebola',un:'kg',qtd:0.15},{nome:'Cenoura',un:'kg',qtd:0.1},{nome:'Salsão',un:'mc',qtd:0.05},{nome:'Tomate',un:'kg',qtd:0.2},{nome:'Azeite de Oliva',un:'lt',qtd:0.05},{nome:'Vinho Branco',un:'lt',qtd:0.1},{nome:'Páprica Picante',un:'kg',qtd:0.01}], preparo:'Tostar cascas 5min. Mirepoix, suar. Tomate+páprica+louro. Deglaçar vinho. Água 3L, 40min. Bater, coar fino. Reduzir a 2L. Iniciar às 08:30.' },
+  { id:'B17', name:'Leite de Tigre Sergipano', tags:['molhos'], rendimento:'0.5 litro', validade:'2 dias refrigerado', d1:false, uso:'Tiradito de Peixe', custo:7.58, custoPorUnit:15.16, unidade:'lt', ingredientes:[{nome:'Limão Tahiti',un:'kg',qtd:0.1},{nome:'Cebola Roxa',un:'kg',qtd:0.05},{nome:'Coentro',un:'mc',qtd:0.03},{nome:'Pimenta de Cheiro',un:'kg',qtd:0.015},{nome:'Gengibre',un:'kg',qtd:0.01},{nome:'Leite de Coco',un:'lt',qtd:0.08},{nome:'Tucupi',un:'lt',qtd:0.02},{nome:'Peixe Branco',un:'kg',qtd:0.05}], preparo:'Processar aparas+limão+cebola+coentro+pimenta+gengibre. Coar fino. Adicionar leite coco+tucupi. Manter gelado. Batida final antes de servir. Preparar até 10:30.' },
+  { id:'B19', name:'Vinagrete Tropical DUE', tags:['molhos'], rendimento:'0.5 litro', validade:'3 dias refrigerado', d1:false, uso:'Frutos do Mar Tempurá', custo:3.89, custoPorUnit:7.78, unidade:'lt', ingredientes:[{nome:'Manga-Rosa',un:'kg',qtd:0.1},{nome:'Cebola Roxa',un:'kg',qtd:0.06},{nome:'Pimentão Amarelo',un:'kg',qtd:0.05},{nome:'Coentro',un:'mc',qtd:0.02},{nome:'Limão Tahiti',un:'kg',qtd:0.05},{nome:'Azeite de Oliva',un:'lt',qtd:0.03}], preparo:'Cortar tudo em brunoise fino (2mm). Misturar delicadamente. Limão+azeite+sal. Descansar 15min geladeira.' },
+  { id:'B20', name:'Camarão Confitado', tags:['proteinas'], rendimento:'0.5 kg', validade:'3 dias no azeite', d1:false, uso:'Burrata + Camarão Confitado', custo:20.02, custoPorUnit:40.04, unidade:'kg', ingredientes:[{nome:'Camarão Pequeno',un:'kg',qtd:0.5},{nome:'Azeite Verde',un:'lt',qtd:0.15},{nome:'Alho',un:'kg',qtd:0.02},{nome:'Limão Siciliano',un:'kg',qtd:0.01},{nome:'Pimenta de Cheiro',un:'kg',qtd:0.005}], preparo:'Temperar camarões. Submergir em azeite a 75°C por 15-20min. Manter no azeite. Reaproveitar azeite para finalização.' },
+  { id:'B21', name:'Coxa de Pato Confit', tags:['proteinas','d1'], rendimento:'6 unidades', validade:'7 dias na gordura', d1:true, uso:'Coxa de Pato Confitada', custo:110.36, custoPorUnit:18.39, unidade:'und', ingredientes:[{nome:'Coxa de Pato',un:'kg',qtd:1.2},{nome:'Sal',un:'kg',qtd:0.06},{nome:'Açúcar Cristal',un:'kg',qtd:0.02},{nome:'Tomilho',un:'mc',qtd:0.01},{nome:'Louro',un:'kg',qtd:0.002},{nome:'Pimenta do Reino',un:'kg',qtd:0.005},{nome:'Alho',un:'kg',qtd:0.02},{nome:'Manteiga',un:'kg',qtd:0.1}], preparo:'1. Cura seca 24h: sal+açúcar+tomilho+louro+pimenta.\n2. Lavar, secar bem.\n3. Submergir em gordura derretida.\n4. Forno 140°C por 2.5-3h até soltar do osso.\n5. Esfriar na gordura. Armazenar submerso.' },
+  { id:'B22', name:'Empanamento DUE', tags:['conservas'], rendimento:'1 kg', validade:'15 dias fechado', d1:false, uso:'Croqueta de Polvo DUE, brie crocante', custo:19.09, custoPorUnit:19.09, unidade:'kg', ingredientes:[{nome:'Farinha Panko',un:'kg',qtd:0.4},{nome:'Farinha de Trigo',un:'kg',qtd:0.2},{nome:'Farinha de Milho',un:'kg',qtd:0.15},{nome:'Parmesão',un:'kg',qtd:0.08},{nome:'Páprica Picante',un:'kg',qtd:0.03},{nome:'Alho',un:'kg',qtd:0.02},{nome:'Salsa',un:'mc',qtd:0.02}], preparo:'Misturar farinhas secas. Adicionar parmesão+temperos. Homogeneizar. Armazenar seco. Uso: farinha → ovo → Empanamento DUE.' },
+  { id:'B23', name:'Massa Tempurá DUE', tags:['massas'], rendimento:'0.5 litro', validade:'Preparar no momento', d1:false, uso:'Frutos do Mar Tempurá', custo:2.47, custoPorUnit:4.93, unidade:'lt', ingredientes:[{nome:'Farinha de Trigo',un:'kg',qtd:0.15},{nome:'Amido de Milho',un:'kg',qtd:0.05},{nome:'Ovo',un:'und',qtd:1},{nome:'Água Gelada',un:'ml',qtd:250},{nome:'Sal',un:'kg',qtd:0.005}], preparo:'Água gelada 250ml + ovo batido. Farinhas de uma vez, misturar POUCO (grumos OK = mais crocante). Usar IMEDIATAMENTE. Óleo 180°C. NÃO sobremisturar.' },
+  { id:'B25', name:'Azeite Vermelho DUE', tags:['molhos'], rendimento:'0.3 litro', validade:'15 dias refrigerado', d1:false, uso:'Taco Sergipano de Camarão', custo:8.76, custoPorUnit:29.20, unidade:'lt', ingredientes:[{nome:'Azeite de Dendê',un:'lt',qtd:0.15},{nome:'Azeite de Oliva',un:'lt',qtd:0.1},{nome:'Páprica Picante',un:'kg',qtd:0.01},{nome:'Alho',un:'kg',qtd:0.01},{nome:'Coentro',un:'mc',qtd:0.01}], preparo:'Aquecer dendê+oliva fogo baixo. Infusionar alho+coentro+páprica 10min. Coar. Armazenar em vidro.' },
+  { id:'B26', name:'Picles de Maxixe', tags:['conservas'], rendimento:'0.5 kg', validade:'15 dias refrigerado', d1:false, uso:'Taco Sergipano, Robalo, Salada de Camarão', custo:13.75, custoPorUnit:27.51, unidade:'kg', ingredientes:[{nome:'Maxixe',un:'kg',qtd:0.5},{nome:'Vinagre de Maçã',un:'lt',qtd:0.15},{nome:'Açúcar Cristal',un:'kg',qtd:0.04},{nome:'Sal',un:'kg',qtd:0.015},{nome:'Cebola Roxa',un:'kg',qtd:0.05},{nome:'Pimenta de Cheiro',un:'kg',qtd:0.005}], preparo:'Ferver vinagre+açúcar+sal. Verter quente sobre maxixe+cebola+pimenta. Tampar. Resfriar. Geladeira mín 4h. Melhor após 24h.' },
+  { id:'B27', name:'Creme de Abacate', tags:['molhos'], rendimento:'0.5 litro', validade:'1 dia (oxidação)', d1:false, uso:'Taco Sergipano, Salada Morna de Camarão', custo:7.15, custoPorUnit:14.29, unidade:'lt', ingredientes:[{nome:'Abacate',un:'kg',qtd:0.4},{nome:'Limão Tahiti',un:'kg',qtd:0.04},{nome:'Coentro',un:'mc',qtd:0.015},{nome:'Cebola Roxa',un:'kg',qtd:0.03},{nome:'Azeite de Oliva',un:'lt',qtd:0.015},{nome:'Pimenta de Cheiro',un:'kg',qtd:0.003}], preparo:'Processar abacate com limão (anti-oxidação). Cebola+coentro+pimenta manualmente. Sal+azeite. Manter com caroço e filme rente. Preparar MAIS PRÓXIMO possível do serviço.' },
+];
+
+let baseTagFilter = 'all', baseSearchStr = '';
+
+function renderAuxBases() {
+  const grid = document.getElementById('auxBasesGrid');
+  if (!grid) return;
+  const filtered = auxBasesData.filter(b => {
+    const tagOk = baseTagFilter === 'all' || b.tags.includes(baseTagFilter);
+    const searchOk = !baseSearchStr || b.name.toLowerCase().includes(baseSearchStr) || b.uso.toLowerCase().includes(baseSearchStr) || b.ingredientes.some(i => i.nome.toLowerCase().includes(baseSearchStr));
+    return tagOk && searchOk;
+  });
+
+  if (!filtered.length) { grid.innerHTML = '<div style="padding:40px;text-align:center;color:var(--muted)">Nenhuma base encontrada</div>'; return; }
+
+  grid.innerHTML = filtered.map(b => `
+    <div class="recipe-card ${b.d1 ? 'd1-card' : ''}" id="rc-${b.id}">
+      <div class="recipe-header" onclick="toggleRecipeCard('${b.id}')">
+        <div class="recipe-id">${b.id}</div>
+        <div>
+          <div class="recipe-name">${b.name}</div>
+          <div style="display:flex;gap:6px;margin-top:4px;flex-wrap:wrap">
+            ${b.d1 ? '<span class="pill pill-d1" style="font-size:10px">D-1</span>' : ''}
+            <span style="font-size:11px;color:var(--muted)">${b.rendimento}</span>
+            <span style="font-size:11px;font-family:DM Mono,monospace;color:var(--gold)">R$${b.custoPorUnit.toFixed(2)}/${b.unidade}</span>
+          </div>
+        </div>
+        <div class="recipe-arrow">▼</div>
+      </div>
+      <div class="recipe-uso">${b.uso}</div>
+      <div class="recipe-body">
+        <div class="recipe-meta-row">
+          <div class="recipe-meta-item">
+            <div class="recipe-meta-label">Rendimento</div>
+            <div class="recipe-meta-value">${b.rendimento}</div>
+          </div>
+          <div class="recipe-meta-item">
+            <div class="recipe-meta-label">Validade</div>
+            <div class="recipe-meta-value">${b.validade}</div>
+          </div>
+        </div>
+        <div class="ingredients-label">Ingredientes</div>
+        <div style="background:var(--bg2);border-radius:8px;padding:8px 12px">
+          ${b.ingredientes.map(i => `
+            <div class="ingredient-row">
+              <div class="ingredient-name">${i.nome}</div>
+              <div class="ingredient-qty">${i.qtd}</div>
+              <div class="ingredient-unit">${i.un}</div>
+            </div>
+          `).join('')}
+        </div>
+        <div class="preparo-label">Modo de Preparo</div>
+        <div class="preparo-text">${b.preparo}</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function toggleRecipeCard(id) {
+  const card = document.getElementById('rc-' + id);
+  card.classList.toggle('open');
+}
+
+function filterAuxBases(val) {
+  baseSearchStr = val.toLowerCase();
+  renderAuxBases();
+}
+
+function filterBaseTag(tag, el) {
+  baseTagFilter = tag;
+  document.querySelectorAll('#tab-bases .filter-chip').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  renderAuxBases();
+}
+
+// ═══ 8 REGRAS ═══
+const regras = [
+  { t: 'Mise en Place é Religião', d: 'Nada começa enquanto o mise en place não estiver 100% conferido. Não existe "quase pronto".' },
+  { t: 'Sobremesas Pré-Montadas', d: 'Pannacota e cheesecake no prato antes do serviço abrir. Sem isso, o turno colapsa.' },
+  { t: 'Temperatura Obsessiva', d: 'Peixe cru, burrata, camarão confitado: zona de perigo 5-65°C. Margem zero para erro sanitário.' },
+  { t: 'Fritura na Temperatura Certa', d: 'Óleo a 180°C. Nunca abaixo (encharca), nunca acima (queima). Filtrar entre turnos.' },
+  { t: 'Massas Al Dente — Sem Exceção', d: 'Pappardelle fresca 2-3min. Rigatoni 8-10min. Nunca pré-cozida além do ponto.' },
+  { t: 'Comunicação Padronizada', d: 'Ouvido confirmado. Boqueta avisada. Falta comunicada na hora. Sem silêncio na cozinha.' },
+  { t: 'Limpeza Contínua, não Final', d: 'Óleo respinga, farinha espalha. Bancada suja = acidente em 30min. Limpe enquanto trabalha.' },
+  { t: 'Avise Antes, não Depois', d: 'Base acabando? Avisa agora. Ingrediente faltando? Avisa agora. Antes de virar crise.' },
+];
+
+function renderRegras() {
+  const el = document.getElementById('auxRegras');
+  if (!el) return;
+  el.innerHTML = regras.map((r, i) => `
+    <div class="rule-card">
+      <div class="rule-num">${i+1}</div>
+      <div>
+        <div class="rule-title">${r.t}</div>
+        <div class="rule-desc">${r.d}</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+// ═══ INIT ═══
+document.addEventListener('DOMContentLoaded', () => {
+  try { auxCheckState = JSON.parse(localStorage.getItem('due_aux_check') || '{}'); } catch(e) { auxCheckState = {}; }
+  try { viradaState = JSON.parse(localStorage.getItem('due_virada') || '{}'); } catch(e) { viradaState = {}; }
+  renderCardapio();
+  renderAuxChecklist();
+  renderViradaChecklist();
+  renderAuxBases();
+  renderRegras();
+});
+</script>
+</body>
+</html>
