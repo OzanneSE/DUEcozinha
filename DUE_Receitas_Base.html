@@ -287,11 +287,12 @@ body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--t
     <div class="s-sub">Grimório de Bases</div>
   </div>
   <a class="s-back" href="index.html">← Sistema Operacional</a>
+  <a class="s-back" href="DUE_Calendario_Forno.html" style="margin-top:4px;">⏱ Calendário de Forno D-1</a>
   <div class="s-label">Por Categoria</div>
   <nav class="s-nav" id="sideNav">
-    <a onclick="filterTag('all',this)" class="active"><span>Todas as Bases</span><span class="badge" id="nav-all">34</span></a>
+    <a onclick="filterTag('all',this)" class="active"><span>Todas as Bases</span><span class="badge" id="nav-all">37</span></a>
     <a onclick="filterTag('signature',this)"><span>⦿ Assinatura DUE</span><span class="badge" id="nav-signature">6</span></a>
-    <a onclick="filterTag('d1',this)"><span>⚑ D-1 Obrigatório</span><span class="badge" id="nav-d1">11</span></a>
+    <a onclick="filterTag('d1',this)"><span>⚑ D-1 Obrigatório</span><span class="badge" id="nav-d1">15</span></a>
     <a onclick="filterTag('massas',this)"><span>Massa Fresca</span><span class="badge">1</span></a>
     <a onclick="filterTag('crocantes',this)"><span>Crocantes & Texturas</span><span class="badge">5</span></a>
     <a onclick="filterTag('sobremesas',this)"><span>Sobremesas</span><span class="badge">3</span></a>
@@ -374,22 +375,40 @@ const categorias = [
 const bases = [
   /* ═══════ 01 · MASSA FRESCA ═══════ */
   { id:'B01', cat:'massas', signature:true, d1:true,
-    nome:'Pappardelle DUE',
-    uso:'Carré de Cordeiro · Pappardelle DUE (Frutos do Mar)',
+    nome:'Pappardelle Artesanal DUE',
+    uso:'Pappardelle DUE com Bisque · Carré de Cordeiro',
+    rendimento:'1 porção de serviço = 160g pré-cozida (~110g crua)',
     ingredientes:[
-      {nome:'Farinha de trigo fina', qtd:'100g', obs:'por porção'},
-      {nome:'Gema de ovo', qtd:'3 unid. (~54g)'},
-      {nome:'Clara de ovo', qtd:'1 unid. (~30g)'},
-      {nome:'Cúrcuma', qtd:'1g'},
+      {nome:'Farinha de trigo comum', qtd:'100g', obs:'base de cálculo — ajustar ao ponto pelo tato'},
+      {nome:'Gema de ovo', qtd:'2 unid.', obs:'por 100g de farinha'},
+      {nome:'Ovo inteiro', qtd:'1 unid.', obs:'por 100g de farinha — hidrata e estrutura a farinha comum'},
+      {nome:'Cúrcuma', qtd:'1g', obs:'cor dourada'},
       {nome:'Sal fino', qtd:'1g'},
-      {nome:'Azeite de oliva', qtd:'q.b.'},
     ],
     preparo:[
-      'Misturar todos os ingredientes secos.',
-      'Incorporar ovos e azeite — sovar à mão até massa homogênea.',
-      'Descansar 30 min embrulhada em filme plástico.',
-      'Laminar na espessura desejada e cortar em tiras largas (pappardelle).',
-    ] },
+      'Misturar farinha, cúrcuma e sal numa bancada ou bowl.',
+      'Abrir um buraco no centro e incorporar as gemas e o ovo inteiro.',
+      'Sovar à mão por 8–10 minutos até massa lisa, elástica e que não gruda na bancada.',
+      'PONTO DE VÉU: massa pronta quando estica sem rasgar e não gruda nas mãos. Adicionar farinha aos poucos se necessário.',
+      'Embrulhar em filme plástico e descansar 30 minutos em temperatura ambiente.',
+      'Laminar no cilindro até penúltima espessura — NÃO usar a última (rasga com farinha comum).',
+      'Cortar em tiras de 2,5cm de largura — a massa encolhe ~20% no cozimento, chegando a ~2cm no prato.',
+    ],
+    preparo_prebatch:[
+      'PRÉ-BATCH: cozinhar em água fervente com sal por exatamente 2 minutos.',
+      'Escorrer sem enxaguar — NÃO usar óleo (impede o bisque de aderir).',
+      'Porcionar em ninhos de 160g.',
+      'Umedecer cada ninho com 1 colher de bisque frio para manter hidratação e incorporar sabor.',
+      'Armazenar em GN perfurada coberta com filme. Geladeira. Validade: 24 horas.',
+    ],
+    preparo_servico:[
+      'SERVIÇO: mergulhar o ninho em água fervente com sal por 15–20 segundos (regeneração).',
+      'Transferir direto para frigideira com bisque quente — sem escorrer completamente.',
+      'Cozinhar em fogo alto por 1 minuto, movimentando a frigideira.',
+      'A massa deve absorver o bisque e brilhar — não nadar no molho.',
+      'Finalizar com azeite, ajuste de sal e servir imediatamente.',
+    ],
+    critical:[3,6] },
 
   /* ═══════ 02 · CROCANTES E ELEMENTOS DE TEXTURA ═══════ */
   { id:'B02', cat:'crocantes',
@@ -406,29 +425,40 @@ const bases = [
     ] },
 
   { id:'B03', cat:'crocantes',
-    nome:'Sagu Crocante',
+    nome:'Crocante de Tapioca DUE',
     uso:'Tartar do Sertão',
     ingredientes:[
-      {nome:'Sagu de tapioca', qtd:'q.b.'},
+      {nome:'Tapioca granulada (sagu)', qtd:'q.b.'},
+      {nome:'Água', qtd:'3× o volume da tapioca', obs:'fervente, sem sal, sem óleo'},
+      {nome:'Óleo de girassol', qtd:'para fritura por imersão'},
     ],
     preparo:[
-      'Cozinhar o sagu em água até ponto (transparente ao centro).',
-      'Escorrer e espalhar em silpat ou papel manteiga.',
-      'Desidratar a 70°C por 2h até crocante.',
-    ] },
+      'Ferver a água — proporção 3 volumes de água para 1 de tapioca.',
+      'Mergulhar a tapioca na água fervente sem sal e sem óleo.',
+      'Cozinhar até completamente translúcida E sem ponto duro ao apertar o grânulo entre os dedos.',
+      'TESTE DE PONTO: grânulo deve ceder completamente sem resistência. Cor translúcida não é suficiente — o centro deve estar macio.',
+      'Escorrer em peneira fina sem lavar e sem esfregar.',
+      'PRÉ-SECAGEM: espalhar em camada única no silpat. Descansar 20 minutos em temperatura ambiente antes de ligar o forno.',
+      'DESIDRATAÇÃO: forno combinado calor seco a 80°C por 2 horas — camada única, sem empilhar.',
+      'TESTE DE PRONTO: grânulo opaco, esbranquiçado, seco ao toque e som seco ao rolar no silpat. Se ainda pastoso, mais 30 minutos.',
+      'Resfriar completamente antes de fritar — nunca fritar ainda morno.',
+      'FRITURA: óleo de girassol a 180°C. Fritar em pequenas quantidades (~50g por vez) para não baixar a temperatura do óleo.',
+      'Escorrer em papel absorvente em camada única — NÃO cobrir.',
+      'ARMAZENAMENTO: pote hermético com saquinho de sílica ou colher de arroz cru no fundo. Sem geladeira. Validade: 48 horas.',
+    ],
+    critical:[2,3,6,8,9,11] },
 
   { id:'B04', cat:'crocantes',
-    nome:'Suspiro Artesanal',
+    nome:'Suspiro · Insumo de Compra',
     uso:'Pannacota de Baunilha · Ganache de Chocolate 70%',
     ingredientes:[
-      {nome:'Clara de ovo', qtd:'q.b.'},
-      {nome:'Açúcar de confeiteiro', qtd:'mesma quantidade da clara'},
+      {nome:'Suspiro industrializado de qualidade', qtd:'conforme demanda', obs:'comprado pronto — forno de convecção inviabiliza produção artesanal consistente'},
     ],
     preparo:[
-      'Bater claras em neve até ponto firme.',
-      'Incorporar açúcar de confeiteiro gradualmente (merengue francês).',
-      'Modelar em formas desejadas.',
-      'Desidratar a 70°C por 3h até seco e crocante.',
+      'DECISÃO OPERACIONAL: suspiro é insumo de compra no DUE. Forno com ventilação forçada resseca a superfície antes de desidratar o interior — resultado inconsistente.',
+      'Avaliar fornecedor por tamanho uniforme, textura seca ao toque e ausência de umidade.',
+      'ARMAZENAMENTO: pote hermético longe de vapor e calor. Sem geladeira — umidade destrói a textura.',
+      'Validade após abertura da embalagem: consumir em até 48h.',
     ] },
 
   { id:'B05', cat:'crocantes',
@@ -495,25 +525,39 @@ const bases = [
       'Resfriar e servir em quenelle.',
     ] },
 
-  { id:'B09', cat:'sobremesas',
+  { id:'B09', cat:'sobremesas', d1:true,
     nome:'Cheesecake Estilo Basco DUE',
     uso:'Cheesecake Artesanal · com frutas vermelhas, farofa de avelã e açúcar de confeiteiro',
+    rendimento:'10 fatias por forma (forma de fundo falso 22–24cm)',
     ingredientes:[
-      {nome:'Cream cheese', qtd:'1kg'},
+      {nome:'Cream cheese', qtd:'1kg', obs:'temperatura ambiente — facilitia incorporação'},
       {nome:'Açúcar', qtd:'250g'},
       {nome:'Creme de leite fresco', qtd:'300g'},
-      {nome:'Ovos inteiros', qtd:'6 unid.'},
+      {nome:'Ovos inteiros', qtd:'6 unid.', obs:'temperatura ambiente'},
       {nome:'Farinha de trigo', qtd:'50g'},
-      {nome:'Parmesão ralado', qtd:'50g', obs:'realça o laticínio'},
+      {nome:'Parmesão ralado fino', qtd:'50g', obs:'realça o laticínio — não omitir'},
       {nome:'Raspas de limão siciliano', qtd:'q.b.'},
     ],
     preparo:[
-      'Misturar todos os ingredientes até massa homogênea e lisa.',
-      'Forrar forma de fundo falso com papel manteiga grande (subindo pelas bordas).',
-      'Assar a 180°C por 6 minutos.',
-      'Reduzir para 150°C e assar mais 20 minutos.',
-      'Resfriar completamente antes de porcionar.',
-      'Rendimento: 10 fatias por forma.',
+      'Pré-aquecer forno a 180°C — calor seco.',
+      'Forrar forma de fundo falso com papel manteiga amplo, subindo pelas laterais — papel deve ultrapassar a borda (o cheesecake cresce e transborda levemente).',
+      'Bater cream cheese com açúcar até liso e homogêneo — sem incorporar ar excessivo.',
+      'Adicionar ovos um a um, incorporando delicadamente a cada adição.',
+      'Adicionar creme de leite, farinha, parmesão e raspas de limão — misturar apenas até homogêneo.',
+      'Verter na forma preparada.',
+      'Assar a 180°C por 6 minutos — formar crosta escura característica.',
+      'Reduzir para 150°C e assar mais 20 minutos — centro deve sair levemente firme mas com leve tremor ao mover a forma.',
+      'Retirar do forno — resfriar em temperatura ambiente por 1h (não forçar refrigeração).',
+      'Levar à geladeira por MÍNIMO 6 horas antes de porcionar — overnight é o ideal.',
+      'Para servir: remover da geladeira 10 minutos antes de porcionar — facilita o corte limpo.',
+      'Cortar em 10 fatias com faca aquecida e limpa a cada corte.',
+    ],
+    critical:[6,7,9],
+    pontos:[
+      'Crosta escura (quase queimada) é correta e característica do basco — não é erro.',
+      'Centro com leve tremor ao sair do forno = ponto certo. Firme demais = ressecado.',
+      'As 6h de geladeira são inegociáveis — sem elas o interior não firma e a fatia desmorona.',
+      'Parmesão não aparece no sabor final, apenas reforça a profundidade do laticínio.',
     ] },
 
   /* ═══════ 04 · FUNDOS E MOLHOS-BASE ═══════ */
@@ -830,30 +874,42 @@ const bases = [
     ],
     critical:[2,3] },
 
-  { id:'B25', cat:'molhos',
+  { id:'B25', cat:'molhos', d1:true,
     nome:'Pão de Batata DUE',
     uso:'Bruschetta de Costela · Toast de serviço',
+    rendimento:'~12 unidades de 40g · formato cilíndrico (aro 8cm)',
     ingredientes:[
       {nome:'Farinha de trigo', qtd:'250g'},
-      {nome:'Purê de batata assada seca', qtd:'80g'},
-      {nome:'Manteiga', qtd:'50g'},
+      {nome:'Purê de batata assada seca', qtd:'80g', obs:'batata assada com casca, espremida quente — ver preparo'},
+      {nome:'Manteiga', qtd:'50g', obs:'temperatura ambiente, incorporada no final'},
       {nome:'Água morna', qtd:'130ml'},
       {nome:'Açúcar', qtd:'15g'},
       {nome:'Fermento biológico seco', qtd:'6g'},
       {nome:'Sal', qtd:'5g'},
-      {nome:'Ovo batido', qtd:'q.b.', obs:'para pincelar (eggwash)'},
+      {nome:'Ovo batido', qtd:'q.b.', obs:'eggwash para pincelar'},
+      {nome:'Manteiga (aragem dos aros)', qtd:'q.b.', obs:'besuntar os aros de 8cm'},
     ],
     preparo:[
-      'Assar batata a 150°C até bem seca — sem excesso de umidade.',
-      'Ativar fermento na água morna com açúcar.',
-      'Bater na batedeira com gancho todos os ingredientes.',
-      'Incorporar manteiga quando massa estiver próxima ao ponto de véu.',
-      'Bater até elasticidade completa.',
-      'Descansar 20 minutos.',
+      'D-1 · BATATA: assar batata inteira com casca a 150°C por 40 minutos — casca deve estufar e interior estar completamente seco.',
+      'Espremer a batata ainda quente — usar espremedor, não processador (evita amido elástico).',
+      'Espalhar o purê espremido em superfície limpa e deixar secar ao ar por 10 minutos antes de pesar.',
+      'Ativar fermento: dissolver em água morna (±38°C) com açúcar — aguardar espumar (~10 min).',
+      'Na batedeira com gancho: farinha + sal + purê de batata + fermento ativado — bater em velocidade média.',
+      'Quando a massa estiver próxima ao ponto de véu, incorporar a manteiga em temperatura ambiente em cubos, aos poucos.',
+      'Bater até elasticidade completa — ponto de véu firme (massa estica fina sem rasgar).',
+      'Descansar 20 minutos coberto.',
       'Bolear porções de 40g.',
-      'Fermentar 1 hora ou até dobrar de tamanho.',
-      'Pincelar com eggwash.',
-      'Assar a 175°C por 14 minutos.',
+      'AROS: besuntar generosamente aros de 8cm com manteiga. Posicionar as bolas centradas dentro dos aros na assadeira.',
+      'Fermentar 1 hora ou até dobrar de volume — os aros garantem o formato cilíndrico perfeito.',
+      'Pincelar delicadamente com eggwash sem pressionar.',
+      'Assar a 175°C por 14 minutos — calor seco — até dourado uniforme.',
+      'Retirar dos aros ainda quente.',
+    ],
+    critical:[0,5,9],
+    pontos:[
+      'Batata com casca retém menos umidade que descascada — o processo inteiro depende de purê bem seco.',
+      'Manteiga SEMPRE no final, próximo ao véu — incorporar antes destrói a estrutura do glúten.',
+      'Aros de 8cm besuntados garantem a altura cilíndrica — sem aro o pão abre lateralmente.',
     ] },
 
   { id:'B26', cat:'molhos',
@@ -916,32 +972,50 @@ const bases = [
       'Mergulhar o polvo 3 vezes na água fervente antes de submergir completamente.',
       'Cozinhar por 40–50 minutos até completamente macio.',
       'Retirar e resfriar FORA do caldo.',
-      'SERVIÇO: frigideira bem quente com azeite.',
-      'Temperar com sal e pimenta do reino — selar todos os lados.',
-      'Finalizar com alho batido e alecrim.',
+      'SERVIÇO: frigideira antiaderente ou de ferro bem quente com azeite — sem forno.',
+      'Temperar com sal e pimenta do reino na hora.',
+      'Selar todos os lados — cor dourada uniforme, ~2 min por lado.',
+      'Finalizar com alho batido e alecrim — aromatizar e servir imediatamente.',
       'APROVEITAMENTO: tentáculos → Arroz de Polvo + Pappardelle · cabeças e bases → Croqueta.',
     ],
-    critical:[3] },
+    critical:[3],
+    pontos:[
+      'Polvo congelado é preferível: o congelamento quebra as fibras e dispensa o abate manual.',
+      'Resfriar fora do caldo evita que continue cozinhando e fique borrachudo.',
+      'Frigideira sem forno: o polvo já está cozido — forno ressecaria a carne.',
+    ] },
 
   { id:'B29', cat:'proteinas', d1:true,
     nome:'Costela Desfiada DUE',
     uso:'Rigatoni com Ragù de Costela · Bruschetta de Costela',
+    rendimento:'~50% do peso bruto após desossa e desfio · porção: 100g',
     ingredientes:[
-      {nome:'Costela bovina', qtd:'q.b.', obs:'por kg'},
+      {nome:'Costela bovina (com osso)', qtd:'q.b.', obs:'base de cálculo por kg bruto'},
       {nome:'Páprica doce', qtd:'20g/kg'},
       {nome:'Páprica defumada', qtd:'10g/kg'},
       {nome:'Sal', qtd:'20g/kg'},
       {nome:'Pimenta do reino', qtd:'5g/kg'},
-      {nome:'Vinho branco seco', qtd:'200ml/kg', obs:'marinada'},
-      {nome:'Fundo escuro (demi)', qtd:'q.b.', obs:'para brasear'},
+      {nome:'Vinho branco seco', qtd:'200ml/kg', obs:'marinada e base do braseado'},
+      {nome:'Fundo escuro DUE (B11)', qtd:'q.b.', obs:'para cobrir no braseado'},
     ],
     preparo:[
-      'Marinar a costela com todos os temperos e vinho branco por 12h na geladeira.',
-      'Forno a 200°C por 30 minutos sem tampa para selar e caramelizar.',
-      'Cobrir com papel alumínio + fundo escuro.',
-      'Reduzir para 130°C e brasear por 3 horas.',
-      'Desfiar ainda quente usando luvas nitrílicas.',
-      'Porcionar em 100g por prato.',
+      'D-1 · MARINADA: misturar páprica doce, páprica defumada, sal e pimenta. Esfregar bem na costela. Adicionar vinho branco. Cobrir com filme e refrigerar 12h.',
+      'FASE 1 — SELAGEM: forno combinado calor seco a 200°C por 30 minutos SEM COBERTURA — formar crosta caramelizada escura em toda a superfície.',
+      'FASE 2 — BRASEADO: cobrir a costela com fundo escuro até 2/3 da altura. Vedar firmemente com papel alumínio duplo.',
+      'Reduzir para 130°C — calor seco — e brasear por 3 horas até a carne soltar do osso espontaneamente.',
+      'Verificar ponto: inserir pinça — a carne deve ceder sem resistência e o osso sair limpo.',
+      'Retirar do forno e deixar esfriar levemente na própria gordura por 20 minutos — não descartar o líquido de braseado.',
+      'DESOSSA: remover ossos e cartilagens enquanto ainda quente — mais fácil e seguro.',
+      'DESFIO: desfiar com luvas nitrílicas ainda quente — fibras longas, não triturar.',
+      'Umedecer levemente com o caldo de braseado coado — carne deve ficar úmida mas não encharcada.',
+      'Porcionar em 100g. Refrigerar em GN coberto. Validade: 3 dias.',
+      'SERVIÇO: aquecer no caldo de braseado em frigideira — não secar.',
+    ],
+    critical:[1,2,7],
+    pontos:[
+      'Fase 1 sem cobertura é obrigatória — a crosta caramelizada é o sabor do prato.',
+      'Desfiar quente: frio a carne compacta e o desfio fica grosseiro.',
+      'O caldo de braseado é insumo — coa e usa para umedecer a porção no serviço e para intensificar o ragù.',
     ] },
 
   { id:'B30', cat:'proteinas', d1:true,
@@ -974,23 +1048,36 @@ const bases = [
   { id:'B31', cat:'proteinas', d1:true,
     nome:'Confit de Pato DUE',
     uso:'Coxa de Pato Confitada',
+    rendimento:'1 coxa por porção (~180–200g confitada)',
     ingredientes:[
       {nome:'Coxas de pato', qtd:'4 unid. (~200g cada)'},
-      {nome:'Sal marinho (cura)', qtd:'25g'},
-      {nome:'Tomilho (cura)', qtd:'2 ramos'},
-      {nome:'Gordura de pato (confit)', qtd:'suficiente para submergir'},
-      {nome:'Canela em pau', qtd:'1 unid.', obs:'aromatizar o confit'},
-      {nome:'Anis estrelado', qtd:'q.b.', obs:'aromatizar o confit'},
-      {nome:'Cravo da índia', qtd:'q.b.', obs:'aromatizar o confit'},
-      {nome:'Alho', qtd:'q.b.', obs:'aromatizar o confit'},
+      {nome:'Sal marinho (cura seca)', qtd:'25g'},
+      {nome:'Tomilho fresco (cura)', qtd:'2 ramos'},
+      {nome:'Gordura de pato renderizada + gordura de carcaças de frango', qtd:'suficiente para submergir completamente', obs:'renderizar em casa — ver pontos'},
+      {nome:'Canela em pau', qtd:'1 unid.', obs:'aromatizar o banho de gordura'},
+      {nome:'Anis estrelado', qtd:'2 unid.', obs:'aromatizar o banho de gordura'},
+      {nome:'Cravo da índia', qtd:'3 unid.', obs:'aromatizar o banho de gordura'},
+      {nome:'Alho', qtd:'4 dentes inteiros', obs:'aromatizar o banho de gordura'},
     ],
     preparo:[
-      'CURA: esfregar as coxas com sal marinho e tomilho.',
-      'Curar na geladeira por 12 horas.',
-      'CONFIT: aquecer gordura de pato com especiarias a 90°C.',
-      'Submergir as coxas completamente.',
-      'Confitar a 90°C por 4 horas.',
-      'SERVIÇO: forno combinado a 170°C até a pele crispar.',
+      'D-1 · CURA SECA: esfregar as coxas com sal marinho e tomilho. Cobrir com filme rente. Curar na geladeira por 12 horas.',
+      'RENDERIZAÇÃO DA GORDURA (quando necessário): derreter pele e gordura de pato + carcaças de frango em fogo baixíssimo até soltar todo o óleo. Coar e reservar. Reutilizável por várias produções — filtrar e refrigerar.',
+      'CONFIT: aquecer a gordura com as especiarias (canela, anis, cravo, alho) a 90°C.',
+      'Secar as coxas com papel absorvente — remover excesso de cura.',
+      'Submergir completamente as coxas na gordura aromatizada a 90°C.',
+      'Confitar a 90°C por 4 horas — temperatura constante, sem ferver.',
+      'Retirar e reservar submerso na própria gordura até o serviço — conserva até 5 dias refrigerado na gordura.',
+      'SERVIÇO: retirar a coxa da gordura. Secar bem com papel.',
+      'Posicionar em assadeira com pele para cima — sem gordura extra na assadeira.',
+      'Forno combinado calor seco a 200°C por 10–12 minutos até a pele dourar e crispar completamente.',
+      'Servir imediatamente após sair do forno — pele perde crocância em 3–4 minutos.',
+    ],
+    critical:[5,9,10],
+    pontos:[
+      'A gordura renderizada da carcaça de frango complementa a de pato — mesma função, custo zero.',
+      'Temperatura de confit a 90°C é inegociável: abaixo não coze, acima frita e resseca.',
+      'Secar bem a coxa antes do forno: umidade na pele = vapor = pele mole, não crocante.',
+      'Servir imediatamente é crítico — a janela de crocância da pele é curta.',
     ] },
 
   /* ═══════ 07 · PURÊS E GUARNIÇÕES ═══════ */
@@ -1060,6 +1147,58 @@ const bases = [
       'Finalizar com curry + suco de limão + ajuste de sal.',
     ],
     critical:[0] },
+
+  /* ═══════ 08 · PROTEÍNAS DE COMPRA — TRATAMENTO ═══════ */
+  /* B36 está em pures/guarnições porque funciona como base de prato */
+  { id:'B35', cat:'proteinas', d1:true,
+    nome:'Charque · Dessalga e Preparo DUE',
+    uso:'Arroz de Feijão Verde com Charque · Filé do Sertão',
+    ingredientes:[
+      {nome:'Charque bovino', qtd:'conforme demanda', obs:'insumo de compra — fornecedor sergipano preferencialmente'},
+      {nome:'Água morna', qtd:'abundante', obs:'dessalga padrão D-1'},
+    ],
+    preparo:[
+      'DESSALGA PADRÃO (D-1): submergir a peça inteira em água morna abundante.',
+      'Provar a cada 30–45 minutos — ponto correto é levemente salgado, nunca insípido.',
+      'Tempo médio: 2 a 4 horas conforme intensidade do sal da peça. O paladar é o único termômetro.',
+      'Escorrer e secar com papel absorvente.',
+      'CORTE: após a dessalga — cortar em cubinhos uniformes. Peça inteira dessalga de forma mais uniforme e mantém a fibra íntegra.',
+      'Armazenar refrigerado já cortado. Uso em até 24h.',
+    ],
+    preparo_servico:[
+      'RUSH — EMERGÊNCIA: submergir a peça em água fria abundante.',
+      'Ferver em fogo alto por 30 minutos — trocar a água uma vez na metade.',
+      'Provar antes de usar — ajustar sal do prato conforme resultado.',
+      'ATENÇÃO: cozimento de emergência pode alterar a textura da fibra. Preferir sempre a dessalga D-1.',
+    ],
+    critical:[1,4] },
+
+  { id:'B36', cat:'pures', d1:true,
+    nome:'Arroz de Feijão Verde com Charque DUE',
+    uso:'Filé do Sertão',
+    ingredientes:[
+      {nome:'Arroz agulhinha', qtd:'conforme demanda', obs:'lavado e escorrido'},
+      {nome:'Charque DUE (B35)', qtd:'conforme demanda', obs:'já dessalgado e cortado em cubinhos'},
+      {nome:'Feijão verde', qtd:'conforme demanda', obs:'branqueado — ver preparo'},
+      {nome:'Manteiga de garrafa', qtd:'q.b.', obs:'refogado do charque e finalização'},
+      {nome:'Alho', qtd:'q.b.', obs:'base do refogado'},
+      {nome:'Cebola branca', qtd:'q.b.', obs:'base do refogado'},
+      {nome:'Sal', qtd:'q.b.', obs:'com cautela — charque já tem sal residual'},
+    ],
+    preparo:[
+      'BRANQUEAMENTO DO FEIJÃO VERDE (D-1): cozinhar o feijão verde em água fervente com sal por 3–4 minutos.',
+      'Transferir imediatamente para banho de gelo — preserva a cor e interrompe o cozimento.',
+      'Escorrer e reservar refrigerado.',
+      'REFOGADO: em frigideira quente, derreter manteiga de garrafa.',
+      'Refogar os cubinhos de charque dessalgado até dourar levemente — a gordura de garrafa carameliza a superfície.',
+      'Adicionar alho e cebola — refogar até transparente.',
+      'Incorporar o arroz cru lavado e refogar por 1 minuto.',
+      'Adicionar água quente na proporção correta e cozinhar normalmente.',
+      'FINALIZAÇÃO: nos últimos 2 minutos, incorporar o feijão verde branqueado.',
+      'Ajustar sal com cautela — o charque cede sal residual ao arroz durante o cozimento.',
+      'Finalizar com fio de manteiga de garrafa fora do fogo.',
+    ],
+    critical:[0,9,10] },
 ];
 
 /* ── Mapeamento de categorias para cores de tag ── */
@@ -1185,6 +1324,20 @@ function recipeCardHTML(b) {
           <ol class="r-preparo-list">
             ${b.preparo.map((p, idx) => `<li${critSet.has(idx) ? ' class="crit"' : ''}>${p}</li>`).join('')}
           </ol>
+          ${b.preparo_prebatch ? `
+            <div style="margin-top:16px;padding-top:14px;border-top:1px dashed rgba(200,168,48,.35);">
+              <div class="r-preparo-label" style="color:#1A4A6A;margin-bottom:8px;">⏱ Pré-Batch · D-1</div>
+              <ol class="r-preparo-list">
+                ${b.preparo_prebatch.map(p => `<li>${p}</li>`).join('')}
+              </ol>
+            </div>` : ''}
+          ${b.preparo_servico ? `
+            <div style="margin-top:16px;padding-top:14px;border-top:1px dashed rgba(200,168,48,.35);">
+              <div class="r-preparo-label" style="color:#1A4A1A;margin-bottom:8px;">🍽 Serviço · à la minute</div>
+              <ol class="r-preparo-list">
+                ${b.preparo_servico.map(p => `<li>${p}</li>`).join('')}
+              </ol>
+            </div>` : ''}
           ${b.rendimento ? `<div style="margin-top:12px;font-size:11px;color:#8A8676;text-transform:uppercase;letter-spacing:1.5px;"><strong style="color:#6A4E10;">Rendimento:</strong> ${b.rendimento}</div>` : ''}
           ${b.pontos ? `
             <div style="margin-top:18px;padding-top:14px;border-top:1px dashed #C8A830;">

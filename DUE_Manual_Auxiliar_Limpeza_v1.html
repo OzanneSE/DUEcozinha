@@ -1,0 +1,908 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Manual do Auxiliar de Limpeza · DUE Restaurante v1</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'DM Sans',sans-serif;color:#111009;background:#FAFAF7;min-height:100vh;display:flex;flex-direction:column}
+
+:root{
+  --gold:#6A4E10;
+  --gold-b:#C8A830;
+  --gold-bg:#FAF3DF;
+  --red:#7A1515;
+  --red-bg:#FDF2F2;
+  --green:#1A5C2A;
+  --green-bg:#F0FAF2;
+  --sidebar:240px;
+  --sidebar-c:52px;
+  --top:52px;
+}
+
+/* TOOLBAR */
+.toolbar{
+  position:fixed;top:0;left:0;right:0;z-index:200;
+  height:var(--top);background:#111009;
+  display:flex;align-items:center;gap:12px;padding:0 16px;
+  border-bottom:1px solid rgba(200,168,48,.2);
+}
+.toolbar-logo{font-family:'Cormorant Garamond',serif;font-weight:700;font-size:22px;color:#E8C870;letter-spacing:4px;text-decoration:none;flex-shrink:0}
+.toolbar-title{font-size:11px;text-transform:uppercase;letter-spacing:2px;color:rgba(232,200,112,.55);flex-shrink:0}
+.toolbar-sep{width:1px;height:20px;background:rgba(232,200,112,.2);flex-shrink:0}
+.toolbar-search{flex:1;max-width:320px;background:rgba(255,255,255,.07);border:1px solid rgba(200,168,48,.25);border-radius:6px;padding:6px 12px;color:#fff;font-size:13px;font-family:'DM Sans',sans-serif;outline:none}
+.toolbar-search::placeholder{color:rgba(255,255,255,.3)}
+.toolbar-search:focus{border-color:rgba(200,168,48,.6)}
+.toolbar-right{margin-left:auto;display:flex;align-items:center;gap:8px}
+.btn-pdf{background:transparent;border:1px solid rgba(200,168,48,.4);color:#E8C870;font-size:11px;letter-spacing:1px;text-transform:uppercase;padding:6px 14px;border-radius:6px;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .2s}
+.btn-pdf:hover{background:rgba(200,168,48,.12)}
+.btn-expand{background:transparent;border:1px solid rgba(200,168,48,.25);color:rgba(232,200,112,.6);font-size:11px;padding:6px 10px;border-radius:6px;cursor:pointer;font-family:'DM Mono',monospace;transition:all .2s}
+.btn-expand:hover{color:#E8C870;border-color:rgba(200,168,48,.5)}
+
+/* LAYOUT */
+.layout{display:flex;padding-top:var(--top);min-height:100vh}
+
+/* SIDEBAR */
+.sidebar{width:var(--sidebar);flex-shrink:0;position:fixed;top:var(--top);left:0;bottom:0;background:#111009;overflow-y:auto;border-right:1px solid rgba(200,168,48,.15);transition:width .25s;z-index:100}
+.sidebar::-webkit-scrollbar{width:4px}
+.sidebar::-webkit-scrollbar-thumb{background:rgba(200,168,48,.2);border-radius:2px}
+.sidebar-group{padding:20px 0 8px}
+.sidebar-group-label{font-size:9px;text-transform:uppercase;letter-spacing:2.5px;color:rgba(200,168,48,.4);padding:0 18px 8px;font-family:'DM Mono',monospace}
+.sidebar-item{display:flex;align-items:center;gap:10px;padding:8px 18px;font-size:12.5px;color:rgba(255,255,255,.55);cursor:pointer;text-decoration:none;border-left:2px solid transparent;transition:all .15s;white-space:nowrap;overflow:hidden}
+.sidebar-item:hover{color:rgba(255,255,255,.85);background:rgba(200,168,48,.07)}
+.sidebar-item.active{color:#E8C870;border-left-color:#C8A830;background:rgba(200,168,48,.1)}
+.sidebar-item .icon{font-size:14px;flex-shrink:0;width:16px;text-align:center}
+
+/* MAIN */
+.main{margin-left:var(--sidebar);flex:1;padding:48px 48px 80px;max-width:900px}
+
+/* SECTION */
+.section{margin-bottom:56px}
+.sec-header{display:flex;align-items:center;gap:16px;margin-bottom:28px;padding-bottom:12px;border-bottom:1px solid rgba(106,78,16,.15)}
+.sec-badge{font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:2px;color:var(--gold);background:var(--gold-bg);padding:4px 10px;border-radius:4px;border:1px solid rgba(200,168,48,.3);flex-shrink:0}
+.sec-title{font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:600;color:#111009;letter-spacing:.3px}
+
+/* INTRO TEXT */
+.intro-text{font-size:14.5px;line-height:1.75;color:#333;margin-bottom:20px;text-align:justify}
+.intro-text strong{color:#111009}
+
+/* TABLES */
+.tbl-wrap{overflow-x:auto;margin:16px 0 24px;border-radius:8px;border:1px solid rgba(106,78,16,.12)}
+table{width:100%;border-collapse:collapse;font-size:13px}
+thead tr{background:var(--gold-bg)}
+thead th{padding:10px 14px;text-align:left;font-size:10px;text-transform:uppercase;letter-spacing:1.5px;color:var(--gold);font-family:'DM Mono',monospace;font-weight:500;border-bottom:1px solid rgba(106,78,16,.18)}
+tbody tr{border-bottom:1px solid rgba(106,78,16,.08)}
+tbody tr:last-child{border-bottom:none}
+tbody tr:nth-child(even){background:rgba(250,243,223,.35)}
+tbody td{padding:9px 14px;color:#222;line-height:1.5}
+tbody td:first-child{font-weight:500;color:#111009}
+
+/* ALERTS */
+.alert{border-radius:8px;padding:14px 18px;margin:16px 0;font-size:13.5px;line-height:1.65}
+.alert-gold{background:var(--gold-bg);border:1px solid rgba(200,168,48,.35);border-left:4px solid var(--gold-b);color:#3a2a00}
+.alert-red{background:var(--red-bg);border:1px solid rgba(122,21,21,.2);border-left:4px solid var(--red);color:#4a0f0f}
+.alert-green{background:var(--green-bg);border:1px solid rgba(26,92,42,.2);border-left:4px solid var(--green);color:#0f3a1a}
+.alert strong{font-weight:600}
+
+/* ACCORDION */
+.acc-card{border:1px solid rgba(106,78,16,.12);border-radius:8px;margin-bottom:12px;overflow:hidden}
+.acc-card.crit{border-color:rgba(122,21,21,.25)}
+.acc-head{display:flex;align-items:center;justify-content:space-between;padding:13px 18px;cursor:pointer;user-select:none;background:#fff;transition:background .15s}
+.acc-head:hover{background:var(--gold-bg)}
+.acc-card.open .acc-head{background:var(--gold-bg)}
+.acc-card.crit .acc-head{background:var(--red-bg)}
+.acc-card.crit .acc-head:hover,.acc-card.crit.open .acc-head{background:#fce8e8}
+.acc-head-left{display:flex;align-items:center;gap:12px}
+.acc-code{font-family:'DM Mono',monospace;font-size:11px;color:var(--gold);flex-shrink:0}
+.acc-card.crit .acc-code{color:var(--red)}
+.acc-name{font-size:14px;font-weight:600;color:#111009}
+.acc-arrow{font-size:16px;color:rgba(106,78,16,.4);transition:transform .2s;flex-shrink:0}
+.acc-card.open .acc-arrow{transform:rotate(180deg)}
+.acc-body{display:none;padding:18px 20px;background:#fff;border-top:1px solid rgba(106,78,16,.1)}
+.acc-card.crit .acc-body{border-top-color:rgba(122,21,21,.12)}
+.acc-card.open .acc-body{display:block}
+.acc-body p{font-size:13.5px;line-height:1.7;color:#333;margin-bottom:10px}
+.acc-body p:last-child{margin-bottom:0}
+.acc-body strong{color:#111009}
+.acc-body ul{margin:8px 0 0 16px}
+.acc-body ul li{font-size:13.5px;line-height:1.7;color:#333;margin-bottom:4px}
+
+/* CHECKLIST */
+.checklist{list-style:none;margin:8px 0}
+.checklist li{display:flex;align-items:flex-start;gap:10px;padding:7px 0;border-bottom:1px solid rgba(106,78,16,.07);font-size:13.5px;color:#333;line-height:1.5;cursor:pointer}
+.checklist li:last-child{border-bottom:none}
+.checklist li.done{text-decoration:line-through;color:#aaa}
+.chk-box{width:18px;height:18px;flex-shrink:0;margin-top:1px;border:2px solid rgba(106,78,16,.3);border-radius:4px;display:flex;align-items:center;justify-content:center;transition:all .15s;background:#fff}
+.checklist li.done .chk-box{background:var(--gold);border-color:var(--gold)}
+.checklist li.done .chk-box::after{content:'✓';display:block;font-size:11px;font-weight:700;color:#fff}
+
+/* PROGRESS */
+.progress-wrap{margin:12px 0 20px}
+.progress-label{display:flex;justify-content:space-between;font-size:11px;color:rgba(106,78,16,.7);margin-bottom:6px;font-family:'DM Mono',monospace}
+.progress-bar{height:6px;background:rgba(106,78,16,.12);border-radius:3px;overflow:hidden}
+.progress-fill{height:100%;background:var(--gold-b);border-radius:3px;transition:width .3s}
+
+/* CHIP FILTERS */
+.filter-chips{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:24px}
+.chip{padding:5px 14px;border-radius:20px;font-size:12px;cursor:pointer;border:1px solid rgba(106,78,16,.2);color:var(--gold);background:#fff;font-family:'DM Sans',sans-serif;transition:all .15s}
+.chip:hover,.chip.active{background:var(--gold-bg);border-color:var(--gold-b);font-weight:500}
+
+/* HERO */
+.page-hero{background:#111009;padding:48px 48px 40px;margin-left:var(--sidebar)}
+.hero-eyebrow{font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:3px;color:rgba(200,168,48,.5);margin-bottom:10px}
+.hero-title{font-family:'Cormorant Garamond',serif;font-size:clamp(32px,5vw,52px);font-weight:700;color:#E8C870;letter-spacing:2px;line-height:1.1;margin-bottom:12px}
+.hero-subtitle{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:16px;color:rgba(232,200,112,.6);margin-bottom:20px}
+.hero-names{font-size:13px;color:rgba(255,255,255,.5);letter-spacing:.5px}
+.hero-names span{color:rgba(200,168,48,.7)}
+
+/* RULES LIST */
+.rules-list{list-style:none;margin:12px 0}
+.rules-list li{padding:9px 0 9px 20px;border-bottom:1px solid rgba(106,78,16,.07);font-size:13.5px;color:#333;line-height:1.6;position:relative}
+.rules-list li:last-child{border-bottom:none}
+.rules-list li::before{content:'—';position:absolute;left:0;color:var(--gold-b);font-weight:700}
+
+/* EPI BADGES */
+.epi-badge{display:inline-block;background:var(--red-bg);color:var(--red);border:1px solid rgba(122,21,21,.2);padding:2px 8px;border-radius:4px;font-size:11px;font-weight:600;font-family:'DM Mono',monospace}
+
+/* FREQ BADGE */
+.freq-continua{color:#1A5C2A;font-weight:600;font-size:11px;font-family:'DM Mono',monospace}
+.freq-diaria{color:#6A4E10;font-weight:600;font-size:11px;font-family:'DM Mono',monospace}
+.freq-semanal{color:#555;font-size:11px;font-family:'DM Mono',monospace}
+
+/* PRINT */
+@media print{
+  .toolbar,.sidebar,.filter-chips,.btn-pdf,.btn-expand{display:none!important}
+  .layout{padding-top:0}
+  .main{margin-left:0;padding:20px 30px}
+  .page-hero{margin-left:0;padding:30px}
+  .acc-body{display:block!important}
+  .section{break-inside:avoid}
+}
+
+/* RESPONSIVE */
+@media(max-width:900px){
+  :root{--sidebar:var(--sidebar-c)}
+  .sidebar-item span,.sidebar-group-label{display:none}
+  .main{padding:32px 20px 60px}
+  .page-hero{padding:32px 20px}
+}
+</style>
+</head>
+<body>
+
+<!-- TOOLBAR -->
+<header class="toolbar">
+  <a href="index.html" class="toolbar-logo">DUE</a>
+  <div class="toolbar-sep"></div>
+  <span class="toolbar-title">Auxiliar de Limpeza</span>
+  <input class="toolbar-search" type="search" placeholder="Buscar no manual…" oninput="filterContent(this.value)">
+  <div class="toolbar-right">
+    <button class="btn-expand" onclick="expandAll()">+ Expandir</button>
+    <button class="btn-pdf" onclick="window.print()">⎙ Imprimir</button>
+  </div>
+</header>
+
+<!-- HERO -->
+<div class="page-hero">
+  <p class="hero-eyebrow">DUE Restaurante · Jardim Europa · Aracaju</p>
+  <h1 class="hero-title">Manual do<br>Auxiliar de Limpeza</h1>
+  <p class="hero-subtitle">Higienização de Ambiente · Cozinha · Salão · Áreas Externas</p>
+  <p class="hero-names">
+    <span>Josilene Alves da Silva</span> · Turno A (Manhã)&nbsp;&nbsp;·&nbsp;&nbsp;
+    <span>Rayanne Cardoso</span> · Turno B (Tarde/Noite)
+  </p>
+</div>
+
+<div class="layout">
+  <!-- SIDEBAR -->
+  <nav class="sidebar" id="sidebar">
+    <div class="sidebar-group">
+      <p class="sidebar-group-label">Identidade</p>
+      <a class="sidebar-item active" href="#identidade" onclick="setActive(this)">
+        <span class="icon">⬡</span><span>O DUE</span>
+      </a>
+      <a class="sidebar-item" href="#equipe" onclick="setActive(this)">
+        <span class="icon">👥</span><span>Equipe & Horários</span>
+      </a>
+      <a class="sidebar-item" href="#intervalos" onclick="setActive(this)">
+        <span class="icon">⏱</span><span>Protocolo Intervalos</span>
+      </a>
+      <a class="sidebar-item" href="#papel" onclick="setActive(this)">
+        <span class="icon">🎯</span><span>Seu Papel</span>
+      </a>
+    </div>
+    <div class="sidebar-group">
+      <p class="sidebar-group-label">Normas</p>
+      <a class="sidebar-item" href="#rdc216" onclick="setActive(this)">
+        <span class="icon">📋</span><span>RDC 216</span>
+      </a>
+      <a class="sidebar-item" href="#mapa-areas" onclick="setActive(this)">
+        <span class="icon">🗺</span><span>Mapa de Áreas</span>
+      </a>
+    </div>
+    <div class="sidebar-group">
+      <p class="sidebar-group-label">Condomínio</p>
+      <a class="sidebar-item" href="#sanitarios" onclick="setActive(this)">
+        <span class="icon">🏢</span><span>Sanitários — Cond.</span>
+      </a>
+    </div>
+    <div class="sidebar-group">
+      <p class="sidebar-group-label">Higiene</p>
+      <a class="sidebar-item" href="#cores" onclick="setActive(this)">
+        <span class="icon">🎨</span><span>Código de Cores</span>
+      </a>
+      <a class="sidebar-item" href="#diluicao" onclick="setActive(this)">
+        <span class="icon">🧪</span><span>Produtos & Diluição</span>
+      </a>
+      <a class="sidebar-item" href="#tecnicas" onclick="setActive(this)">
+        <span class="icon">🧹</span><span>Técnicas por Superfície</span>
+      </a>
+    </div>
+    <div class="sidebar-group">
+      <p class="sidebar-group-label">Checklists</p>
+      <a class="sidebar-item" href="#checklist-abertura" onclick="setActive(this)">
+        <span class="icon">✅</span><span>Abertura (09:00)</span>
+      </a>
+      <a class="sidebar-item" href="#checklist-servico" onclick="setActive(this)">
+        <span class="icon">🔄</span><span>Serviço Contínuo</span>
+      </a>
+      <a class="sidebar-item" href="#checklist-virada" onclick="setActive(this)">
+        <span class="icon">🌙</span><span>Virada 17:45</span>
+      </a>
+      <a class="sidebar-item" href="#checklist-fechamento" onclick="setActive(this)">
+        <span class="icon">🔒</span><span>Fechamento 23:30</span>
+      </a>
+    </div>
+    <div class="sidebar-group">
+      <p class="sidebar-group-label">Segurança</p>
+      <a class="sidebar-item" href="#epi" onclick="setActive(this)">
+        <span class="icon">🦺</span><span>EPI</span>
+      </a>
+      <a class="sidebar-item" href="#haccp" onclick="setActive(this)">
+        <span class="icon">🌡</span><span>HACCP</span>
+      </a>
+      <a class="sidebar-item" href="#regras" onclick="setActive(this)">
+        <span class="icon">⭐</span><span>8 Regras de Ouro</span>
+      </a>
+    </div>
+  </nav>
+
+  <!-- MAIN -->
+  <main class="main" id="main-content">
+
+    <!-- FILTROS -->
+    <div class="filter-chips" id="filter-chips">
+      <button class="chip active" onclick="filterSection('all',this)">Tudo</button>
+      <button class="chip" onclick="filterSection('identidade',this)">Identidade</button>
+      <button class="chip" onclick="filterSection('normas',this)">Normas</button>
+      <button class="chip" onclick="filterSection('higiene',this)">Higiene</button>
+      <button class="chip" onclick="filterSection('checklists',this)">Checklists</button>
+      <button class="chip" onclick="filterSection('seguranca',this)">Segurança</button>
+    </div>
+
+    <!-- ── IDENTIDADE ── -->
+    <section class="section" id="identidade" data-group="identidade">
+      <div class="sec-header">
+        <span class="sec-badge">Identidade</span>
+        <h2 class="sec-title">O DUE · Filosofia e Valores</h2>
+      </div>
+      <p class="intro-text">
+        O DUE é um restaurante de cozinha contemporânea autoral no Jardim Europa, em Aracaju. O cardápio eleva ingredientes sergipanos e do Nordeste — polvo, carne do sol, tucupi, maxixe, jambu, coalho, costela — através de técnica precisa e consistente. O que diferencia o DUE não é apenas o que está no prato: é a <strong>consistência</strong>. O mesmo prato na terça ao almoço e no sábado lotado precisa ser idêntico. Essa é a sua responsabilidade direta.
+      </p>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>VALOR</th><th>O QUE SIGNIFICA NA PRÁTICA</th></tr></thead>
+          <tbody>
+            <tr><td>Consistência</td><td>O prato do almoço de terça tem que ser igual ao do jantar de sábado.</td></tr>
+            <tr><td>Precisão</td><td>Gramaturas, pontos de cocção e finalização seguem as fichas técnicas — sempre.</td></tr>
+            <tr><td>Comunicação</td><td>Informação errada ou ausente durante o serviço gera erro em cadeia.</td></tr>
+            <tr><td>Limpeza contínua</td><td>Estação limpa não é estética — é segurança alimentar e eficiência operacional.</td></tr>
+            <tr><td>Proatividade</td><td>Ver o problema antes que vire crise. Avisar antes de acabar, não depois.</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="alert alert-gold">
+        <em>"Ingredientes que têm endereço. Técnica que tem propósito."</em>
+      </div>
+    </section>
+
+    <!-- ── EQUIPE ── -->
+    <section class="section" id="equipe" data-group="identidade">
+      <div class="sec-header">
+        <span class="sec-badge">Equipe</span>
+        <h2 class="sec-title">Equipe e Horários</h2>
+      </div>
+      <p class="intro-text">
+        A função de Auxiliar de Limpeza é acumulada pelas colaboradoras de Serviços Gerais — Josilene no Turno A e Rayanne no Turno B. Cada uma é responsável pela disciplina de limpeza de ambiente do seu turno, em paralelo à lavagem de panelas e apoio à brigada. <strong>Horário partido é exceção, nunca regra.</strong>
+      </p>
+      <div class="tbl-wrap">
+        <table>
+          <thead>
+            <tr><th>DIA</th><th>JOSILENE · Turno A (Manhã)</th><th>RAYANNE · Turno B (Tarde/Noite)</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Segunda</td><td style="color:#999;font-style:italic">FOLGA</td><td>09:00–18:00</td></tr>
+            <tr><td>Terça</td><td>09:00–18:00</td><td style="color:#999;font-style:italic">FOLGA</td></tr>
+            <tr><td>Quarta</td><td>09:00–19:00</td><td>14:00–23:30</td></tr>
+            <tr><td>Quinta</td><td>09:00–19:00</td><td>14:00–23:30</td></tr>
+            <tr><td>Sexta</td><td>09:00–19:00</td><td>14:00–23:30</td></tr>
+            <tr><td>Sábado</td><td>09:00–19:00</td><td>14:00–23:30</td></tr>
+            <tr><td>Domingo</td><td style="color:#999;font-style:italic">FECHADO</td><td style="color:#999;font-style:italic">FECHADO</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="alert alert-gold" style="margin-bottom:8px">
+        <strong>TURNO A</strong> — Terça: 09:00–18:00 = 8h efetivas. Qua–Sáb: 09:00–19:00 = 9h ef × 4 = 36h. Total: 44h
+      </div>
+      <div class="alert alert-gold" style="margin-bottom:8px">
+        <strong>TURNO B</strong> — Segunda: 09:00–18:00 = 8h efetivas. Qua–Sáb: 14:00–23:30 = 9h ef × 4 = 36h. Total: 44h
+      </div>
+      <div class="alert alert-red">
+        A limpeza profunda rápida entre almoço e jantar é a janela mais crítica do dia. <strong>Precisa estar concluída às 17:45 — o jantar não abre em ambiente sujo.</strong>
+      </div>
+    </section>
+
+    <!-- ── INTERVALOS ── -->
+    <section class="section" id="intervalos" data-group="identidade">
+      <div class="sec-header">
+        <span class="sec-badge">Protocolo</span>
+        <h2 class="sec-title">Protocolo de Intervalos · Cozinha Nunca Vazia</h2>
+      </div>
+      <p class="intro-text">
+        Regra mestre: a cozinha <strong>nunca</strong> fica vazia durante o serviço. A ordem é fixa — SG sai primeiro, Auxiliar depois, Cozinheiro por último. O próximo só sai quando o anterior retorna e confirma.
+      </p>
+      <h3 style="font-size:15px;font-weight:600;margin:20px 0 10px;color:#111">Intervalo da manhã — coletivo</h3>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>CARGO</th><th>HORÁRIO</th><th>DURAÇÃO</th><th>OBSERVAÇÃO</th></tr></thead>
+          <tbody>
+            <tr><td>Toda a equipe</td><td>11:00–11:30</td><td>30 min</td><td>Saem todos juntos — casa ainda fechada para o almoço.</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <h3 style="font-size:15px;font-weight:600;margin:20px 0 10px;color:#111">Turno A — Intervalo da tarde (Qua–Sáb)</h3>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>ORDEM</th><th>CARGO</th><th>HORÁRIO</th><th>REGRA</th></tr></thead>
+          <tbody>
+            <tr><td>1º</td><td>Aux. Serviços Gerais</td><td>14:00–14:30</td><td>Sai primeiro — menos crítico no pós-almoço.</td></tr>
+            <tr><td>2º</td><td>Auxiliar de Cozinha</td><td>14:30–15:00</td><td>Sai quando o SG retorna.</td></tr>
+            <tr><td>3º</td><td>Cozinheiro</td><td>15:00–15:30</td><td>Sai por último — retorna para prep do jantar.</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <h3 style="font-size:15px;font-weight:600;margin:20px 0 10px;color:#111">Turno B — Intervalo da noite (Qua–Sáb)</h3>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>ORDEM</th><th>CARGO</th><th>HORÁRIO</th><th>REGRA</th></tr></thead>
+          <tbody>
+            <tr><td>1º</td><td>Aux. Serviços Gerais</td><td>16:45–17:15</td><td>Sai primeiro — retorna às 17:15, antes do serviço.</td></tr>
+            <tr><td>2º</td><td>Auxiliar de Cozinha</td><td>17:15–17:45</td><td>Sai quando o SG retorna — volta às 17:45.</td></tr>
+            <tr><td>3º</td><td>Cozinheiro</td><td>17:30–18:00</td><td>Sai por último — retorna às 18:00 exato para o serviço.</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <h3 style="font-size:15px;font-weight:600;margin:20px 0 10px;color:#111">Regras inegociáveis de intervalo</h3>
+      <ul class="rules-list">
+        <li>Nunca dois cargos fora ao mesmo tempo — um sempre na cozinha.</li>
+        <li>O próximo só sai quando o anterior retornar e confirmar presença.</li>
+        <li>Em dia de pico (sábado lotado): o chef pode atrasar ou cancelar o intervalo do Cozinheiro.</li>
+        <li>O SG nunca adia intervalo por iniciativa própria — aguarda liberação do Cozinheiro.</li>
+        <li>Intervalo partido ou fracionado não é permitido como regra.</li>
+        <li>Troca de ordem (Coz sair antes do SG) somente com autorização do chef.</li>
+      </ul>
+    </section>
+
+    <!-- ── PAPEL ── -->
+    <section class="section" id="papel" data-group="identidade">
+      <div class="sec-header">
+        <span class="sec-badge">Identidade</span>
+        <h2 class="sec-title">Seu Papel no DUE</h2>
+      </div>
+      <p class="intro-text">
+        A limpeza é a primeira e a última coisa que o cliente percebe — antes de provar um prato, ele vê o piso, o vidro, a calçada. E antes de um cozinheiro começar a trabalhar, ele precisa de uma bancada higienizada e uma cozinha organizada. Você é a pessoa que sustenta as duas coisas ao mesmo tempo.
+      </p>
+      <div class="alert alert-gold" style="margin-bottom:16px">
+        <strong>Nota operacional:</strong> o DUE está inserido em um prédio empresarial. Os sanitários de clientes e de funcionários são de responsabilidade do <strong>condomínio</strong> — a higienização dessas áreas não é atribuição da equipe DUE. Em caso de ocorrência (entupimento, falta de insumos, condição inadequada), <strong>acionar o condomínio imediatamente e avisar François.</strong>
+      </div>
+      <ul class="rules-list">
+        <li>Piso molhado sem sinalização = acidente com panela de bisque fervendo.</li>
+        <li>Lixeira transbordando = risco sanitário = vigilância fecha a casa.</li>
+        <li>Vidro embaçado ou marcado = o cliente vê antes do primeiro prato.</li>
+        <li>Área pet friendly suja = cliente com cachorro vai embora antes de sentar.</li>
+      </ul>
+      <div class="alert alert-gold" style="margin-top:16px">
+        <strong>O DUE não tem cargo descartável.</strong> A pessoa que limpa sustenta a operação tanto quanto o chef que finaliza um prato. <strong>Sem você, a casa não abre.</strong>
+      </div>
+    </section>
+
+    <!-- ── RDC 216 ── -->
+    <section class="section" id="rdc216" data-group="normas">
+      <div class="sec-header">
+        <span class="sec-badge">Normas</span>
+        <h2 class="sec-title">RDC 216 · O que a Vigilância Sanitária Espera</h2>
+      </div>
+      <p class="intro-text">
+        A RDC 216 da ANVISA é a norma brasileira que rege serviços de alimentação. Você não precisa decorar a lei, mas precisa saber os pontos que a fiscalização sempre verifica:
+      </p>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>ITEM FISCALIZADO</th><th>O QUE FAZER</th></tr></thead>
+          <tbody>
+            <tr><td>Piso, paredes, teto</td><td>Superfícies lisas, laváveis, sem rachaduras. Sem infiltração, sem mofo visível.</td></tr>
+            <tr><td>Ralos e sifões</td><td>Grelhas limpas, escovadas, sem gordura acumulada. Sifões funcionando, sem odor.</td></tr>
+            <tr><td>Lixeiras</td><td>Tampa com pedal (sem contato manual). Saco plástico interno. Nunca transbordar.</td></tr>
+            <tr><td>Higiene do ambiente</td><td>Rotinas documentadas por escrito (este manual). Produtos identificados por cor.</td></tr>
+            <tr><td>Sanitários dos funcionários</td><td>Responsabilidade do condomínio. Qualquer problema: acionar o condomínio e avisar François.</td></tr>
+            <tr><td>Controle de pragas</td><td>Barreiras (telas, borrachas de vedação) íntegras. Sem vestígios visíveis.</td></tr>
+            <tr><td>Armazenamento de produtos químicos</td><td>Em local separado, identificado, fora de áreas de preparo e armazenagem de alimentos.</td></tr>
+            <tr><td>POP — Procedimentos Operacionais Padronizados</td><td>Este manual é o POP de higiene. Deve estar acessível e assinado pelo responsável.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ── MAPA DE ÁREAS ── -->
+    <section class="section" id="mapa-areas" data-group="normas">
+      <div class="sec-header">
+        <span class="sec-badge">Normas</span>
+        <h2 class="sec-title">Áreas de Limpeza · Mapa e Frequência</h2>
+      </div>
+      <p class="intro-text">
+        Cada área da casa tem uma frequência mínima de limpeza. Marcar só o óbvio não basta — sua responsabilidade é o que não é visto também.
+      </p>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>ÁREA</th><th>FREQUÊNCIA</th><th>O QUE FAZER</th></tr></thead>
+          <tbody>
+            <tr><td>Cozinha — piso</td><td><span class="freq-continua">Contínua + 3× dia</span></td><td>Varrer gordura. Lavar com desengordurante + sanitizante. Secar imediatamente — placa de piso molhado.</td></tr>
+            <tr><td>Cozinha — bancadas aço</td><td><span class="freq-continua">Entre cada preparo + abertura</span></td><td>Desengordurante, sanitizar com quaternário de amônio, secar com pano branco.</td></tr>
+            <tr><td>Cozinha — ralos</td><td><span class="freq-diaria">3× dia (abertura, virada, fechamento)</span></td><td>Escovar grelha, retirar gordura, lavar com desengordurante, sanitizar.</td></tr>
+            <tr><td>Cozinha — paredes e azulejo</td><td><span class="freq-semanal">Semanal (folga coletiva ou D-0)</span></td><td>Desengordurar parte inferior (até 1,2 m). Verificar manchas e atacar imediatamente.</td></tr>
+            <tr><td>Salão — piso</td><td><span class="freq-continua">Antes do almoço e antes do jantar</span></td><td>Varrer + passar mop úmido com sanitizante suave. Cuidado com cadeiras — levantar, não arrastar.</td></tr>
+            <tr><td>Salão — mesas e cadeiras</td><td><span class="freq-diaria">A cada virada de mesa</span></td><td>Pano úmido com sanitizante. Trocar o pano a cada 10 mesas. Nunca pano de cozinha.</td></tr>
+            <tr><td>Salão — vidros e portas</td><td><span class="freq-diaria">Diária (manhã)</span></td><td>Limpa-vidros profissional. Sem manchas, sem dedadas. A porta é o cartão de visita.</td></tr>
+            <tr><td>Sanitários — clientes e funcionários</td><td><span style="color:#888;font-size:11px;font-family:'DM Mono',monospace">CONDOMÍNIO</span></td><td>Responsabilidade do condomínio do prédio empresarial. Ocorrência: acionar condomínio + avisar François.</td></tr>
+            <tr><td>Área externa + calçada</td><td><span class="freq-diaria">Abertura + fechamento</span></td><td>Varrer, lavar com água. Recolher bitucas e folhas. Piso da entrada é primeira impressão.</td></tr>
+            <tr><td>Área pet friendly</td><td><span class="freq-diaria">A cada virada + no fechamento</span></td><td>Sanitizar piso, revisar potinhos de água, recolher pelos, trocar tapete.</td></tr>
+            <tr><td>Lixeiras</td><td><span class="freq-continua">Quando 2/3 cheias + fechamento</span></td><td>Tampa com pedal. Trocar saco. Sanitizar bocal se sujou. Lixo orgânico sempre separado.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ── SANITÁRIOS ── -->
+    <section class="section" id="sanitarios" data-group="normas">
+      <div class="sec-header">
+        <span class="sec-badge">Condomínio</span>
+        <h2 class="sec-title">Sanitários · Responsabilidade do Condomínio</h2>
+      </div>
+      <div class="alert alert-gold">
+        <strong>O DUE está inserido em um prédio empresarial.</strong> Os sanitários de clientes e de funcionários são áreas comuns do condomínio — a higienização, manutenção e abastecimento dessas áreas é responsabilidade do condomínio, não da equipe DUE.
+      </div>
+      <p class="intro-text" style="margin-top:16px">
+        O sanitário é o único ambiente onde o cliente fica sozinho com o DUE. Se houver qualquer problema — condição inadequada, falta de insumos, entupimento, odor — a ação correta é <strong>acionar o condomínio imediatamente e comunicar François</strong>. Nunca tentar resolver por conta própria com recursos da cozinha.
+      </p>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>SITUAÇÃO</th><th>AÇÃO IMEDIATA</th><th>QUEM ACIONAR</th></tr></thead>
+          <tbody>
+            <tr><td>Falta de papel higiênico, sabão ou toalha</td><td>Comunicar ao condomínio. Avisar François.</td><td>Portaria / Administração do prédio</td></tr>
+            <tr><td>Entupimento ou vazamento</td><td>Sinalizar o acesso. Comunicar ao condomínio urgente. Avisar François.</td><td>Portaria / Manutenção do prédio</td></tr>
+            <tr><td>Condição de higiene inadequada (odor, sujeira)</td><td>Registrar ocorrência. Comunicar ao condomínio. Avisar François.</td><td>Administração do prédio</td></tr>
+            <tr><td>Lâmpada queimada ou equipamento com defeito</td><td>Comunicar ao condomínio. Avisar François.</td><td>Manutenção do prédio</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="alert alert-red">
+        <strong>Nunca usar materiais ou panos de limpeza da cozinha nos sanitários do condomínio.</strong> Se a equipe do condomínio solicitar acesso à área de serviço do DUE para atender alguma ocorrência, solicitar autorização de François antes de permitir.
+      </div>
+    </section>
+
+    <!-- ── CÓDIGO DE CORES ── -->
+    <section class="section" id="cores" data-group="higiene">
+      <div class="sec-header">
+        <span class="sec-badge">Higiene</span>
+        <h2 class="sec-title">Código de Cores · Panos, Esponjas e Baldes</h2>
+      </div>
+      <p class="intro-text">
+        Cada cor tem um uso e apenas um uso. Misturar cores é risco sanitário e motivo de advertência formal. Se perder ou danificar um pano, avisa François imediatamente — não improvise com a cor errada.
+      </p>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>COR</th><th>USO CORRETO</th><th>NUNCA USAR EM</th></tr></thead>
+          <tbody>
+            <tr>
+              <td><span style="display:inline-flex;align-items:center;gap:8px"><span style="background:#1565C0;width:14px;height:14px;border-radius:3px;display:inline-block"></span>AZUL</span></td>
+              <td>Superfícies de preparo frio (bancada frios, pista fria, garde manger).</td>
+              <td>Carnes cruas, equipamentos quentes, chão, banheiro.</td>
+            </tr>
+            <tr>
+              <td><span style="display:inline-flex;align-items:center;gap:8px"><span style="background:#C62828;width:14px;height:14px;border-radius:3px;display:inline-block"></span>VERMELHO</span></td>
+              <td>Carnes cruas (bancada grill, chapa, tábua de proteínas).</td>
+              <td>Vegetais, laticínios, sobremesas, bancada fria.</td>
+            </tr>
+            <tr>
+              <td><span style="display:inline-flex;align-items:center;gap:8px"><span style="background:#2E7D32;width:14px;height:14px;border-radius:3px;display:inline-block"></span>VERDE</span></td>
+              <td>Hortaliças e vegetais (câmara fria, pré-lavagem, bancada de folhas).</td>
+              <td>Laticínios, chão, banheiro.</td>
+            </tr>
+            <tr>
+              <td><span style="display:inline-flex;align-items:center;gap:8px"><span style="background:#F9A825;width:14px;height:14px;border-radius:3px;display:inline-block"></span>AMARELO</span></td>
+              <td>Laticínios, ovos, pista fria de sobremesas.</td>
+              <td>Carnes, vegetais, chão, banheiro.</td>
+            </tr>
+            <tr>
+              <td><span style="display:inline-flex;align-items:center;gap:8px"><span style="background:#e8e8e8;width:14px;height:14px;border-radius:3px;display:inline-block;border:1px solid #ccc"></span>BRANCO</span></td>
+              <td>Superfícies gerais e equipamentos do salão (mesas, cadeiras, balcão).</td>
+              <td>Chão, banheiros, carnes cruas.</td>
+            </tr>
+            <tr>
+              <td><span style="display:inline-flex;align-items:center;gap:8px"><span style="background:#555;width:14px;height:14px;border-radius:3px;display:inline-block"></span>CINZA/PRETO</span></td>
+              <td>Piso da cozinha, piso do salão e área externa.</td>
+              <td>Qualquer superfície de contato com alimento.</td>
+            </tr>
+            <tr style="background:rgba(200,200,200,.08)">
+              <td style="color:#999"><span style="display:inline-flex;align-items:center;gap:8px"><span style="background:#E91E8C;width:14px;height:14px;border-radius:3px;display:inline-block;opacity:.4"></span>ROSA</span></td>
+              <td style="color:#999;font-style:italic">Sanitários — <strong style="color:#888">não aplicável</strong>. Sanitários são responsabilidade do condomínio.</td>
+              <td style="color:#999">—</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ── DILUIÇÃO ── -->
+    <section class="section" id="diluicao" data-group="higiene">
+      <div class="sec-header">
+        <span class="sec-badge">Higiene</span>
+        <h2 class="sec-title">Produtos · Diluição e Uso</h2>
+      </div>
+      <div class="alert alert-red">
+        <strong>Diluição errada é risco grave:</strong> produto fraco não sanitiza; produto forte contamina alimentos e danifica superfícies. <strong>Sempre diluir com água em temperatura ambiente.</strong>
+      </div>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>PRODUTO</th><th>CONCENTRAÇÃO</th><th>DILUIÇÃO</th><th>USO</th></tr></thead>
+          <tbody>
+            <tr><td>Hipoclorito (2%)</td><td>200 ppm — sanitização</td><td>10 mL / litro de água</td><td>Superfícies de contato c/ alimento.</td></tr>
+            <tr><td>Hipoclorito (2%)</td><td>50 ppm — hortifrúti</td><td>2,5 mL / litro</td><td>Imersão de frutas/legumes 15 min.</td></tr>
+            <tr><td>Detergente neutro</td><td>Normal</td><td>Conforme embalagem</td><td>Lavagem de utensílios, louça, bancadas.</td></tr>
+            <tr><td>Quaternário de amônio</td><td>Conforme produto</td><td>Seguir embalagem EXATAMENTE</td><td>Superfícies não porosas, equipamentos.</td></tr>
+            <tr><td>Desengordurante alcalino</td><td>Conforme produto</td><td>Conforme embalagem</td><td>Coifa, chapa fria, paredes de cozinha, piso com gordura.</td></tr>
+            <tr><td>Álcool 70%</td><td>Pronto uso</td><td>Não diluir</td><td>Sanitização rápida de superfícies entre preparos.</td></tr>
+            <tr><td>Limpa-vidros</td><td>Pronto uso</td><td>Não diluir</td><td>Vidros, espelhos, portas de vidro.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ── TÉCNICAS ── -->
+    <section class="section" id="tecnicas" data-group="higiene">
+      <div class="sec-header">
+        <span class="sec-badge">Higiene</span>
+        <h2 class="sec-title">Técnicas · Como Limpar Cada Superfície</h2>
+      </div>
+
+      <div class="acc-card open">
+        <div class="acc-head" onclick="toggleAcc(this)">
+          <div class="acc-head-left">
+            <span class="acc-code">TEC 01</span>
+            <span class="acc-name">Piso de cozinha (com gordura)</span>
+          </div>
+          <span class="acc-arrow">▾</span>
+        </div>
+        <div class="acc-body">
+          <ul>
+            <li>Varrer primeiro — sempre. Nunca aplicar produto sobre lixo seco ou gordura sólida.</li>
+            <li>Aplicar desengordurante alcalino com regador. Esperar 2–3 minutos (nunca deixar secar).</li>
+            <li>Esfregar com escova dura ou pano cinza dedicado.</li>
+            <li>Enxaguar com água abundante — puxar com rodo em direção ao ralo.</li>
+            <li>Aplicar sanitizante (quaternário). Deixar agir e puxar com rodo.</li>
+            <li>Secar com pano limpo ou deixar secar naturalmente antes de liberar o trânsito.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="acc-card">
+        <div class="acc-head" onclick="toggleAcc(this)">
+          <div class="acc-head-left">
+            <span class="acc-code">TEC 02</span>
+            <span class="acc-name">Bancada de aço inoxidável</span>
+          </div>
+          <span class="acc-arrow">▾</span>
+        </div>
+        <div class="acc-body">
+          <ul>
+            <li>Retirar resíduos com pano seco ou papel-toalha.</li>
+            <li>Aplicar desengordurante borrifado (não despejar direto na bancada).</li>
+            <li>Esfregar com pano branco dedicado, sempre no sentido da trama do aço.</li>
+            <li>Enxaguar com pano úmido limpo.</li>
+            <li>Sanitizar com quaternário de amônio ou álcool 70%. Deixar secar ao ar.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="acc-card">
+        <div class="acc-head" onclick="toggleAcc(this)">
+          <div class="acc-head-left">
+            <span class="acc-code">TEC 03</span>
+            <span class="acc-name">Vidros, espelhos e portas</span>
+          </div>
+          <span class="acc-arrow">▾</span>
+        </div>
+        <div class="acc-body">
+          <ul>
+            <li>Limpa-vidros profissional. Não usar água com detergente — deixa marca.</li>
+            <li>Pano de microfibra branco, dedicado a vidros.</li>
+            <li>Movimentos em zigue-zague de cima para baixo. Nunca circular.</li>
+            <li>Secar imediatamente com pano limpo, seco, também de microfibra.</li>
+            <li>Verificar contra a luz — se houver marca, refazer.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="acc-card">
+        <div class="acc-head" onclick="toggleAcc(this)">
+          <div class="acc-head-left">
+            <span class="acc-code">TEC 04</span>
+            <span class="acc-name">Ralos</span>
+          </div>
+          <span class="acc-arrow">▾</span>
+        </div>
+        <div class="acc-body">
+          <ul>
+            <li>Retirar grelha. Raspar resíduos grosseiros para o lixo orgânico — nunca empurrar para o ralo.</li>
+            <li>Escovar grelha e borda com escova dedicada + desengordurante.</li>
+            <li>Enxaguar com água fervente (se a tubulação permitir) ou água quente.</li>
+            <li>Aplicar sanitizante, aguardar 1 minuto, enxaguar.</li>
+            <li>Recolocar a grelha. Verificar se há odor — odor persistente = avisar François (pode ser sifão).</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── CHECKLIST ABERTURA ── -->
+    <section class="section" id="checklist-abertura" data-group="checklists">
+      <div class="sec-header">
+        <span class="sec-badge">Checklist</span>
+        <h2 class="sec-title">Abertura (09:00) · Ambiente</h2>
+      </div>
+      <div class="progress-wrap">
+        <div class="progress-label"><span>Progresso abertura</span><span id="prog-abertura-pct">0%</span></div>
+        <div class="progress-bar"><div class="progress-fill" id="prog-abertura-fill" style="width:0%"></div></div>
+      </div>
+      <ul class="checklist" id="cl-abertura">
+        <li onclick="toggleCheck(this,'cl-abertura','prog-abertura-fill','prog-abertura-pct')"><span class="chk-box"></span><span>Salão: piso varrido e passado com mop + sanitizante.</span></li>
+        <li onclick="toggleCheck(this,'cl-abertura','prog-abertura-fill','prog-abertura-pct')"><span class="chk-box"></span><span>Salão: mesas e cadeiras alinhadas e limpas.</span></li>
+        <li onclick="toggleCheck(this,'cl-abertura','prog-abertura-fill','prog-abertura-pct')"><span class="chk-box"></span><span>Vidros e portas: sem manchas nem dedadas.</span></li>
+        <li onclick="toggleCheck(this,'cl-abertura','prog-abertura-fill','prog-abertura-pct')"><span class="chk-box"></span><span>Área externa + calçada varridas.</span></li>
+        <li onclick="toggleCheck(this,'cl-abertura','prog-abertura-fill','prog-abertura-pct')"><span class="chk-box"></span><span>Área pet friendly: piso limpo, potinhos de água abastecidos.</span></li>
+        <li onclick="toggleCheck(this,'cl-abertura','prog-abertura-fill','prog-abertura-pct')"><span class="chk-box"></span><span>Verificar condição dos sanitários do condomínio — se inadequados, acionar portaria e avisar François.</span></li>
+        <li onclick="toggleCheck(this,'cl-abertura','prog-abertura-fill','prog-abertura-pct')"><span class="chk-box"></span><span>Cozinha: piso, ralos e bancadas sanitizados.</span></li>
+        <li onclick="toggleCheck(this,'cl-abertura','prog-abertura-fill','prog-abertura-pct')"><span class="chk-box"></span><span>Lixeiras: sacos novos em todos os pontos (cozinha + salão).</span></li>
+        <li onclick="toggleCheck(this,'cl-abertura','prog-abertura-fill','prog-abertura-pct')"><span class="chk-box"></span><span>Produtos de limpeza organizados por cor e área.</span></li>
+      </ul>
+    </section>
+
+    <!-- ── CHECKLIST SERVIÇO ── -->
+    <section class="section" id="checklist-servico" data-group="checklists">
+      <div class="sec-header">
+        <span class="sec-badge">Checklist</span>
+        <h2 class="sec-title">Durante o serviço · Limpeza Contínua</h2>
+      </div>
+      <ul class="checklist" id="cl-servico">
+        <li onclick="toggleCheck(this,'cl-servico','','')"><span class="chk-box"></span><span>Piso da cozinha seco — verificar a cada 15 min no pico.</span></li>
+        <li onclick="toggleCheck(this,'cl-servico','','')"><span class="chk-box"></span><span>Piso do salão: qualquer derramamento, limpar imediatamente com sinalização.</span></li>
+        <li onclick="toggleCheck(this,'cl-servico','','')"><span class="chk-box"></span><span>Mesas: limpas e sanitizadas a cada virada de cliente.</span></li>
+        <li onclick="toggleCheck(this,'cl-servico','','')"><span class="chk-box"></span><span>Lixeiras: esvaziar quando 2/3 cheias.</span></li>
+        <li onclick="toggleCheck(this,'cl-servico','','')"><span class="chk-box"></span><span>Responder imediatamente a qualquer solicitação do cozinheiro ou do salão.</span></li>
+      </ul>
+    </section>
+
+    <!-- ── CHECKLIST VIRADA ── -->
+    <section class="section" id="checklist-virada" data-group="checklists">
+      <div class="sec-header">
+        <span class="sec-badge">Checklist</span>
+        <h2 class="sec-title">Virada de turno · até 17:45</h2>
+      </div>
+      <div class="alert alert-red">
+        Esta é a janela mais crítica do dia. <strong>Tudo concluído até 17:45 — o jantar não abre em ambiente sujo.</strong>
+      </div>
+      <div class="progress-wrap">
+        <div class="progress-label"><span>Progresso virada</span><span id="prog-virada-pct">0%</span></div>
+        <div class="progress-bar"><div class="progress-fill" id="prog-virada-fill" style="width:0%"></div></div>
+      </div>
+      <ul class="checklist" id="cl-virada">
+        <li onclick="toggleCheck(this,'cl-virada','prog-virada-fill','prog-virada-pct')"><span class="chk-box"></span><span>Cozinha: limpeza profunda rápida de pisos, ralos, bancadas.</span></li>
+        <li onclick="toggleCheck(this,'cl-virada','prog-virada-fill','prog-virada-pct')"><span class="chk-box"></span><span>Salão: piso passado + mesas alinhadas para o jantar.</span></li>
+        <li onclick="toggleCheck(this,'cl-virada','prog-virada-fill','prog-virada-pct')"><span class="chk-box"></span><span>Verificar condição dos sanitários do condomínio antes do jantar — acionar portaria se necessário.</span></li>
+        <li onclick="toggleCheck(this,'cl-virada','prog-virada-fill','prog-virada-pct')"><span class="chk-box"></span><span>Lixeiras: sacos trocados.</span></li>
+        <li onclick="toggleCheck(this,'cl-virada','prog-virada-fill','prog-virada-pct')"><span class="chk-box"></span><span>Vidros e portas: repasse rápido.</span></li>
+        <li onclick="toggleCheck(this,'cl-virada','prog-virada-fill','prog-virada-pct')"><span class="chk-box"></span><span>Área externa: varrida, pronta para receber o jantar.</span></li>
+      </ul>
+    </section>
+
+    <!-- ── CHECKLIST FECHAMENTO ── -->
+    <section class="section" id="checklist-fechamento" data-group="checklists">
+      <div class="sec-header">
+        <span class="sec-badge">Checklist</span>
+        <h2 class="sec-title">Fechamento · 23:30</h2>
+      </div>
+      <div class="progress-wrap">
+        <div class="progress-label"><span>Progresso fechamento</span><span id="prog-fechamento-pct">0%</span></div>
+        <div class="progress-bar"><div class="progress-fill" id="prog-fechamento-fill" style="width:0%"></div></div>
+      </div>
+      <ul class="checklist" id="cl-fechamento">
+        <li onclick="toggleCheck(this,'cl-fechamento','prog-fechamento-fill','prog-fechamento-pct')"><span class="chk-box"></span><span>Toda a louça pendente do salão recolhida e lavada.</span></li>
+        <li onclick="toggleCheck(this,'cl-fechamento','prog-fechamento-fill','prog-fechamento-pct')"><span class="chk-box"></span><span>Salão: piso varrido + lavado com sanitizante.</span></li>
+        <li onclick="toggleCheck(this,'cl-fechamento','prog-fechamento-fill','prog-fechamento-pct')"><span class="chk-box"></span><span>Mesas: sanitizadas e repostas para o próximo dia.</span></li>
+        <li onclick="toggleCheck(this,'cl-fechamento','prog-fechamento-fill','prog-fechamento-pct')"><span class="chk-box"></span><span>Cozinha: piso completo com sanitizante, ralos escovados.</span></li>
+        <li onclick="toggleCheck(this,'cl-fechamento','prog-fechamento-fill','prog-fechamento-pct')"><span class="chk-box"></span><span>Verificar se houve alguma ocorrência nos sanitários do condomínio — registrar e avisar François se sim.</span></li>
+        <li onclick="toggleCheck(this,'cl-fechamento','prog-fechamento-fill','prog-fechamento-pct')"><span class="chk-box"></span><span>Lixo orgânico ensacado e levado para área externa.</span></li>
+        <li onclick="toggleCheck(this,'cl-fechamento','prog-fechamento-fill','prog-fechamento-pct')"><span class="chk-box"></span><span>Áreas externas varridas, calçada limpa.</span></li>
+        <li onclick="toggleCheck(this,'cl-fechamento','prog-fechamento-fill','prog-fechamento-pct')"><span class="chk-box"></span><span>Produtos de limpeza organizados e repostos.</span></li>
+        <li onclick="toggleCheck(this,'cl-fechamento','prog-fechamento-fill','prog-fechamento-pct')"><span class="chk-box"></span><span>Todas as luzes e equipamentos de limpeza desligados.</span></li>
+      </ul>
+    </section>
+
+    <!-- ── EPI ── -->
+    <section class="section" id="epi" data-group="seguranca">
+      <div class="sec-header">
+        <span class="sec-badge">Segurança</span>
+        <h2 class="sec-title">EPI e Segurança do Trabalho</h2>
+      </div>
+      <p class="intro-text">
+        Seu corpo é seu instrumento. Produtos químicos, piso molhado e água quente são riscos reais. O DUE é responsável por fornecer EPI — e você é responsável por usar.
+      </p>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>EPI</th><th>QUANDO USAR</th><th>POR QUÊ</th></tr></thead>
+          <tbody>
+            <tr><td>Luva de borracha cano longo</td><td>Lavagem de louça, aplicação de químicos e produtos de limpeza.</td><td>Protege contra químicos, água quente e cortes por cacos de vidro ou louça.</td></tr>
+            <tr><td>Avental impermeável</td><td>Lavagem de louça e piso com químicos.</td><td>Protege roupa e pele do abdômen — evita absorção dérmica de produtos.</td></tr>
+            <tr><td>Calçado antiderrapante fechado</td><td>Turno inteiro — sem exceção.</td><td>Piso de cozinha tem gordura e água. Tênis aberto ou sandália é proibido.</td></tr>
+            <tr><td>Touca ou rede de cabelo</td><td>Sempre que entrar na cozinha.</td><td>Cabelo em alimento é contaminação grave — risco sanitário.</td></tr>
+            <tr><td>Máscara descartável</td><td>Aplicação de desengordurante em espaços fechados (câmara fria, área de armazenamento).</td><td>Vapores fortes em espaço pequeno — irritação respiratória.</td></tr>
+            <tr><td>Placa de piso molhado</td><td>Sempre que lavar ou aplicar produto em piso.</td><td>Evita queda de funcionário e de cliente.</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <h3 style="font-size:15px;font-weight:600;margin:20px 0 10px;color:#111">Regras inegociáveis de segurança</h3>
+      <ul class="rules-list">
+        <li>Nunca misturar produtos químicos. Hipoclorito + amônia = gás tóxico.</li>
+        <li>Nunca usar produtos sem rótulo ou em recipientes não identificados.</li>
+        <li>Nunca transitar com balde cheio pelo caminho do salão — use a entrada de serviço.</li>
+        <li>Se cortar ou queimar: avisar imediatamente. Curativo + luva até ser liberado pelo chef.</li>
+        <li>Se sentir tontura, náusea ou irritação respiratória ao usar químico: sair da área, avisar, pedir ajuda.</li>
+        <li>Placa de piso molhado <strong>sempre</strong> visível quando a superfície estiver escorregadia.</li>
+      </ul>
+    </section>
+
+    <!-- ── HACCP ── -->
+    <section class="section" id="haccp" data-group="seguranca">
+      <div class="sec-header">
+        <span class="sec-badge">Segurança</span>
+        <h2 class="sec-title">Segurança Alimentar · HACCP Básico</h2>
+      </div>
+      <h3 style="font-size:15px;font-weight:600;margin:0 0 12px;color:#111">Zonas de temperatura críticas</h3>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>ZONA</th><th>TEMPERATURA</th><th>O QUE SIGNIFICA</th></tr></thead>
+          <tbody>
+            <tr><td>Zona de perigo</td><td>5 °C – 65 °C</td><td>Bactérias se multiplicam nessa faixa. Nunca manter alimento aqui por mais de 2h.</td></tr>
+            <tr><td>Refrigeração segura</td><td>Abaixo de 5 °C</td><td>Câmaras e pista fria devem estar sempre nessa faixa.</td></tr>
+            <tr><td>Cozimento — aves/suínos</td><td>75 °C+</td><td>Frango e pato precisam atingir 75 °C no ponto mais espesso.</td></tr>
+            <tr><td>Cozimento — carnes vermelhas</td><td>63 °C+ (ao ponto)</td><td>Malpassado = 52–55 °C. Comunicar risco ao cliente quando solicitado.</td></tr>
+            <tr><td>Conservação quente</td><td>Acima de 65 °C</td><td>Pratos e bases mantidos em banho-maria.</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <h3 style="font-size:15px;font-weight:600;margin:20px 0 10px;color:#111">Higiene pessoal — inegociáveis</h3>
+      <ul class="rules-list">
+        <li>Lavar as mãos ao chegar, após o banheiro, após tocar no rosto, após lidar com alimentos crus e após o lixo.</li>
+        <li>Cabelos sempre presos com touca ou rede. Zero exceção durante o serviço.</li>
+        <li>Unhas curtas e sem esmalte. Unhas longas acumulam bactérias e caem nos alimentos.</li>
+        <li>Sem anéis, pulseiras, brincos durante o preparo. Relógios ficam fora da cozinha.</li>
+        <li>Ferimento nas mãos: curativo + luva descartável. Não trabalhar com corte aberto sem proteção.</li>
+        <li>Sintomas de gripe ou doença gastrointestinal: avisar François. Dependendo dos sintomas, não trabalha.</li>
+      </ul>
+      <h3 style="font-size:15px;font-weight:600;margin:20px 0 10px;color:#111">FIFO e PVPS — controle de estoque</h3>
+      <div class="alert alert-green">
+        <strong>FIFO</strong> = <em>First In, First Out.</em> &nbsp;<strong>PVPS</strong> = <em>Primeiro que Vence, Primeiro que Sai.</em> O produto que chegou primeiro ou vence primeiro é o que sai primeiro. Ao guardar produtos novos na câmara, colocar ATRÁS dos mais antigos — sempre. TUDO que for produzido recebe etiqueta (nome, data de produção, validade, responsável). Carnes cruas sempre na prateleira inferior, nunca acima de alimentos prontos.
+      </div>
+    </section>
+
+    <!-- ── 8 REGRAS ── -->
+    <section class="section" id="regras" data-group="seguranca">
+      <div class="sec-header">
+        <span class="sec-badge">Regras</span>
+        <h2 class="sec-title">As 8 Regras de Ouro do DUE</h2>
+      </div>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>REGRA</th><th>O QUE SIGNIFICA</th></tr></thead>
+          <tbody>
+            <tr><td>1. Mise en place é religião</td><td>Nada começa enquanto o mise en place não estiver 100% conferido e reportado. Não existe "quase pronto".</td></tr>
+            <tr><td>2. A balança é sua parceira</td><td>Nas primeiras 2 semanas, TUDO é pesado. Sem balança, não existe consistência — e consistência é o DUE.</td></tr>
+            <tr><td>3. Comunicação padronizada</td><td>Ouvido confirmado. Boqueta avisada. Falta comunicada na hora. Três regras que eliminam 80% dos erros.</td></tr>
+            <tr><td>4. Limpeza contínua, não final</td><td>Limpou, guardou, próxima tarefa. Bancada suja com resto de peixe cru ao lado de burrata = intoxicação.</td></tr>
+            <tr><td>5. O forno é seu melhor amigo</td><td>Selar na chapa, terminar no forno. Quem domina esse fluxo domina o serviço.</td></tr>
+            <tr><td>6. Produção antecipada é inegociável</td><td>Polvo, costela e pato não se fazem no dia. O calendário de produção não é sugestão.</td></tr>
+            <tr><td>7. Avise antes, não depois</td><td>Base abaixo de 30%? Avisa agora. Ingrediente acabando? Avisa agora. Dúvida técnica? Pergunta antes.</td></tr>
+            <tr><td>8. François está aqui</td><td>Você não está sozinho. Para qualquer tempestade, François estará presente para conduzir. Use isso.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<script>
+function toggleAcc(el){
+  const card=el.closest('.acc-card');
+  card.classList.toggle('open');
+}
+
+function toggleCheck(li,listId,fillId,pctId){
+  li.classList.toggle('done');
+  if(fillId&&pctId) updateProgress(listId,fillId,pctId);
+}
+
+function updateProgress(listId,fillId,pctId){
+  const list=document.getElementById(listId);
+  if(!list)return;
+  const items=list.querySelectorAll('li');
+  const done=list.querySelectorAll('li.done').length;
+  const pct=items.length?Math.round(done/items.length*100):0;
+  const fill=document.getElementById(fillId);
+  const pctEl=document.getElementById(pctId);
+  if(fill)fill.style.width=pct+'%';
+  if(pctEl)pctEl.textContent=pct+'%';
+}
+
+function expandAll(){
+  document.querySelectorAll('.acc-card').forEach(c=>c.classList.add('open'));
+}
+
+function filterContent(q){
+  const term=q.toLowerCase().trim();
+  document.querySelectorAll('.section').forEach(sec=>{
+    if(!term){sec.style.display='';return;}
+    sec.style.display=sec.textContent.toLowerCase().includes(term)?'':'none';
+  });
+}
+
+function filterSection(group,btn){
+  document.querySelectorAll('.chip').forEach(c=>c.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.section').forEach(sec=>{
+    if(group==='all'){sec.style.display='';return;}
+    sec.style.display=(sec.getAttribute('data-group')||'')===group?'':'none';
+  });
+}
+
+function setActive(el){
+  document.querySelectorAll('.sidebar-item').forEach(i=>i.classList.remove('active'));
+  el.classList.add('active');
+}
+
+const sections=document.querySelectorAll('section[id]');
+const obs=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      const id=e.target.id;
+      document.querySelectorAll('.sidebar-item').forEach(i=>{
+        i.classList.toggle('active',i.getAttribute('href')==='#'+id);
+      });
+    }
+  });
+},{rootMargin:'-30% 0px -60% 0px'});
+sections.forEach(s=>obs.observe(s));
+</script>
+</body>
+</html>

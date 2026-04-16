@@ -1,0 +1,810 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Manual do Auxiliar de Cozinha v4 — DUE Restaurante</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #FAFAF7;
+  --bg2: #F2F0E8;
+  --white: #FFFFFF;
+  --border: #DDD9CC;
+  --text: #0E0C08;
+  --muted: #7A7668;
+  --gold: #6A4E10;
+  --gold2: #9A7820;
+  --gold-border: #C8A830;
+  --gold-bg: #FAF3DF;
+  --red: #7A1515;
+  --red-bg: #FDF0F0;
+  --red-border: #CC4444;
+  --green: #1A4A1A;
+  --green-bg: #F0FAF0;
+  --sidebar-w: 240px;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); display: flex; min-height: 100vh; }
+
+/* ── SIDEBAR ── */
+.sidebar {
+  width: var(--sidebar-w);
+  min-height: 100vh;
+  background: var(--bg2);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  top: 0; left: 0; bottom: 0;
+  z-index: 100;
+  overflow-y: auto;
+}
+.sb-logo { padding: 24px 20px 18px; border-bottom: 1px solid var(--border); }
+.sb-logo a { text-decoration: none; }
+.sb-wordmark { font-family: 'Cormorant Garamond', serif; font-size: 28px; font-weight: 700; color: var(--gold); letter-spacing: 6px; display: block; }
+.sb-sub { font-family: 'DM Mono', monospace; font-size: 8px; text-transform: uppercase; letter-spacing: 2px; color: var(--muted); margin-top: 3px; }
+.sb-section { padding: 16px 0 8px; }
+.sb-section-label { font-family: 'DM Mono', monospace; font-size: 8px; text-transform: uppercase; letter-spacing: 2px; color: #A09888; padding: 0 16px 8px; display: block; }
+.sb-link { display: flex; align-items: center; gap: 8px; padding: 8px 16px; font-size: 12px; color: var(--muted); text-decoration: none; transition: all .15s; border-left: 2px solid transparent; }
+.sb-link:hover { color: var(--gold); background: rgba(106,78,16,.06); border-left-color: var(--gold-border); }
+.sb-link.active { color: var(--gold); background: rgba(106,78,16,.08); border-left-color: var(--gold); font-weight: 500; }
+.sb-icon { font-size: 13px; min-width: 16px; text-align: center; }
+.sb-badge { margin-left: auto; font-family: 'DM Mono', monospace; font-size: 9px; background: var(--gold-bg); color: var(--gold); border: 1px solid var(--gold-border); padding: 1px 5px; border-radius: 2px; }
+.sb-footer { margin-top: auto; padding: 16px; border-top: 1px solid var(--border); }
+.sb-footer-text { font-family: 'DM Mono', monospace; font-size: 9px; color: #B0A898; text-transform: uppercase; letter-spacing: 1px; }
+
+/* ── MAIN ── */
+.main { margin-left: var(--sidebar-w); flex: 1; min-height: 100vh; }
+
+/* ── PAGE HEADER ── */
+.page-header { background: var(--text); padding: 40px 48px 36px; position: relative; overflow: hidden; }
+.page-header::before { content: '⊡'; position: absolute; right: 40px; top: 50%; transform: translateY(-50%); font-size: 180px; color: #fff; opacity: .03; line-height: 1; }
+.ph-eyebrow { font-family: 'DM Mono', monospace; font-size: 9px; text-transform: uppercase; letter-spacing: 3px; color: rgba(232,200,112,.5); margin-bottom: 10px; }
+.ph-title { font-family: 'Cormorant Garamond', serif; font-size: 44px; font-weight: 700; color: #E8C870; line-height: 1.1; margin-bottom: 12px; }
+.ph-subtitle { font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 16px; color: rgba(232,200,112,.6); margin-bottom: 16px; }
+.ph-pills { display: flex; flex-wrap: wrap; gap: 8px; }
+.ph-pill { font-family: 'DM Mono', monospace; font-size: 9px; text-transform: uppercase; letter-spacing: 1.5px; color: rgba(232,200,112,.6); background: rgba(232,200,112,.08); border: 1px solid rgba(232,200,112,.2); padding: 4px 10px; border-radius: 2px; }
+
+/* ── TOOLBAR ── */
+.toolbar { position: sticky; top: 0; z-index: 50; background: var(--white); border-bottom: 1px solid var(--border); padding: 10px 48px; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.tb-search { flex: 1; min-width: 180px; max-width: 280px; padding: 7px 12px; border: 1px solid var(--border); border-radius: 3px; font-family: 'DM Sans', sans-serif; font-size: 12px; background: var(--bg); color: var(--text); outline: none; transition: border-color .15s; }
+.tb-search:focus { border-color: var(--gold-border); }
+.tb-chips { display: flex; gap: 6px; flex-wrap: wrap; flex: 1; }
+.chip { font-family: 'DM Mono', monospace; font-size: 9px; text-transform: uppercase; letter-spacing: 1px; padding: 5px 10px; border: 1px solid var(--border); border-radius: 2px; background: var(--bg); color: var(--muted); cursor: pointer; transition: all .15s; white-space: nowrap; }
+.chip:hover { border-color: var(--gold-border); color: var(--gold); }
+.chip.active { background: var(--gold-bg); border-color: var(--gold-border); color: var(--gold); font-weight: 500; }
+.tb-btn { font-family: 'DM Mono', monospace; font-size: 9px; text-transform: uppercase; letter-spacing: 1px; padding: 6px 12px; border: 1px solid var(--border); border-radius: 2px; background: var(--bg); color: var(--muted); cursor: pointer; transition: all .15s; white-space: nowrap; }
+.tb-btn:hover { border-color: var(--gold-border); color: var(--gold); }
+.tb-btn.gold { background: var(--gold-bg); border-color: var(--gold-border); color: var(--gold); }
+
+/* ── CONTENT ── */
+.content { padding: 40px 48px 60px; }
+
+/* ── SECTION ── */
+.sec-header { display: flex; align-items: center; gap: 12px; margin: 40px 0 20px; }
+.sec-title { font-family: 'Cormorant Garamond', serif; font-size: 22px; font-weight: 700; color: var(--text); white-space: nowrap; }
+.sec-line { flex: 1; height: 1px; background: linear-gradient(90deg, var(--gold-border) 0%, transparent 100%); }
+.sec-label { font-family: 'DM Mono', monospace; font-size: 8px; text-transform: uppercase; letter-spacing: 2px; color: var(--gold2); }
+
+/* ── TABLE ── */
+.due-table { width: 100%; border-collapse: collapse; font-size: 12.5px; margin: 12px 0 20px; }
+.due-table th { background: var(--text); color: #E8C870; font-family: 'DM Mono', monospace; font-size: 9px; text-transform: uppercase; letter-spacing: 1.5px; padding: 9px 12px; text-align: left; font-weight: 500; }
+.due-table td { padding: 9px 12px; border-bottom: 1px solid var(--border); color: var(--text); vertical-align: top; line-height: 1.5; }
+.due-table tr:nth-child(even) td { background: rgba(242,240,232,.5); }
+.due-table tr:hover td { background: var(--gold-bg); }
+.due-table .td-mono { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--gold2); }
+.due-table .td-muted { color: var(--muted); font-size: 11.5px; }
+
+/* ── ALERT ── */
+.alert { border-left: 3px solid var(--gold-border); background: var(--gold-bg); padding: 12px 16px; margin: 12px 0; font-size: 12.5px; line-height: 1.6; border-radius: 0 3px 3px 0; }
+.alert strong { color: var(--gold); }
+.alert-red { border-left-color: var(--red-border); background: var(--red-bg); }
+.alert-red strong { color: var(--red); }
+.alert-dark { background: var(--text); color: #E8C870; border-left-color: #E8C870; }
+.alert-green { border-left-color: #4A7A1A; background: var(--green-bg); }
+.alert-green strong { color: var(--green); }
+
+/* ── ACCORDION ── */
+.acc-card { border: 1px solid var(--border); border-radius: 3px; margin-bottom: 6px; overflow: hidden; transition: border-color .15s; }
+.acc-card:hover { border-color: var(--gold-border); }
+.acc-card.crit { border-left: 3px solid var(--red-border); }
+.acc-card.gold-card { border-left: 3px solid var(--gold-border); background: #FFFEF8; }
+.acc-header { display: flex; align-items: center; gap: 12px; padding: 12px 16px; background: var(--white); cursor: pointer; user-select: none; transition: background .15s; }
+.acc-header:hover { background: var(--bg2); }
+.acc-num { font-family: 'DM Mono', monospace; font-size: 9px; color: var(--muted); min-width: 28px; }
+.acc-name { font-family: 'DM Sans', sans-serif; font-size: 13.5px; font-weight: 600; color: var(--text); flex: 1; }
+.acc-tags { display: flex; gap: 4px; flex-wrap: wrap; }
+.acc-tag { font-family: 'DM Mono', monospace; font-size: 8px; text-transform: uppercase; letter-spacing: .5px; padding: 2px 6px; border-radius: 2px; }
+.tag-crit { background: var(--red-bg); color: var(--red); border: 1px solid var(--red-border); }
+.tag-gold { background: var(--gold-bg); color: var(--gold); border: 1px solid var(--gold-border); }
+.tag-gray { background: var(--bg2); color: var(--muted); border: 1px solid var(--border); }
+.tag-green { background: var(--green-bg); color: var(--green); border: 1px solid #4A7A1A; }
+.acc-arrow { font-size: 10px; color: var(--muted); transition: transform .2s; flex-shrink: 0; }
+.acc-card.open .acc-arrow { transform: rotate(180deg); }
+.acc-body { display: none; padding: 16px; border-top: 1px solid var(--border); background: var(--bg); }
+.acc-card.open .acc-body { display: block; }
+
+/* ── CHECKLIST ── */
+.checklist { margin: 8px 0; }
+.cl-item { display: flex; align-items: flex-start; gap: 10px; padding: 6px 0; border-bottom: 1px solid rgba(221,217,204,.4); font-size: 12.5px; line-height: 1.5; cursor: pointer; }
+.cl-item:last-child { border-bottom: none; }
+.cl-cb { width: 14px; height: 14px; border: 1.5px solid var(--gold-border); border-radius: 2px; flex-shrink: 0; margin-top: 1px; transition: all .15s; position: relative; }
+.cl-item.checked .cl-cb { background: var(--gold); border-color: var(--gold); }
+.cl-item.checked .cl-cb::after { content: '✓'; position: absolute; top: -2px; left: 1px; font-size: 11px; color: #fff; }
+.cl-item.checked .cl-text { text-decoration: line-through; color: var(--muted); }
+.cl-text { flex: 1; }
+.cl-crit { color: var(--red); font-weight: 500; }
+
+/* ── PROGRESS ── */
+.progress-wrap { margin: 12px 0; }
+.progress-label { display: flex; justify-content: space-between; font-family: 'DM Mono', monospace; font-size: 9px; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); margin-bottom: 5px; }
+.progress-bar { height: 4px; background: var(--border); border-radius: 2px; overflow: hidden; }
+.progress-fill { height: 100%; background: var(--gold); border-radius: 2px; transition: width .3s ease; }
+
+/* ── GRID ── */
+.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 12px 0; }
+.grid3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin: 12px 0; }
+
+/* ── QUOTE ── */
+.quote { font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 16px; color: var(--gold2); text-align: center; padding: 20px; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); margin: 24px 0; }
+
+/* ── ESTAÇÃO CARD ── */
+.station-card { border: 1px solid var(--border); border-radius: 3px; padding: 16px; background: var(--white); }
+.station-title { font-family: 'Cormorant Garamond', serif; font-size: 17px; font-weight: 700; color: var(--gold); margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
+.station-title::before { content: ''; width: 4px; height: 16px; background: var(--gold-border); border-radius: 2px; }
+
+/* ── PRINT ── */
+@media print {
+  @page { size: A4; margin: 14mm; }
+  .sidebar, .toolbar { display: none !important; }
+  .main { margin-left: 0; }
+  .page-header { background: #111009 !important; -webkit-print-color-adjust: exact; }
+  .acc-body { display: block !important; }
+  .acc-card { page-break-inside: avoid; }
+  .due-table th { background: #111009 !important; -webkit-print-color-adjust: exact; }
+}
+
+/* ── RESPONSIVE ── */
+@media (max-width: 900px) {
+  :root { --sidebar-w: 52px; }
+  .sb-sub, .sb-section-label, .sb-link span:not(.sb-icon), .sb-badge, .sb-footer-text { display: none; }
+  .sb-wordmark { font-size: 16px; letter-spacing: 2px; }
+  .sb-link { padding: 10px; justify-content: center; }
+  .page-header, .toolbar, .content { padding-left: 24px; padding-right: 24px; }
+  .grid2, .grid3 { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="sb-logo">
+    <a href="index.html">
+      <span class="sb-wordmark">DUE</span>
+      <span class="sb-sub">Manual Auxiliar Cozinha</span>
+    </a>
+  </div>
+
+  <div class="sb-section">
+    <span class="sb-section-label">Identidade</span>
+    <a class="sb-link active" href="#identidade"><span class="sb-icon">◎</span><span>O DUE &amp; Filosofia</span></a>
+    <a class="sb-link" href="#equipe"><span class="sb-icon">⊞</span><span>Equipe &amp; Horários</span></a>
+    <a class="sb-link" href="#intervalos"><span class="sb-icon">◷</span><span>Protocolo de Intervalos</span></a>
+  </div>
+
+  <div class="sb-section">
+    <span class="sb-section-label">Equipamentos</span>
+    <a class="sb-link" href="#equipamentos"><span class="sb-icon">⊕</span><span>Equipamentos</span></a>
+  </div>
+
+  <div class="sb-section">
+    <span class="sb-section-label">Estações</span>
+    <a class="sb-link" href="#frios"><span class="sb-icon">❄</span><span>Aux Frios</span><span class="sb-badge">6 pratos</span></a>
+    <a class="sb-link" href="#quente"><span class="sb-icon">☀</span><span>Aux Quente</span><span class="sb-badge">7 pratos</span></a>
+  </div>
+
+  <div class="sb-section">
+    <span class="sb-section-label">Checklists</span>
+    <a class="sb-link" href="#checklist-frios"><span class="sb-icon">★</span><span>Abertura Frios</span></a>
+    <a class="sb-link" href="#checklist-quente"><span class="sb-icon">★</span><span>Abertura Quente</span></a>
+    <a class="sb-link" href="#regras"><span class="sb-icon">◇</span><span>Regras &amp; HACCP</span></a>
+    <a class="sb-link" href="#alergenos"><span class="sb-icon">⚠</span><span>Alérgenos</span></a>
+  </div>
+
+  <div class="sb-footer">
+    <div class="sb-footer-text">v4.0 · Abril 2026</div>
+    <div class="sb-footer-text" style="margin-top:3px;">François Ozanne</div>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<main class="main">
+
+  <!-- PAGE HEADER -->
+  <div class="page-header">
+    <div class="ph-eyebrow">DUE Restaurante · Cozinha Contemporânea Autoral</div>
+    <div class="ph-title">Manual do Auxiliar de Cozinha</div>
+    <div class="ph-subtitle">Aux Frios (Garde Manger + Sobremesas) · Aux Quente (Frituras + Massas)</div>
+    <div class="ph-pills">
+      <span class="ph-pill">Franciele Barreto · Turno A</span>
+      <span class="ph-pill">Beatriz Maria Santos · Turno B</span>
+      <span class="ph-pill">13 pratos · 2 estações</span>
+      <span class="ph-pill">Abril 2026 · v4</span>
+    </div>
+  </div>
+
+  <!-- TOOLBAR -->
+  <div class="toolbar">
+    <input class="tb-search" type="text" id="searchInput" placeholder="Buscar prato, técnica, estação..." oninput="filterContent()">
+    <div class="tb-chips">
+      <div class="chip active" onclick="scrollToSection('identidade',this)">Tudo</div>
+      <div class="chip" onclick="scrollToSection('frios',this)">Aux Frios</div>
+      <div class="chip" onclick="scrollToSection('quente',this)">Aux Quente</div>
+      <div class="chip" onclick="scrollToSection('checklist-frios',this)">Checklists</div>
+      <div class="chip" onclick="scrollToSection('alergenos',this)">Alérgenos</div>
+    </div>
+    <button class="tb-btn gold" onclick="window.print()">⎙ PDF</button>
+    <button class="tb-btn" onclick="expandAll()">⊞ Expandir</button>
+  </div>
+
+  <div class="content">
+
+    <!-- ═══ IDENTIDADE ═══ -->
+    <div id="identidade" class="sec-header">
+      <span class="sec-title">O DUE · Identidade e Filosofia</span>
+      <div class="sec-line"></div>
+    </div>
+
+    <p style="font-size:13px;line-height:1.7;margin-bottom:16px;">
+      O DUE é um restaurante de cozinha contemporânea autoral no Jardim Europa, em Aracaju. O cardápio eleva ingredientes sergipanos e do Nordeste — polvo, carne do sol, tucupi, maxixe, jambu, coalho, costela — através de técnica precisa e consistente. O que diferencia o DUE não é apenas o que está no prato: é a <strong>consistência</strong>. O mesmo prato na terça ao almoço e no sábado lotado precisa ser idêntico. Essa é a sua responsabilidade direta.
+    </p>
+
+    <table class="due-table">
+      <thead><tr><th>Valor</th><th>O que significa na prática</th></tr></thead>
+      <tbody>
+        <tr><td>Consistência</td><td>O prato do almoço de terça tem que ser igual ao do jantar de sábado.</td></tr>
+        <tr><td>Precisão</td><td>Gramaturas, pontos de cocção e finalização seguem as fichas técnicas — sempre.</td></tr>
+        <tr><td>Comunicação</td><td>Informação errada ou ausente durante o serviço gera erro em cadeia.</td></tr>
+        <tr><td>Limpeza contínua</td><td>Estação limpa não é estética — é segurança alimentar e eficiência operacional.</td></tr>
+        <tr><td>Proatividade</td><td>Ver o problema antes que vire crise. Avisar antes de acabar, não depois.</td></tr>
+      </tbody>
+    </table>
+
+    <div class="quote">"Ingredientes que têm endereço. Técnica que tem propósito."</div>
+
+    <!-- ═══ EQUIPE ═══ -->
+    <div id="equipe" class="sec-header">
+      <span class="sec-title">Equipe &amp; Horários</span>
+      <div class="sec-line"></div>
+    </div>
+
+    <p style="font-size:13px;line-height:1.7;margin-bottom:14px;">
+      Franciele e Beatriz operam em turnos contínuos distintos — escala 5×2, 44h semanais. Franciele cobre o Turno A (Manhã). Beatriz cobre o Turno B (Tarde/Noite). <strong>Horário partido é exceção, nunca regra.</strong>
+    </p>
+
+    <table class="due-table">
+      <thead><tr><th>Dia</th><th>Franciele · Aux A (Turno Manhã)</th><th>Beatriz · Aux B (Turno Tarde/Noite)</th></tr></thead>
+      <tbody>
+        <tr><td>Segunda</td><td class="td-muted">FOLGA</td><td>09:00–18:00</td></tr>
+        <tr><td>Terça</td><td>09:00–18:00</td><td class="td-muted">FOLGA</td></tr>
+        <tr><td>Quarta</td><td>09:00–19:00</td><td>14:00–23:30</td></tr>
+        <tr><td>Quinta</td><td>09:00–19:00</td><td>14:00–23:30</td></tr>
+        <tr><td>Sexta</td><td>09:00–19:00</td><td>14:00–23:30</td></tr>
+        <tr><td>Sábado</td><td>09:00–19:00</td><td>14:00–23:30</td></tr>
+        <tr><td>Domingo</td><td class="td-muted">FECHADO</td><td class="td-muted">FECHADO</td></tr>
+      </tbody>
+    </table>
+
+    <div class="grid2">
+      <div class="alert"><strong>TURNO A</strong> — Terça: 09:00–18:00 = 8h efetivas. Qua–Sáb: 09:00–19:00 = 9h ef × 4 = 36h. Total: 44h</div>
+      <div class="alert"><strong>TURNO B</strong> — Segunda: 09:00–18:00 = 8h efetivas. Qua–Sáb: 14:00–23:30 = 9h ef × 4 = 36h. Total: 44h</div>
+    </div>
+    <div class="alert alert-red"><strong>OVERLAP Qua–Sáb: 14:00–19:00 (5h)</strong> — janela de virada e mise en place de jantar. Sobremesas pré-montadas antes de 17:45.</div>
+
+    <!-- ═══ INTERVALOS ═══ -->
+    <div id="intervalos" class="sec-header">
+      <span class="sec-title">Protocolo de Intervalos · Cozinha Nunca Vazia</span>
+      <div class="sec-line"></div>
+    </div>
+
+    <p style="font-size:13px;line-height:1.7;margin-bottom:14px;">Regra mestre: a cozinha <strong>nunca</strong> fica vazia durante o serviço. A ordem é fixa — SG sai primeiro, Auxiliar depois, Cozinheiro por último.</p>
+
+    <p style="font-size:13px;font-weight:600;margin:16px 0 8px;">Turno A — Intervalo da tarde (Qua–Sáb)</p>
+    <table class="due-table">
+      <thead><tr><th>Ordem</th><th>Cargo</th><th>Horário</th><th>Regra</th></tr></thead>
+      <tbody>
+        <tr><td class="td-mono">1º</td><td>Aux. Serviços Gerais</td><td class="td-mono">14:00–14:30</td><td>Sai primeiro — menos crítico no pós-almoço.</td></tr>
+        <tr><td class="td-mono">2º</td><td><strong>Auxiliar de Cozinha</strong></td><td class="td-mono">14:30–15:00</td><td>Sai quando o SG retorna.</td></tr>
+        <tr><td class="td-mono">3º</td><td>Cozinheiro</td><td class="td-mono">15:00–15:30</td><td>Sai por último — retorna para prep do jantar.</td></tr>
+      </tbody>
+    </table>
+
+    <p style="font-size:13px;font-weight:600;margin:16px 0 8px;">Turno B — Intervalo da noite (Qua–Sáb)</p>
+    <table class="due-table">
+      <thead><tr><th>Ordem</th><th>Cargo</th><th>Horário</th><th>Regra</th></tr></thead>
+      <tbody>
+        <tr><td class="td-mono">1º</td><td>Aux. Serviços Gerais</td><td class="td-mono">16:45–17:15</td><td>Sai primeiro — retorna às 17:15, antes do serviço.</td></tr>
+        <tr><td class="td-mono">2º</td><td><strong>Auxiliar de Cozinha</strong></td><td class="td-mono">17:15–17:45</td><td>Sai quando o SG retorna — volta às 17:45.</td></tr>
+        <tr><td class="td-mono">3º</td><td>Cozinheiro</td><td class="td-mono">17:30–18:00</td><td>Sai por último — retorna às 18:00 exato para o serviço.</td></tr>
+      </tbody>
+    </table>
+
+    <!-- ═══ EQUIPAMENTOS ═══ -->
+    <div id="equipamentos" class="sec-header">
+      <span class="sec-title">Equipamentos · Aux de Cozinha</span>
+      <div class="sec-line"></div>
+    </div>
+
+    <div class="acc-card crit open" id="acc-fritadeiras">
+      <div class="acc-header" onclick="toggleAcc('acc-fritadeiras')">
+        <span class="acc-num">EQ01</span>
+        <span class="acc-name">Fritadeiras (2 unidades) · Aux Quente</span>
+        <div class="acc-tags"><span class="acc-tag tag-crit">Crítico</span></div>
+        <span class="acc-arrow">▼</span>
+      </div>
+      <div class="acc-body">
+        <table class="due-table">
+          <thead><tr><th>Item</th><th>Temperatura</th><th>Tempo</th><th>Ponto correto</th></tr></thead>
+          <tbody>
+            <tr><td>Croqueta de Polvo</td><td class="td-mono">180 °C</td><td class="td-mono">3–4 min</td><td>Dourado intenso, crocante ao toque.</td></tr>
+            <tr><td>Tempurá frutos do mar</td><td class="td-mono">180 °C</td><td class="td-mono">Camarão 2 min | Lula 90s</td><td>Dourado claro, massa levemente inflada.</td></tr>
+            <tr><td>Taco de Camarão (tortilha)</td><td class="td-mono">180 °C</td><td class="td-mono">2–3 min</td><td>Tortilha crocante, camarão firme.</td></tr>
+          </tbody>
+        </table>
+        <div class="alert alert-red"><strong>Temperatura é inegociável.</strong> Abaixo de 170 °C: absorve gordura. Acima de 195 °C: queima por fora, cru por dentro. Trocar óleo quando escurecer ou fumaçar a 180 °C. Filtrar entre turnos.</div>
+      </div>
+    </div>
+
+    <div class="acc-card" id="acc-cilindro">
+      <div class="acc-header" onclick="toggleAcc('acc-cilindro')">
+        <span class="acc-num">EQ02</span>
+        <span class="acc-name">Cilindro Elétrico de Massa · Aux Quente</span>
+        <div class="acc-tags"><span class="acc-tag tag-gold">Pappardelle DUE</span></div>
+        <span class="acc-arrow">▼</span>
+      </div>
+      <div class="acc-body">
+        <div class="checklist">
+          <div class="cl-item"><div class="cl-cb" style="background:var(--gold);border-color:var(--gold);"></div><span class="cl-text">Farinha na bancada antes de começar — a massa precisa de superfície enfarinhada ao sair do cilindro.</span></div>
+          <div class="cl-item"><div class="cl-cb" style="background:var(--gold);border-color:var(--gold);"></div><span class="cl-text">Começar sempre na espessura máxima (#1) e reduzir progressivamente até a espessura desejada.</span></div>
+          <div class="cl-item cl-crit"><div class="cl-cb" style="background:var(--red);border-color:var(--red);"></div><span class="cl-text cl-crit">Pappardelle DUE: espessura #5. Cortar manualmente em tiras de 2 cm com faca de chef.</span></div>
+          <div class="cl-item"><div class="cl-cb" style="background:var(--gold);border-color:var(--gold);"></div><span class="cl-text">Limpar o cilindro A SECO (nunca água) com escova própria após cada uso.</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="acc-card" id="acc-vacuo">
+      <div class="acc-header" onclick="toggleAcc('acc-vacuo')">
+        <span class="acc-num">EQ03</span>
+        <span class="acc-name">Máquina de Vácuo</span>
+        <span class="acc-arrow">▼</span>
+      </div>
+      <div class="acc-body">
+        <div class="checklist">
+          <div class="cl-item"><div class="cl-cb" style="background:var(--gold);border-color:var(--gold);"></div><span class="cl-text">Usada para marinadas rápidas, conservação de bases e sous-vide quando necessário.</span></div>
+          <div class="cl-item cl-crit"><div class="cl-cb" style="background:var(--red);border-color:var(--red);"></div><span class="cl-text cl-crit">Nunca selar líquidos quentes — resfriar completamente antes.</span></div>
+          <div class="cl-item"><div class="cl-cb" style="background:var(--gold);border-color:var(--gold);"></div><span class="cl-text">Etiquetar TUDO que for selado: produto, data, validade, responsável.</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ AUX FRIOS ═══ -->
+    <div id="frios" class="sec-header">
+      <span class="sec-title">Aux Frios · Garde Manger + Sobremesas</span>
+      <div class="sec-line"></div>
+      <span class="sec-label">Franciele (A) | Beatriz (B)</span>
+    </div>
+
+    <div class="alert alert-dark">Você guarda a estação mais <strong>visual</strong> da cozinha. Entradas frias são 80% visuais. Corte errado, temperatura incorreta, montagem descuidada — o prato não funciona.</div>
+
+    <p style="font-size:13.5px;font-weight:600;margin:20px 0 10px;">Técnica de corte · entradas frias (crítico)</p>
+    <table class="due-table">
+      <thead><tr><th>Prato</th><th>Técnica de Corte</th><th>Espessura / Tamanho</th><th>Por que é crítico</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Tiradito de Peixe</strong></td><td>Lâminas transversais</td><td class="td-mono">2–3 mm uniforme</td><td>Espessura define textura e absorção do leite de tigre.</td></tr>
+        <tr><td><strong>Tartar do Sertão</strong></td><td>Brunoise</td><td class="td-mono">3–4 mm cubos</td><td>Irregularidade arruína textura e estética.</td></tr>
+        <tr><td><strong>Burrata</strong></td><td>Sem corte — abrir na hora</td><td>Porcionar camarão ao lado</td><td>Burrata não pode ser preparada com antecedência.</td></tr>
+      </tbody>
+    </table>
+
+    <p style="font-size:13.5px;font-weight:600;margin:20px 0 10px;">Seus 9 pratos · composições atualizadas</p>
+
+    <div class="acc-card crit" id="acc-tiradito">
+      <div class="acc-header" onclick="toggleAcc('acc-tiradito')">
+        <span class="acc-num">F01</span>
+        <span class="acc-name">Tiradito de Peixe</span>
+        <div class="acc-tags"><span class="acc-tag tag-crit">Corte milimétrico</span><span class="acc-tag tag-gray">R$ 68</span></div>
+        <span class="acc-arrow">▼</span>
+      </div>
+      <div class="acc-body">
+        <div class="grid2">
+          <div><p style="font-size:12.5px;line-height:1.6;"><strong>Composição:</strong> Peixe do mar · leite de tigre sergipano · chips de batata doce · microgreens · azeite verde</p></div>
+          <div><p style="font-size:12.5px;line-height:1.6;"><strong>Execução:</strong> Lâminas 2–3 mm. Leite de tigre gelado. Servir gelado.</p></div>
+        </div>
+        <div class="alert" style="margin-top:10px;"><strong>Ponto crítico:</strong> Corte milimétrico. Servir gelado — pista fria abaixo de 4 °C.</div>
+      </div>
+    </div>
+
+    <div class="acc-card" id="acc-burrata">
+      <div class="acc-header" onclick="toggleAcc('acc-burrata')">
+        <span class="acc-num">F02</span>
+        <span class="acc-name">Burrata</span>
+        <div class="acc-tags"><span class="acc-tag tag-gold">Nunca gelada demais</span><span class="acc-tag tag-gray">R$ 105</span></div>
+        <span class="acc-arrow">▼</span>
+      </div>
+      <div class="acc-body">
+        <div class="grid2">
+          <div><p style="font-size:12.5px;line-height:1.6;"><strong>Composição:</strong> Burrata artesanal · camarão confitado em azeite · pesto sergipano · tomates confitados</p></div>
+          <div><p style="font-size:12.5px;line-height:1.6;"><strong>Execução:</strong> Abrir na hora 8–12 °C. Camarão confitado D-1 obrigatório. Pesto ao lado.</p></div>
+        </div>
+        <div class="alert alert-red" style="margin-top:10px;"><strong>Nunca gelada demais.</strong> Burrata fria demais perde cremosidade. Temperatura ideal: 8–12 °C.</div>
+      </div>
+    </div>
+
+    <div class="acc-card crit" id="acc-tartar">
+      <div class="acc-header" onclick="toggleAcc('acc-tartar')">
+        <span class="acc-num">F03</span>
+        <span class="acc-name">Tartar do Sertão</span>
+        <div class="acc-tags"><span class="acc-tag tag-crit">Gema curada</span><span class="acc-tag tag-gold">D-1</span><span class="acc-tag tag-gray">R$ 58</span></div>
+        <span class="acc-arrow">▼</span>
+      </div>
+      <div class="acc-body">
+        <div class="grid2">
+          <div><p style="font-size:12.5px;line-height:1.6;"><strong>Composição:</strong> Carne do sol dessalgada · sagu crocante · gema curada 12h · chips de mandioca</p></div>
+          <div><p style="font-size:12.5px;line-height:1.6;"><strong>Execução:</strong> Brunoise 3–4 mm. Gema curada D-1. Mise en place, não pré-montar.</p></div>
+        </div>
+        <div class="alert alert-red" style="margin-top:10px;"><strong>D-1:</strong> Gema curada 12h em shoyu — produzir D-1. Montar na hora do pedido, nunca antes.</div>
+      </div>
+    </div>
+
+    <div class="acc-card" id="acc-pannacota">
+      <div class="acc-header" onclick="toggleAcc('acc-pannacota')">
+        <span class="acc-num">F04</span>
+        <span class="acc-name">Pannacota de Baunilha</span>
+        <div class="acc-tags"><span class="acc-tag tag-crit">Pré-montar antes 17:45</span><span class="acc-tag tag-gray">R$ 42</span></div>
+        <span class="acc-arrow">▼</span>
+      </div>
+      <div class="acc-body">
+        <div class="grid2">
+          <div><p style="font-size:12.5px;line-height:1.6;"><strong>Composição:</strong> Pannacota de baunilha · goiaba verde confitada · esferas de framboesa · suspiro artesanal</p></div>
+          <div><p style="font-size:12.5px;line-height:1.6;"><strong>Execução:</strong> PRÉ-MONTAR no prato antes das 17:45. Suspiro separado. Firme mas tremendo.</p></div>
+        </div>
+        <div class="alert alert-red" style="margin-top:10px;"><strong>INEGOCIÁVEL:</strong> Pannacota PRÉ-MONTADA no prato antes da abertura do jantar (17:45).</div>
+      </div>
+    </div>
+
+    <div class="acc-card" id="acc-ganache">
+      <div class="acc-header" onclick="toggleAcc('acc-ganache')">
+        <span class="acc-num">F05</span>
+        <span class="acc-name">Ganache de Chocolate 70%</span>
+        <div class="acc-tags"><span class="acc-tag tag-gray">R$ 45</span></div>
+        <span class="acc-arrow">▼</span>
+      </div>
+      <div class="acc-body">
+        <div class="grid2">
+          <div><p style="font-size:12.5px;line-height:1.6;"><strong>Composição:</strong> Chocolate 70% · casca de laranja confitada · suspiro crocante · flor de sal · azeite</p></div>
+          <div><p style="font-size:12.5px;line-height:1.6;"><strong>Execução:</strong> Porcionada. Calda de laranja à temperatura ambiente. Suspiro granulado separado.</p></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="acc-card" id="acc-cheesecake">
+      <div class="acc-header" onclick="toggleAcc('acc-cheesecake')">
+        <span class="acc-num">F06</span>
+        <span class="acc-name">Torta Basca (Cheesecake Artesanal)</span>
+        <div class="acc-tags"><span class="acc-tag tag-crit">Pré-montar antes 17:45</span><span class="acc-tag tag-gray">R$ 52</span></div>
+        <span class="acc-arrow">▼</span>
+      </div>
+      <div class="acc-body">
+        <div class="grid2">
+          <div><p style="font-size:12.5px;line-height:1.6;"><strong>Composição:</strong> Torta basca · frutas vermelhas · farofa de avelã tostada · calda de frutas vermelhas</p></div>
+          <div><p style="font-size:12.5px;line-height:1.6;"><strong>Execução:</strong> PRÉ-MONTAR no prato. Textura cremosa — lâmina aquecida na hora de cortar.</p></div>
+        </div>
+        <div class="alert alert-red" style="margin-top:10px;"><strong>INEGOCIÁVEL:</strong> Cheesecake PRÉ-MONTADO antes de 17:45. Frutas vermelhas só na finalização.</div>
+      </div>
+    </div>
+
+    <!-- CHECKLIST FRIOS -->
+    <div id="checklist-frios" class="sec-header">
+      <span class="sec-title">Checklist Abertura · Aux Frios</span>
+      <div class="sec-line"></div>
+    </div>
+
+    <div class="alert alert-red"><strong>SOBREMESAS SÃO NÃO-NEGOCIÁVEIS:</strong> pannacota e cheesecake devem estar nos pratos ANTES da abertura do jantar (17:45). Ganache porcionada. Suspiros separados. Se isso não estiver feito às 17:45, o serviço entra em crise.</div>
+
+    <div class="checklist" id="cl-frios">
+      <div class="cl-item" onclick="toggleCheck(this)"><div class="cl-cb"></div><span class="cl-text">Pista fria ligada e entre 0 °C e 4 °C.</span></div>
+      <div class="cl-item" onclick="toggleCheck(this)"><div class="cl-cb"></div><span class="cl-text">Tiradito: peixe fatiado em lâminas 2–3 mm, leite de tigre preparado e gelado.</span></div>
+      <div class="cl-item" onclick="toggleCheck(this)"><div class="cl-cb"></div><span class="cl-text">Tartar: carne do sol dessalgada em brunoise 3–4 mm, gema curada confirmada.</span></div>
+      <div class="cl-item" onclick="toggleCheck(this)"><div class="cl-cb"></div><span class="cl-text">Burrata: porcionada e em temperatura 8–12 °C (abrir só na hora do pedido).</span></div>
+      <div class="cl-item cl-crit" onclick="toggleCheck(this)"><div class="cl-cb"></div><span class="cl-text cl-crit">Pannacota: PRÉ-MONTADA no prato, goiaba confitada + suspiro separado.</span></div>
+      <div class="cl-item cl-crit" onclick="toggleCheck(this)"><div class="cl-cb"></div><span class="cl-text cl-crit">Cheesecake: PRÉ-MONTADO no prato, frutas vermelhas só na finalização.</span></div>
+      <div class="cl-item" onclick="toggleCheck(this)"><div class="cl-cb"></div><span class="cl-text">Ganache: porcionada, suspiro crocante separado em recipiente fechado, calda de laranja pronta.</span></div>
+      <div class="cl-item" onclick="toggleCheck(this)"><div class="cl-cb"></div><span class="cl-text">Todos os componentes identificados e etiquetados com data.</span></div>
+      <div class="cl-item cl-crit" onclick="toggleCheck(this)"><div class="cl-cb"></div><span class="cl-text cl-crit">Reporte ao cozinheiro: <strong>"FRIOS OK"</strong>.</span></div>
+    </div>
+
+    <div class="progress-wrap">
+      <div class="progress-label"><span>Abertura Frios</span><span id="prog-frios-pct">0%</span></div>
+      <div class="progress-bar"><div class="progress-fill" id="prog-frios-fill" style="width:0%"></div></div>
+    </div>
+
+    <!-- ═══ AUX QUENTE ═══ -->
+    <div id="quente" class="sec-header">
+      <span class="sec-title">Aux Quente · Frituras + Massas + Apoio</span>
+      <div class="sec-line"></div>
+      <span class="sec-label">Franciele (A) | Beatriz (B)</span>
+    </div>
+
+    <div class="alert alert-dark">O cargo mais sobrecarregado da brigada. No pico: fritar croqueta + soltar massa + saltear camarão + montar mexilhões = <strong>4 ações simultâneas</strong>. Isso não é exagero — é o fluxo real do jantar lotado.</div>
+
+    <p style="font-size:13.5px;font-weight:600;margin:20px 0 10px;">Seus pratos · composições atualizadas</p>
+
+    <div class="acc-card crit" id="acc-croqueta">
+      <div class="acc-header" onclick="toggleAcc('acc-croqueta')">
+        <span class="acc-num">Q01</span>
+        <span class="acc-name">Croqueta de Polvo DUE</span>
+        <div class="acc-tags"><span class="acc-tag tag-gold">D-1</span><span class="acc-tag tag-gray">R$ 58</span></div>
+        <span class="acc-arrow">▼</span>
+      </div>
+      <div class="acc-body">
+        <div class="grid2">
+          <div><p style="font-size:12.5px;line-height:1.6;"><strong>Composição:</strong> Polvo cozido · empanamento DUE · aioli de páprica (não artesanal).</p></div>
+          <div><p style="font-size:12.5px;line-height:1.6;"><strong>Execução:</strong> Fritar 180 °C · 3–4 min. Dourado intenso. Aioli de páprica ao lado.</p></div>
+        </div>
+        <div class="alert alert-red" style="margin-top:10px;"><strong>D-1 obrigatório:</strong> Polvo cozido D-1. Sem polvo = sem croqueta. Confirmar estoque antes de abrir.</div>
+      </div>
+    </div>
+
+    <div class="acc-card" id="acc-taco">
+      <div class="acc-header" onclick="toggleAcc('acc-taco')">
+        <span class="acc-num">Q02</span>
+        <span class="acc-name">Taco Sergipano de Camarão</span>
+        <div class="acc-tags"><span class="acc-tag tag-gray">R$ 49</span></div>
+        <span class="acc-arrow">▼</span>
+      </div>
+      <div class="acc-body">
+        <div class="grid2">
+          <div><p style="font-size:12.5px;line-height:1.6;"><strong>Composição:</strong> Tortilha cuscuz com cúrcuma · camarão salteado · maxixe curado · creme abacate · azeite vermelho</p></div>
+          <div><p style="font-size:12.5px;line-height:1.6;"><strong>Execução:</strong> Tortilha fritar 2–3 min. Camarão saltear chapa. Montar na saída — máximo 2 min antes de servir.</p></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="acc-card" id="acc-toast">
+      <div class="acc-header" onclick="toggleAcc('acc-toast')">
+        <span class="acc-num">Q03</span>
+        <span class="acc-name">Toast de Costela</span>
+        <div class="acc-tags"><span class="acc-tag tag-gold">D-1</span><span class="acc-tag tag-gray">R$ 52</span></div>
+        <span class="acc-arrow">▼</span>
+      </div>
+      <div class="acc-body">
+        <div class="grid2">
+          <div><p style="font-size:12.5px;line-height:1.6;"><strong>Composição:</strong> Costela desfiada · pão de batata artesanal · milho tostado · queijo fresco regional · microgreens</p></div>
+          <div><p style="font-size:12.5px;line-height:1.6;"><strong>Execução:</strong> Pão de batata tostar. Costela D-1 obrigatório. QUEIJO FRESCO na montagem — nunca pré-montar.</p></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="acc-card" id="acc-tempura">
+      <div class="acc-header" onclick="toggleAcc('acc-tempura')">
+        <span class="acc-num">Q04</span>
+        <span class="acc-name">Frutos do Mar Tempurá</span>
+        <div class="acc-tags"><span class="acc-tag tag-crit">Timing crítico</span><span class="acc-tag tag-gray">R$ 79</span></div>
+        <span class="acc-arrow">▼</span>
+      </div>
+      <div class="acc-body">
+        <div class="grid2">
+          <div><p style="font-size:12.5px;line-height:1.6;"><strong>Composição:</strong> Camarão + lulas · massa tempurá com nori · vinagrete de manga · teriyaki de hibisco (squeeze)</p></div>
+          <div><p style="font-size:12.5px;line-height:1.6;"><strong>Execução:</strong> Massa tempurá fresca a 180 °C. Camarão 2 min | Lula 90s. Servir junto.</p></div>
+        </div>
+        <div class="alert" style="margin-top:10px;"><strong>Timing crítico:</strong> Fritar na hora do pedido. Massa tempurá fresca — nunca preparar com antecedência.</div>
+      </div>
+    </div>
+
+    <div class="acc-card crit" id="acc-pappar-q">
+      <div class="acc-header" onclick="toggleAcc('acc-pappar-q')">
+        <span class="acc-num">Q05</span>
+        <span class="acc-name">Pappardelle DUE (apoio massa)</span>
+        <div class="acc-tags"><span class="acc-tag tag-crit">Timing com bisque</span><span class="acc-tag tag-gray">R$ 110</span></div>
+        <span class="acc-arrow">▼</span>
+      </div>
+      <div class="acc-body">
+        <div class="grid2">
+          <div><p style="font-size:12.5px;line-height:1.6;"><strong>Composição:</strong> Pappardelle fresca · camarão + lulas + mexilhões · bisque · azeite trufado</p></div>
+          <div><p style="font-size:12.5px;line-height:1.6;"><strong>Execução:</strong> Pappardelle: 2–3 min cozido. Coordenar com Cozinheiro. Timing com bisque — base crítica.</p></div>
+        </div>
+        <div class="alert alert-red" style="margin-top:10px;"><strong>Atenção:</strong> Coordenar saída com Cozinheiro. Nunca pré-cozinhar a massa.</div>
+      </div>
+    </div>
+
+    <div class="acc-card" id="acc-rigatoni-q">
+      <div class="acc-header" onclick="toggleAcc('acc-rigatoni-q')">
+        <span class="acc-num">Q06</span>
+        <span class="acc-name">Rigatoni com Ragù de Costela (apoio)</span>
+        <div class="acc-tags"><span class="acc-tag tag-gold">D-1</span><span class="acc-tag tag-gray">R$ 89</span></div>
+        <span class="acc-arrow">▼</span>
+      </div>
+      <div class="acc-body">
+        <div class="grid2">
+          <div><p style="font-size:12.5px;line-height:1.6;"><strong>Composição:</strong> Costela desfiada · pomodoro artesanal · rigatoni al dente · parmesão RALADO NA HORA</p></div>
+          <div><p style="font-size:12.5px;line-height:1.6;"><strong>Execução:</strong> Rigatoni al dente. Ragù D-1. PARMESÃO RALADO NA HORA. Nunca pré-ralar.</p></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="acc-card" id="acc-flat-q">
+      <div class="acc-header" onclick="toggleAcc('acc-flat-q')">
+        <span class="acc-num">Q07</span>
+        <span class="acc-name">Flat Iron (apoio fonduta)</span>
+        <div class="acc-tags"><span class="acc-tag tag-gray">R$ 115</span></div>
+        <span class="acc-arrow">▼</span>
+      </div>
+      <div class="acc-body">
+        <div class="grid2">
+          <div><p style="font-size:12.5px;line-height:1.6;"><strong>Composição:</strong> Rigatoni · fonduta de parmesão · pomodoro artesanal · manjericão</p></div>
+          <div><p style="font-size:12.5px;line-height:1.6;"><strong>Execução:</strong> Fonduta mantida pelo Cozinheiro. Coordenar com saída do Flat Iron.</p></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CHECKLIST QUENTE -->
+    <div id="checklist-quente" class="sec-header">
+      <span class="sec-title">Checklist Abertura · Aux Quente</span>
+      <div class="sec-line"></div>
+    </div>
+
+    <div class="checklist" id="cl-quente">
+      <div class="cl-item cl-crit" onclick="toggleCheck(this)"><div class="cl-cb"></div><span class="cl-text cl-crit">Fritadeiras ligadas e a 180 °C.</span></div>
+      <div class="cl-item" onclick="toggleCheck(this)"><div class="cl-cb"></div><span class="cl-text">Óleo verificado: não está escuro nem fumando a 180 °C.</span></div>
+      <div class="cl-item cl-crit" onclick="toggleCheck(this)"><div class="cl-cb"></div><span class="cl-text cl-crit">Croquetas de polvo empanadas e prontas (polvo D-1 confirmado).</span></div>
+      <div class="cl-item" onclick="toggleCheck(this)"><div class="cl-cb"></div><span class="cl-text">Massa tempurá com nori preparada e fresca.</span></div>
+      <div class="cl-item" onclick="toggleCheck(this)"><div class="cl-cb"></div><span class="cl-text">Tortilhas de cuscuz prontas.</span></div>
+      <div class="cl-item cl-crit" onclick="toggleCheck(this)"><div class="cl-cb"></div><span class="cl-text cl-crit">Pappardelle fresca feita no cilindro (espessura #5, tiras 2 cm).</span></div>
+      <div class="cl-item" onclick="toggleCheck(this)"><div class="cl-cb"></div><span class="cl-text">Massas porcionadas e organizadas por tipo.</span></div>
+      <div class="cl-item" onclick="toggleCheck(this)"><div class="cl-cb"></div><span class="cl-text">Cozedor de massas com água fervendo.</span></div>
+      <div class="cl-item" onclick="toggleCheck(this)"><div class="cl-cb"></div><span class="cl-text">Teriyaki de Hibisco em squeeze pronto.</span></div>
+      <div class="cl-item cl-crit" onclick="toggleCheck(this)"><div class="cl-cb"></div><span class="cl-text cl-crit">Reporte ao cozinheiro: <strong>"QUENTE OK"</strong>.</span></div>
+    </div>
+
+    <div class="progress-wrap">
+      <div class="progress-label"><span>Abertura Quente</span><span id="prog-quente-pct">0%</span></div>
+      <div class="progress-bar"><div class="progress-fill" id="prog-quente-fill" style="width:0%"></div></div>
+    </div>
+
+    <!-- ═══ REGRAS ═══ -->
+    <div id="regras" class="sec-header">
+      <span class="sec-title">Regras Gerais + Comunicação</span>
+      <div class="sec-line"></div>
+    </div>
+
+    <table class="due-table">
+      <thead><tr><th>Regra</th><th>O que significa</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Mise en place é religião</strong></td><td>Não existe improvisar. Se o componente não está pronto às 11:30 (almoço) ou 17:45 (jantar), o serviço começa errado.</td></tr>
+        <tr><td><strong>Limpeza contínua</strong></td><td>Bancada suja = acidente esperando. Óleo respinga no Aux Quente. Peixe cru ao lado de burrata = contaminação cruzada.</td></tr>
+        <tr><td><strong>OUVIDO confirmado</strong></td><td>Ouviu a comanda? Responde OUVIDO. Não entendeu? Pede para repetir. Nunca fingir que ouviu.</td></tr>
+        <tr><td><strong>Temperatura é vida</strong></td><td>Frio tem que estar frio (pista fria abaixo de 4 °C). Óleo tem que estar a 180 °C. Sem temperatura correta, não sai.</td></tr>
+        <tr><td><strong>Virada de turno — Beatriz</strong></td><td>Repor TODO o mise en place antes de 17:30. Sobremesas pré-montadas antes de 17:45. Isso é inegociável.</td></tr>
+        <tr><td><strong>Noturno — auxiliar único</strong></td><td>Beatriz acumula Frios + Quente à noite. Só funciona com mise en place 100% completo. Se uma condição falha, o serviço paralisa.</td></tr>
+      </tbody>
+    </table>
+
+    <!-- ═══ HACCP ═══ -->
+    <div id="alergenos" class="sec-header">
+      <span class="sec-title">Segurança Alimentar · HACCP Básico</span>
+      <div class="sec-line"></div>
+    </div>
+
+    <p style="font-size:13.5px;font-weight:600;margin:0 0 10px;">Zonas de temperatura críticas</p>
+    <table class="due-table">
+      <thead><tr><th>Zona</th><th>Temperatura</th><th>O que significa</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Zona de perigo</strong></td><td class="td-mono td-crit" style="color:var(--red)">5 °C – 65 °C</td><td>Bactérias se multiplicam nessa faixa. Nunca manter alimento aqui por mais de 2h.</td></tr>
+        <tr><td>Refrigeração segura</td><td class="td-mono">Abaixo de 5 °C</td><td>Câmaras e pista fria devem estar sempre nessa faixa.</td></tr>
+        <tr><td>Cozimento — aves/suínos</td><td class="td-mono">75 °C+</td><td>Frango e pato precisam atingir 75 °C no ponto mais espesso.</td></tr>
+        <tr><td>Cozimento — carnes vermelhas</td><td class="td-mono">63 °C+ (ao ponto)</td><td>Malpassado = 52–55 °C. Comunicar risco ao cliente quando solicitado.</td></tr>
+        <tr><td>Conservação quente</td><td class="td-mono">Acima de 65 °C</td><td>Pratos e bases mantidos em banho-maria.</td></tr>
+      </tbody>
+    </table>
+
+    <p style="font-size:13.5px;font-weight:600;margin:20px 0 10px;">Higiene pessoal — inegociáveis</p>
+    <div class="checklist">
+      <div class="cl-item"><div class="cl-cb" style="background:var(--gold);border-color:var(--gold);"></div><span class="cl-text">Lavar as mãos ao chegar, após o banheiro, após tocar no rosto, após lidar com alimentos crus e após o lixo.</span></div>
+      <div class="cl-item"><div class="cl-cb" style="background:var(--gold);border-color:var(--gold);"></div><span class="cl-text">Cabelos sempre presos com touca ou rede. Zero exceção durante o serviço.</span></div>
+      <div class="cl-item"><div class="cl-cb" style="background:var(--gold);border-color:var(--gold);"></div><span class="cl-text">Unhas curtas e sem esmalte. Unhas longas acumulam bactérias e caem nos alimentos.</span></div>
+      <div class="cl-item"><div class="cl-cb" style="background:var(--gold);border-color:var(--gold);"></div><span class="cl-text">Sem anéis, pulseiras, brincos durante o preparo. Relógios ficam fora da cozinha.</span></div>
+      <div class="cl-item cl-crit"><div class="cl-cb" style="background:var(--red);border-color:var(--red);"></div><span class="cl-text cl-crit">Sintomas de gripe ou doença gastrointestinal: avisar François. Dependendo dos sintomas, não trabalha.</span></div>
+    </div>
+
+    <p style="font-size:13.5px;font-weight:600;margin:20px 0 10px;">Alérgenos por prato · saber de cor</p>
+    <table class="due-table">
+      <thead><tr><th>Alérgeno</th><th>Pratos com alto risco no DUE</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Glúten (trigo)</strong></td><td>Pappardelle, Rigatoni, Croqueta (empanamento), Toast, Tempurá.</td></tr>
+        <tr><td><strong>Crustáceos</strong></td><td>Bisque, Taco Camarão, Pappardelle DUE, Burrata (camarão confitado).</td></tr>
+        <tr><td><strong>Peixes</strong></td><td>Tiradito, Robalo, Arroz de Polvo, Pappardelle DUE (bisque).</td></tr>
+        <tr><td><strong>Laticínios</strong></td><td>Burrata, Fonduta, Ganache, Pannacota, Cheesecake, Rigatoni, Xerém.</td></tr>
+        <tr><td><strong>Ovos</strong></td><td>Tartar (gema curada), Aioli, massa fresca (pappardelle).</td></tr>
+        <tr><td><strong>Frutos secos</strong></td><td>Cheesecake (avelã), Coxa de Pato (castanha).</td></tr>
+        <tr><td><strong style="color:var(--red);">Jambu ⚠</strong></td><td><strong>Frango Tucupi &amp; Jambu — AVISAR: causa adormecimento na língua (normal).</strong></td></tr>
+      </tbody>
+    </table>
+
+    <div class="alert-green alert" style="margin-top:20px;"><strong>FIFO e PVPS:</strong> o produto que chegou primeiro ou vence primeiro é o que sai primeiro. Carnes cruas sempre na prateleira inferior, nunca acima de alimentos prontos. Etiquetar TUDO: nome, data, validade, responsável.</div>
+
+    <div class="quote" style="margin-top:40px;">"O mise en place não é preparação para o serviço — é o próprio serviço começando."</div>
+
+  </div>
+</main>
+
+<script>
+function toggleAcc(id) {
+  const card = document.getElementById(id);
+  card.classList.toggle('open');
+}
+
+function toggleCheck(item) {
+  item.classList.toggle('checked');
+  const cl = item.closest('.checklist');
+  const items = cl.querySelectorAll('.cl-item');
+  const checked = cl.querySelectorAll('.cl-item.checked').length;
+  const pct = items.length ? Math.round(checked / items.length * 100) : 0;
+
+  // atualiza barra de progresso imediatamente após
+  const wrap = cl.nextElementSibling;
+  if (wrap && wrap.classList.contains('progress-wrap')) {
+    const fill = wrap.querySelector('.progress-fill');
+    const lbl = wrap.querySelector('[id$="-pct"]');
+    if (fill) fill.style.width = pct + '%';
+    if (lbl) lbl.textContent = pct + '%';
+  }
+  // atualiza barras nomeadas
+  if (cl.id === 'cl-frios') {
+    document.getElementById('prog-frios-fill').style.width = pct + '%';
+    document.getElementById('prog-frios-pct').textContent = pct + '%';
+  }
+  if (cl.id === 'cl-quente') {
+    document.getElementById('prog-quente-fill').style.width = pct + '%';
+    document.getElementById('prog-quente-pct').textContent = pct + '%';
+  }
+}
+
+let allOpen = false;
+function expandAll() {
+  allOpen = !allOpen;
+  document.querySelectorAll('.acc-card').forEach(c => {
+    if (allOpen) c.classList.add('open'); else c.classList.remove('open');
+  });
+}
+
+function filterContent() {
+  const q = document.getElementById('searchInput').value.toLowerCase();
+  document.querySelectorAll('.acc-card').forEach(card => {
+    card.style.display = card.textContent.toLowerCase().includes(q) ? '' : 'none';
+  });
+}
+
+function scrollToSection(id, el) {
+  document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  const target = document.getElementById(id);
+  if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      const id = e.target.id;
+      document.querySelectorAll('.sb-link').forEach(l => {
+        l.classList.toggle('active', l.getAttribute('href') === '#' + id);
+      });
+    }
+  });
+}, { threshold: 0.3 });
+document.querySelectorAll('[id]').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>

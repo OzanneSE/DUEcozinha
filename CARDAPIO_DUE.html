@@ -1,0 +1,1150 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cardápio — DUE Restaurante</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'DM Sans', sans-serif;
+  color: #111009;
+  background: #F0ECE0;
+}
+
+/* ══════════════════════════════════
+   PÁGINA (folha A4 impressa / tela)
+══════════════════════════════════ */
+.page {
+  width: 794px;
+  min-height: 1123px;
+  margin: 20px auto;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 4px 32px rgba(0,0,0,.18);
+}
+
+/* ══════════════════════════════════
+   PÁGINA 1 — CAPA
+══════════════════════════════════ */
+.page-cover {
+  background: #111009;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 1123px;
+  position: relative;
+}
+.cover-bg {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+.cover-bg-word {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 380px;
+  font-weight: 700;
+  color: #fff;
+  opacity: .028;
+  letter-spacing: 30px;
+  user-select: none;
+}
+.cover-ornament-top,
+.cover-ornament-bottom {
+  position: absolute;
+  left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, transparent 0%, #E8C870 20%, #E8C870 80%, transparent 100%);
+  opacity: .4;
+}
+.cover-ornament-top { top: 60px; }
+.cover-ornament-bottom { bottom: 60px; }
+
+.cover-content { position: relative; z-index: 1; text-align: center; }
+.cover-logo {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 148px;
+  font-weight: 700;
+  color: #E8C870;
+  letter-spacing: 22px;
+  line-height: 1;
+  display: block;
+}
+.cover-rule {
+  width: 60px; height: 1px;
+  background: #E8C870;
+  margin: 22px auto;
+  opacity: .6;
+}
+.cover-sub {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 11px;
+  font-weight: 400;
+  letter-spacing: 8px;
+  text-transform: uppercase;
+  color: rgba(232,200,112,.6);
+  margin-bottom: 6px;
+}
+.cover-tagline {
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-size: 17px;
+  color: rgba(232,200,112,.45);
+  letter-spacing: .5px;
+  margin-top: 14px;
+}
+.cover-footer {
+  position: absolute;
+  bottom: 38px;
+  left: 0; right: 0;
+  text-align: center;
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  color: rgba(232,200,112,.3);
+}
+
+/* ══════════════════════════════════
+   PÁGINAS INTERNAS — BASE
+══════════════════════════════════ */
+.page-inner {
+  background: #FAF6EC;
+  padding: 0 52px 70px 52px;
+  min-height: 1123px;
+  position: relative;
+}
+
+/* linha decorativa top */
+.page-inner::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: #111009;
+}
+
+/* footer decorativo */
+.page-foot {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 56px;
+  background: #111009;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+}
+.pf-word {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 6px;
+  color: rgba(232,200,112,.5);
+  text-transform: uppercase;
+}
+.pf-dot {
+  width: 3px; height: 3px;
+  border-radius: 50%;
+  background: rgba(232,200,112,.25);
+}
+
+/* section bar */
+.sbar {
+  background: #111009;
+  color: #E8C870;
+  text-align: center;
+  padding: 13px 40px;
+  margin: 0 -52px 32px -52px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 7px;
+  text-transform: uppercase;
+}
+
+/* sub-section */
+.ssub {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 20px;
+  font-weight: 600;
+  color: #111009;
+  margin: 26px 0 10px 0;
+  padding-bottom: 6px;
+  border-bottom: 1px solid #D0C898;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.ssub-rule {
+  flex: 1;
+  height: 1px;
+  background: #D0C898;
+  margin-left: 12px;
+}
+
+/* ══════════════════════════════════
+   PRATO
+══════════════════════════════════ */
+.dish {
+  margin-bottom: 24px;
+  page-break-inside: avoid;
+}
+.dish-hd {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 5px;
+  gap: 12px;
+}
+.dish-name {
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 600;
+  font-size: 15px;
+  color: #111009;
+  line-height: 1.2;
+}
+.dish-dots {
+  flex: 1;
+  border-bottom: 1px dotted #C8C0A0;
+  margin: 0 6px 4px 6px;
+  min-width: 16px;
+}
+.dish-price {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 18px;
+  font-weight: 600;
+  color: #5A3E00;
+  white-space: nowrap;
+}
+.dish-desc {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 13.5px;
+  line-height: 1.62;
+  color: #4A4438;
+  text-align: justify;
+}
+.dish-badge {
+  display: inline-block;
+  font-family: 'DM Mono', monospace;
+  font-size: 8px;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: #7A5C10;
+  background: #FAF3DF;
+  border: 1px solid #E0C860;
+  padding: 2px 6px;
+  border-radius: 2px;
+  margin-left: 6px;
+  vertical-align: middle;
+}
+.dish-rule {
+  height: 1px;
+  background: linear-gradient(90deg, #D0C898 0%, transparent 100%);
+  margin-top: 16px;
+  opacity: .4;
+}
+
+/* ══════════════════════════════════
+   PÁGINA MENU EXECUTIVO
+══════════════════════════════════ */
+.page-exec {
+  background: #FAF6EC;
+  min-height: 1123px;
+  position: relative;
+  padding: 0;
+  overflow: hidden;
+}
+.exec-header {
+  background: #111009;
+  padding: 34px 52px 28px 52px;
+  position: relative;
+}
+.exec-header::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent 0%, #E8C870 30%, #E8C870 70%, transparent 100%);
+  opacity: .5;
+}
+.exec-supertitle {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: 4px;
+  color: rgba(232,200,112,.5);
+  margin-bottom: 8px;
+}
+.exec-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 42px;
+  font-weight: 700;
+  color: #E8C870;
+  letter-spacing: 3px;
+  line-height: 1;
+}
+.exec-subtitle {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 11px;
+  font-weight: 400;
+  color: rgba(232,200,112,.55);
+  letter-spacing: 2px;
+  margin-top: 10px;
+}
+.exec-body {
+  padding: 36px 52px 80px 52px;
+}
+.exec-dish {
+  margin-bottom: 28px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid #D8D0B0;
+}
+.exec-dish:last-child { border-bottom: none; }
+.exec-dish-hd {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+.exec-num {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  color: #C0A870;
+  min-width: 20px;
+}
+.exec-dish-name {
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 600;
+  font-size: 16px;
+  color: #111009;
+}
+.exec-dish-desc {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 13.5px;
+  line-height: 1.65;
+  color: #4A4438;
+  text-align: justify;
+  padding-left: 28px;
+}
+
+/* ══════════════════════════════════
+   PÁGINA BEBIDAS
+══════════════════════════════════ */
+.page-beb {
+  background: #FAF6EC;
+  min-height: 1123px;
+  position: relative;
+  padding: 0;
+}
+.beb-header {
+  background: #111009;
+  padding: 36px 52px;
+  position: relative;
+  overflow: hidden;
+}
+.beb-bg-word {
+  position: absolute;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 180px;
+  font-weight: 700;
+  color: #fff;
+  opacity: .04;
+  top: 50%;
+  right: -20px;
+  transform: translateY(-50%);
+  letter-spacing: 10px;
+}
+.beb-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 52px;
+  font-weight: 700;
+  color: #E8C870;
+  letter-spacing: 10px;
+  text-transform: uppercase;
+}
+.beb-sub {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: rgba(232,200,112,.4);
+  margin-top: 6px;
+}
+.beb-body {
+  padding: 36px 52px 80px 52px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0 48px;
+}
+.beb-cat {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: #5A3E00;
+  margin: 22px 0 8px;
+  border-bottom: 1px solid #D0C898;
+  padding-bottom: 5px;
+}
+.beb-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding: 4px 0;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 14px;
+  color: #4A4438;
+  border-bottom: 1px dotted rgba(192,180,140,.3);
+}
+.beb-item:last-child { border-bottom: none; }
+.beb-item-name { flex: 1; }
+.beb-item-sub {
+  font-style: italic;
+  font-size: 11px;
+  color: #8A7858;
+  margin-left: 4px;
+}
+.beb-item-price {
+  font-weight: 600;
+  color: #5A3E00;
+  min-width: 48px;
+  text-align: right;
+  font-size: 14px;
+}
+
+/* ══════════════════════════════════
+   PÁGINA DRINKS
+══════════════════════════════════ */
+.page-drinks {
+  background: #0E0C08;
+  min-height: 1123px;
+  position: relative;
+  padding: 0;
+  overflow: hidden;
+}
+.drinks-accent {
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, transparent 0%, #E8C870 30%, #E8C870 70%, transparent 100%);
+  opacity: .5;
+}
+.drinks-header {
+  padding: 40px 52px 32px;
+  position: relative;
+  z-index: 1;
+}
+.drinks-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 72px;
+  font-weight: 700;
+  color: #E8C870;
+  letter-spacing: 16px;
+  text-transform: uppercase;
+  opacity: .85;
+  line-height: 1;
+}
+.drinks-sub {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: rgba(232,200,112,.3);
+  margin-top: 8px;
+}
+.drinks-grid {
+  padding: 0 52px 80px 52px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0 40px;
+  position: relative;
+  z-index: 1;
+}
+.drink {
+  padding: 18px 0;
+  border-bottom: 1px solid rgba(232,200,112,.08);
+}
+.drink:last-child { border-bottom: none; }
+.drink-hd {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 4px;
+}
+.drink-name {
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 600;
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: #E8C870;
+}
+.drink-price {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 18px;
+  font-weight: 600;
+  color: rgba(232,200,112,.75);
+}
+.drink-desc {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 12.5px;
+  color: rgba(232,200,112,.42);
+  line-height: 1.5;
+}
+.drinks-footer {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 56px;
+  background: rgba(232,200,112,.06);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  z-index: 1;
+}
+.drinks-footer-text {
+  font-family: 'DM Mono', monospace;
+  font-size: 8px;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  color: rgba(232,200,112,.2);
+}
+
+/* ══════════════════════════════════
+   NAV (tela apenas)
+══════════════════════════════════ */
+.nav-bar {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: #111009;
+  padding: 12px 0;
+  border-bottom: 1px solid rgba(232,200,112,.15);
+}
+.nav-inner {
+  max-width: 794px;
+  margin: 0 auto;
+  padding: 0 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.nav-brand {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 20px;
+  font-weight: 700;
+  color: #E8C870;
+  letter-spacing: 5px;
+  text-decoration: none;
+}
+.nav-links {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+}
+.nav-link {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: rgba(232,200,112,.5);
+  text-decoration: none;
+  padding: 5px 10px;
+  border-radius: 2px;
+  transition: all .18s;
+}
+.nav-link:hover {
+  color: #E8C870;
+  background: rgba(232,200,112,.08);
+}
+.nav-print {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: rgba(232,200,112,.35);
+  background: none;
+  border: 1px solid rgba(232,200,112,.2);
+  padding: 5px 12px;
+  border-radius: 2px;
+  cursor: pointer;
+  transition: all .18s;
+}
+.nav-print:hover {
+  color: #E8C870;
+  border-color: rgba(232,200,112,.5);
+}
+
+/* ══════════════════════════════════
+   KIDS
+══════════════════════════════════ */
+.kids-desc {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 13px;
+  line-height: 1.6;
+  color: #4A4438;
+}
+.kids-note {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 11px;
+  font-style: italic;
+  color: #8A7858;
+  margin-top: 3px;
+}
+
+/* ══════════════════════════════════
+   PRINT
+══════════════════════════════════ */
+@media print {
+  .nav-bar { display: none; }
+  body { background: white; }
+  .page {
+    margin: 0;
+    page-break-after: always;
+    box-shadow: none;
+    width: 100%;
+  }
+}
+
+/* ══════════════════════════════════
+   MOBILE
+══════════════════════════════════ */
+@media (max-width: 860px) {
+  .page { width: 100%; margin: 0; box-shadow: none; border-radius: 0; }
+  .page-inner, .exec-body, .beb-body, .drinks-grid { padding-left: 24px; padding-right: 24px; }
+  .sbar { margin-left: -24px; margin-right: -24px; }
+  .beb-body { grid-template-columns: 1fr; gap: 0; }
+  .drinks-grid { grid-template-columns: 1fr; }
+  .cover-logo { font-size: 100px; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV BAR (tela) -->
+<nav class="nav-bar" id="topo">
+  <div class="nav-inner">
+    <a class="nav-brand" href="index.html">DUE</a>
+    <div class="nav-links">
+      <a class="nav-link" href="#entradas">Entradas</a>
+      <a class="nav-link" href="#principais">Principais</a>
+      <a class="nav-link" href="#sobremesas">Sobremesas</a>
+      <a class="nav-link" href="#executivo">Executivo</a>
+      <a class="nav-link" href="#bebidas">Bebidas</a>
+      <a class="nav-link" href="#drinks">Drinks</a>
+    </div>
+    <button class="nav-print" onclick="window.print()">&#9113; Imprimir</button>
+  </div>
+</nav>
+
+<!-- ══════════════════════════════
+  PÁGINA 1 — CAPA
+══════════════════════════════════ -->
+<div class="page page-cover">
+  <div class="cover-bg"><div class="cover-bg-word">DUE</div></div>
+  <div class="cover-ornament-top"></div>
+  <div class="cover-ornament-bottom"></div>
+  <div class="cover-content">
+    <span class="cover-logo">DUE</span>
+    <div class="cover-rule"></div>
+    <div class="cover-sub">Restaurante &nbsp;&middot;&nbsp; Jardim Europa &nbsp;&middot;&nbsp; Aracaju</div>
+    <div class="cover-tagline">Ingredientes que têm endereço. Técnica que tem propósito.</div>
+  </div>
+  <div class="cover-footer">Cozinha Contemporânea Autoral &nbsp;&middot;&nbsp; Abertura Abril 2026</div>
+</div>
+
+<!-- ══════════════════════════════
+  PÁGINA 2 — ENTRADAS
+══════════════════════════════════ -->
+<div class="page page-inner" id="entradas">
+  <div class="sbar">Entradas</div>
+
+  <div class="ssub">Frias</div>
+
+  <div class="dish">
+    <div class="dish-hd">
+      <span class="dish-name">Tiradito de Peixe</span>
+      <span class="dish-dots"></span>
+      <span class="dish-price">68</span>
+    </div>
+    <div class="dish-desc">Peixe do mar cortado em fatias translúcidas, banhado no Leite de Tigre DUE — cítrico de laranja e limão, tucupi e talos de coentro. A cura acontece na mesa enquanto você aprecia os chips de batata doce artesanais e microgreens de produtores locais. Azeite verde DUE fecha com perfume de salsinha, manjericão e pimenta de cheiro.</div>
+    <div class="dish-rule"></div>
+  </div>
+
+  <div class="dish">
+    <div class="dish-hd">
+      <span class="dish-name">Burrata</span>
+      <span class="dish-dots"></span>
+      <span class="dish-price">105</span>
+    </div>
+    <div class="dish-desc">Burrata artesanal — a faca toca a superfície e o creme interior escorre denso e levemente ácido. Camarões confitados em baixa temperatura, tomates confitados a 80°C até concentrar toda doçura sem perder a firmeza. Pesto Sergipano de castanha de caju, manjericão e coentro com parmesão. Azeite aromatizado une tudo em coerência silenciosa.</div>
+    <div class="dish-rule"></div>
+  </div>
+
+  <div class="dish">
+    <div class="dish-hd">
+      <span class="dish-name">Tartar do Sertão</span>
+      <span class="dish-dots"></span>
+      <span class="dish-price">58</span>
+    </div>
+    <div class="dish-desc">Carne do sol curada com sal e leite em pó, picada em brunoise — a gordura é dela mesma, o sabor também. A gema curada por 12 horas em shoyu chega intacta sobre o centro: quando quebrada, escorre como seda e cria uma emulsão natural. Sagu crocante desidratado e chips de mandioca artesanais para textura. Reverência ao sertão.</div>
+    <div class="dish-rule"></div>
+  </div>
+
+  <div class="ssub" style="margin-top: 30px;">Quentes</div>
+
+  <div class="dish">
+    <div class="dish-hd">
+      <span class="dish-name">Croqueta de Polvo DUE</span>
+      <span class="dish-dots"></span>
+      <span class="dish-price">58</span>
+    </div>
+    <div class="dish-desc">Polvo cozido em pressão até o ponto exato, incorporado ao recheio com queijo coalho defumado. Envolto no Empanamento DUE e frito até a casca produzir o estalo que se ouve antes de morder. O aioli de páprica defumada — lactonese feita com leite gelado e mostarda dijon — chega aveludado, com uma pontada que não intimida.</div>
+    <div class="dish-rule"></div>
+  </div>
+
+  <div class="dish">
+    <div class="dish-hd">
+      <span class="dish-name">Taco Sergipano de Camarão</span>
+      <span class="dish-dots"></span>
+      <span class="dish-price">49</span>
+    </div>
+    <div class="dish-desc">A tortilha é de farinha com fubá, páprica e açafrão — cor dourada, textura granulada, perfume do interior nordestino em cada mordida. Camarões com marcação de chapa que carrega aroma defumado sem sacrificar a maciez. Creme de abacate, picles de maxixe artesanal curado 24 horas, azeite vermelho DUE de coloral e páprica defumada.</div>
+    <div class="dish-rule"></div>
+  </div>
+
+  <div class="dish">
+    <div class="dish-hd">
+      <span class="dish-name">Toast de Costela</span>
+      <span class="dish-dots"></span>
+      <span class="dish-price">52</span>
+    </div>
+    <div class="dish-desc">Pão de batata artesanal tostado até a crosta ranger — firme o suficiente para sustentar a costela desfiada após doze horas de marinada e três horas de cocção lenta no forno combinado. Milho tostado traz adocicado e textura, queijo fresco regional leveza e acidez. Microgreens equilibram tudo.</div>
+  </div>
+
+  <div class="page-foot">
+    <span class="pf-word">D</span><span class="pf-dot"></span>
+    <span class="pf-word">U</span><span class="pf-dot"></span>
+    <span class="pf-word">E</span>
+  </div>
+</div>
+
+<!-- ══════════════════════════════
+  PÁGINA 3 — INTERMEDIÁRIO + CARNES
+══════════════════════════════════ -->
+<div class="page page-inner" id="principais">
+  <div class="sbar">Intermediário</div>
+
+  <div class="dish">
+    <div class="dish-hd">
+      <span class="dish-name">Frutos do Mar Tempurá</span>
+      <span class="dish-dots"></span>
+      <span class="dish-price">79</span>
+    </div>
+    <div class="dish-desc">Massa tempurá com nori em pó e cerveja gelada — leve, estaladiça, com sabor marinho que prepara o palato. Camarões e lulas preservados pelo calor rápido da fritura bem executada. Vinagrete de manga tropical vibrante e ácido, teriyaki de hibisco DUE com canela e casca de laranja — contraste entre o doce, o floral e o salgado.</div>
+  </div>
+
+  <div class="sbar" style="margin-top: 36px;">Principais &nbsp;·&nbsp; Carnes</div>
+
+  <div class="dish">
+    <div class="dish-hd">
+      <span class="dish-name">Filé Alto com Crosta de Ervas</span>
+      <span class="dish-dots"></span>
+      <span class="dish-price">125</span>
+    </div>
+    <div class="dish-desc">O filé sela na chapa e sai com o centro rosé — a crosta de ervas, aplicada antes do forno combinado, quebra no primeiro dente liberando tomilho, alecrim e salsinha. Embaixo, xerém cremoso DUE enriquecido com manteiga de garrafa, parmesão, curry e páprica defumada. Demi-glace de produção própria — mocotó, carcaça e horas de redução. Azeite verde de prensagem a frio.</div>
+    <div class="dish-rule"></div>
+  </div>
+
+  <div class="dish">
+    <div class="dish-hd">
+      <span class="dish-name">Coxa de Pato Confitada</span>
+      <span class="dish-dots"></span>
+      <span class="dish-price">139</span>
+    </div>
+    <div class="dish-desc">Curada doze horas em sal marinho e tomilho, confitada quatro horas a 90°C em gordura de pato aromatizada com canela, anis e cravo — pele crocante no forno combinado. Purê de mandioquinha com cenoura sedoso e adocicado. Farofa de castanha, confit de tangerina e laranja Bahia cristalizado em cocção lenta. Demi-glace fecha em silêncio.</div>
+    <div class="dish-rule"></div>
+  </div>
+
+  <div class="dish">
+    <div class="dish-hd">
+      <span class="dish-name">Carré de Cordeiro <span class="dish-badge">★ Assinatura</span></span>
+      <span class="dish-dots"></span>
+      <span class="dish-price">165</span>
+    </div>
+    <div class="dish-desc">Três costelas de cordeiro seladas na chapa com gordura dourada, centro rosé preservado. Pappardelle fresco laminado à mão todas as manhãs — farinha, gema e cúrcuma — envolvido em manteiga trufada até absorver gordura e a nota terrosa da trufa. Gremolata de limão, alho e salsinha corta com acidez. Demi-glace une. Silêncio à mesa.</div>
+    <div class="dish-rule"></div>
+  </div>
+
+  <div class="dish">
+    <div class="dish-hd">
+      <span class="dish-name">Flat Iron</span>
+      <span class="dish-dots"></span>
+      <span class="dish-price">115</span>
+    </div>
+    <div class="dish-desc">Corte marmorizado que na chapa ganha crosta escura com toda a reação de Maillard em cada mordida. Chega sobre rigatoni al dente banhado em fonduta de parmesão — béchamel infusionado com louro e noz moscada, fundido com parmesão ralado. Pomodoro artesanal reduzido traz acidez que equilibra a gordura. Manjericão desidratado fecha com crocância e perfume.</div>
+    <div class="dish-rule"></div>
+  </div>
+
+  <div class="dish">
+    <div class="dish-hd">
+      <span class="dish-name">Filé do Sertão</span>
+      <span class="dish-dots"></span>
+      <span class="dish-price">119</span>
+    </div>
+    <div class="dish-desc">Carne do sol curada doze horas com sal e leite em pó, grelhada na chapa em manteiga de garrafa que fumega e perfuma a cozinha. Chega sobre o Rubacão Sergipano: arroz com feijão verde, queijo coalho e charque, enriquecido com manteiga de garrafa até uma cremosidade que não é italiana, não é francesa — é sergipana. Couve crocante em fios como contraponto aéreo.</div>
+  </div>
+
+  <div class="page-foot">
+    <span class="pf-word">D</span><span class="pf-dot"></span>
+    <span class="pf-word">U</span><span class="pf-dot"></span>
+    <span class="pf-word">E</span>
+  </div>
+</div>
+
+<!-- ══════════════════════════════
+  PÁGINA 4 — PEIXES, MASSAS, SOBREMESAS
+══════════════════════════════════ -->
+<div class="page page-inner" id="sobremesas">
+  <div class="sbar">Principais &nbsp;·&nbsp; Peixes</div>
+
+  <div class="dish">
+    <div class="dish-hd">
+      <span class="dish-name">Robalo com Pele Crocante</span>
+      <span class="dish-dots"></span>
+      <span class="dish-price">118</span>
+    </div>
+    <div class="dish-desc">Lombo de robalo com a pele para baixo e pressão constante — pele dourada estaladiça, carne branca e úmida em todo o interior. Mousseline de banana da terra assada uma hora a 150°C, com creme de leite e toque de curry. Picles de maxixe artesanal curado 24 horas e tomate cereja com acidez viva. Azeite verde e limão tahiti fecham com leveza.</div>
+    <div class="dish-rule"></div>
+  </div>
+
+  <div class="dish">
+    <div class="dish-hd">
+      <span class="dish-name">Arroz de Polvo DUE <span class="dish-badge">★ Assinatura</span></span>
+      <span class="dish-dots"></span>
+      <span class="dish-price">145</span>
+    </div>
+    <div class="dish-desc">Bisque de crustáceos artesanal — cascas tostadas, flambadas com conhaque, reduzidas com creme de leite. O arroz arbóreo absorve esse caldo aos poucos, no método do risoto, até a consistência caldosa entre o cremoso e o fluido. Parmesão fora do fogo, emulsiona e sela. Tentáculos de polvo grelhados na chapa com alho e alecrim. O prato que define o DUE.</div>
+  </div>
+
+  <div class="sbar" style="margin-top: 32px;">Massas Artesanais</div>
+
+  <div class="dish">
+    <div class="dish-hd">
+      <span class="dish-name">Pappardelle DUE</span>
+      <span class="dish-dots"></span>
+      <span class="dish-price">110</span>
+    </div>
+    <div class="dish-desc">Massa laminada à mão todas as manhãs — farinha, gema e cúrcuma — fina o suficiente para sentir o molho, espessa para aguentar o peso do mar. Bisque de crustáceos artesanal envolve cada tira com densidade dourada oceânica. Camarões, lulas e mexilhões grelhados separadamente. Azeite trufado fecha com nota terrosa.</div>
+    <div class="dish-rule"></div>
+  </div>
+
+  <div class="dish">
+    <div class="dish-hd">
+      <span class="dish-name">Rigatoni com Ragù de Costela</span>
+      <span class="dish-dots"></span>
+      <span class="dish-price">89</span>
+    </div>
+    <div class="dish-desc">O ragù começa com a costela inteira marinada doze horas e braseada a 130°C até desfiar. Pomodoro artesanal DUE — tomates sem sementes, cebola, alho, açúcar mascavo e manjericão ao final — reduzido até a doçura concentrada, integra a gordura da carne sem afogar o prato. Parmesão de 12 meses ralado na montagem derrete no primeiro sopro.</div>
+  </div>
+
+  <div class="sbar" style="margin-top: 28px;">Sobremesas</div>
+
+  <div class="dish">
+    <div class="dish-hd">
+      <span class="dish-name">Pannacota de Baunilha</span>
+      <span class="dish-dots"></span>
+      <span class="dish-price">42</span>
+    </div>
+    <div class="dish-desc">A textura que treme: firme o suficiente para se sustentar, sedosa o bastante para derreter — creme de leite fresco e pasta de baunilha natural, sem extrato. Esferas de framboesa estouram com acidez viva, a goiaba verde confitada traz doçura da fruta antes de amadurecer. Suspiro artesanal desidratado três horas quebra com crocância seca e efêmera.</div>
+    <div class="dish-rule"></div>
+  </div>
+
+  <div class="dish">
+    <div class="dish-hd">
+      <span class="dish-name">Ganache de Chocolate 70%</span>
+      <span class="dish-dots"></span>
+      <span class="dish-price">45</span>
+    </div>
+    <div class="dish-desc">Chocolate belga 70% emulsionado com creme de leite infusionado em raspas de laranja e manteiga — consistência aveludada que não escorre, apenas cede. Casca de laranja confit cristalizada com doçura cítrica, suspiro crocante com leveza efêmera. Flor de sal potencializa o cacau, um fio de azeite fecha com profundidade sedosa.</div>
+    <div class="dish-rule"></div>
+  </div>
+
+  <div class="dish">
+    <div class="dish-hd">
+      <span class="dish-name">Torta Basca</span>
+      <span class="dish-dots"></span>
+      <span class="dish-price">52</span>
+    </div>
+    <div class="dish-desc">Superfície queimada que esconde um interior cremoso — cream cheese com parmesão e raspas de limão siciliano, que ninguém identifica mas todo mundo sente. Assada em duas temperaturas até o ponto exato entre o firme e o que mal se sustenta. Calda de frutas vermelhas vibrante corta a gordura, farofa de avelã tostada fecha com textura e aroma.</div>
+  </div>
+
+  <div class="page-foot">
+    <span class="pf-word">D</span><span class="pf-dot"></span>
+    <span class="pf-word">U</span><span class="pf-dot"></span>
+    <span class="pf-word">E</span>
+  </div>
+</div>
+
+<!-- ══════════════════════════════
+  PÁGINA 5 — PARA OS PEQUENOS
+══════════════════════════════════ -->
+<div class="page page-inner">
+  <div class="sbar">Para os Pequenos</div>
+
+  <div class="dish">
+    <div class="dish-hd">
+      <span class="dish-name">Rigatoni na Manteiga</span>
+      <span class="dish-dots"></span>
+      <span class="dish-price">38</span>
+    </div>
+    <div class="kids-desc">Massa cozida no ponto certo, envolta em manteiga de garrafa e parmesão ralado na hora. Simples, honesto, gostoso de verdade.</div>
+    <div class="dish-rule"></div>
+  </div>
+
+  <div class="dish">
+    <div class="dish-hd">
+      <span class="dish-name">Frango Grelhado</span>
+      <span class="dish-dots"></span>
+      <span class="dish-price">38</span>
+    </div>
+    <div class="kids-desc">Peito de frango grelhado com tempero leve, servido com arroz branco e couve crocante. O que uma criança merece comer bem.</div>
+    <div class="dish-rule"></div>
+  </div>
+
+  <div class="dish">
+    <div class="dish-hd">
+      <span class="dish-name">Paillard de Filé</span>
+      <span class="dish-dots"></span>
+      <span class="dish-price">48</span>
+    </div>
+    <div class="kids-desc">Filé mignon batido fino e grelhado com cuidado — bem macio, sem nenhum esforço para cortar. Acompanha rigatoni na manteiga de garrafa e parmesão.</div>
+    <div class="kids-note">Pode vir com molho de tomate artesanal no lugar da manteiga — é só pedir.</div>
+  </div>
+
+  <!-- EXPERIÊNCIA DUE -->
+  <div style="margin: 48px 0 0; padding: 28px 28px 24px; background: #111009; border-radius: 2px; position: relative; overflow: hidden;">
+    <div style="position:absolute;top:-20px;right:-10px;font-family:'Cormorant Garamond',serif;font-size:90px;font-weight:700;color:#fff;opacity:.04;letter-spacing:5px;user-select:none;">EXP</div>
+    <div style="font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:3px;color:rgba(232,200,112,.4);margin-bottom:10px;">Para quem vem pela primeira vez</div>
+    <div style="font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:700;color:#E8C870;letter-spacing:2px;margin-bottom:8px;">Experiência DUE</div>
+    <div style="font-family:'Cormorant Garamond',serif;font-size:14px;color:rgba(232,200,112,.65);line-height:1.65;margin-bottom:16px;">Entrada + Principal + Bebida de boas-vindas da nossa escolha. Uma forma de conhecer o DUE do jeito certo — com curadoria, sem pressa.</div>
+    <div style="display:flex;align-items:baseline;gap:8px;">
+      <span style="font-family:'Cormorant Garamond',serif;font-size:32px;font-weight:700;color:#E8C870;">R$&nbsp;159</span>
+      <span style="font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:2px;color:rgba(232,200,112,.35);">por pessoa</span>
+    </div>
+  </div>
+
+  <div class="page-foot">
+    <span class="pf-word">D</span><span class="pf-dot"></span>
+    <span class="pf-word">U</span><span class="pf-dot"></span>
+    <span class="pf-word">E</span>
+  </div>
+</div>
+
+<!-- ══════════════════════════════
+  PÁGINA 6 — MENU EXECUTIVO
+══════════════════════════════════ -->
+<div class="page page-exec" id="executivo">
+  <div class="exec-header">
+    <div class="exec-supertitle">Almoço &nbsp;·&nbsp; Segunda a Sábado &nbsp;·&nbsp; 12h às 15h</div>
+    <div class="exec-title">Menu Executivo DUE</div>
+    <div class="exec-subtitle">Escolha um prato &nbsp;·&nbsp; R$ 75</div>
+  </div>
+  <div class="exec-body">
+
+    <div class="exec-dish">
+      <div class="exec-dish-hd">
+        <span class="exec-num">01</span>
+        <span class="exec-dish-name">Robalo Território</span>
+      </div>
+      <div class="exec-dish-desc">O lombo de robalo sela na frigideira com azeite verde — pele intacta, carne úmida por dentro. Repousa sobre purê rústico de banana-da-terra adocicado, com o amargor gentil que só a fruta madura conhece. Maxixe grelhado na chapa, vinagrete de pimenta de cheiro. Cozinha sergipana em sua forma mais honesta.</div>
+    </div>
+
+    <div class="exec-dish">
+      <div class="exec-dish-hd">
+        <span class="exec-num">02</span>
+        <span class="exec-dish-name">Frango Tucupi &amp; Jambu</span>
+      </div>
+      <div class="exec-dish-desc">Peito de frango envolvido horas no Dry Rub DUE antes de encontrar a grelha — sela a superfície, por dentro permanece macio e perfumado. A redução de tucupi chega escura, com aquela acidez singular da Amazônia. O jambu vibra no paladar com sua anestesia delicada, quase imperceptível — e é exatamente isso que torna o prato inesquecível.</div>
+    </div>
+
+    <div class="exec-dish">
+      <div class="exec-dish-hd">
+        <span class="exec-num">03</span>
+        <span class="exec-dish-name">Arroz de Sol DUE</span>
+      </div>
+      <div class="exec-dish-desc">Carne do sol dessalgada com método, salteada em manteiga de garrafa artesanal até dourar — o aroma que sobe da cozinha é o aviso de que o prato está sendo feito. O arroz caldoso absorve esse caldo e se torna base densa e perfumada que carrega o sertão em cada grão. Queijo coalho maçaricado, couve crocante em fios. Identidade local com precisão.</div>
+    </div>
+
+    <div class="exec-dish">
+      <div class="exec-dish-hd">
+        <span class="exec-num">04</span>
+        <span class="exec-dish-name">Rigatoni da Nonna</span>
+      </div>
+      <div class="exec-dish-desc">A costela cozinha por doze horas até desfazer-se com a mínima pressão do garfo. O ragù é espesso, intenso, com profundidade que só o tempo produz — envolve o rigatoni al dente por fora e penetra por dentro. Pomodoro artesanal reduzido até a doçura concentrada, parmesão de 12 meses ralado na montagem. Conforto e elegância.</div>
+    </div>
+
+    <div class="exec-dish">
+      <div class="exec-dish-hd">
+        <span class="exec-num">05</span>
+        <span class="exec-dish-name">Salada Morna de Camarão</span>
+      </div>
+      <div class="exec-dish-desc">Camarões saltados em fogo alto por segundos — dourados por fora, textura delicada por dentro. Caem sobre microgreens de produtores locais e cubos de macaxeira dourados. O picles de maxixe artesanal corta com acidez precisa, a castanha tostada devolve a crocância. Um prato que parece leve porque é — mas sacia com dignidade.</div>
+    </div>
+
+    <div class="exec-dish">
+      <div class="exec-dish-hd">
+        <span class="exec-num">06</span>
+        <span class="exec-dish-name">Arroz do Sertão Verde</span>
+      </div>
+      <div class="exec-dish-desc">Feijão verde fresco cozido com arroz — combinação antiga que o DUE respeita sem condescendência. Creme de abacate à temperatura ambiente, aveludado, com a gordura boa que o palato reconhece. Sementes de girassol tostadas, picles de maxixe, microgreens locais. Vegano, nutritivo, mais gostoso do que qualquer promessa funcional conseguiria sugerir.</div>
+    </div>
+
+  </div>
+  <div class="page-foot">
+    <span class="pf-word">D</span><span class="pf-dot"></span>
+    <span class="pf-word">U</span><span class="pf-dot"></span>
+    <span class="pf-word">E</span>
+  </div>
+</div>
+
+<!-- ══════════════════════════════
+  PÁGINA 7 — BEBIDAS
+══════════════════════════════════ -->
+<div class="page page-beb" id="bebidas">
+  <div class="beb-header">
+    <div class="beb-bg-word">BEBIDAS</div>
+    <div class="beb-title">Bebidas</div>
+    <div class="beb-sub">Água &middot; Refrigerante &middot; Cerveja &middot; Suco &middot; Café &middot; Destilados</div>
+  </div>
+  <div class="beb-body">
+
+    <!-- Coluna 1 -->
+    <div>
+      <div class="beb-cat">Água</div>
+      <div class="beb-item"><span class="beb-item-name">Prata com gás</span><span class="beb-item-price">9,90</span></div>
+      <div class="beb-item"><span class="beb-item-name">Prata sem gás</span><span class="beb-item-price">9,90</span></div>
+      <div class="beb-item"><span class="beb-item-name">Schweppes Tônica</span><span class="beb-item-price">7,50</span></div>
+
+      <div class="beb-cat">Refrigerante</div>
+      <div class="beb-item"><span class="beb-item-name">Coca-Cola</span><span class="beb-item-price">6,50</span></div>
+      <div class="beb-item"><span class="beb-item-name">Coca-Cola Zero</span><span class="beb-item-price">6,50</span></div>
+      <div class="beb-item"><span class="beb-item-name">Kuat</span><span class="beb-item-price">6,50</span></div>
+      <div class="beb-item"><span class="beb-item-name">Kuat Zero</span><span class="beb-item-price">6,50</span></div>
+      <div class="beb-item"><span class="beb-item-name">Fanta</span><span class="beb-item-price">6,50</span></div>
+      <div class="beb-item"><span class="beb-item-name">Schweppes Cítrus</span><span class="beb-item-price">6,50</span></div>
+      <div class="beb-item"><span class="beb-item-name">Energético</span><span class="beb-item-price">18,90</span></div>
+
+      <div class="beb-cat">Cerveja</div>
+      <div class="beb-item"><span class="beb-item-name">Long Neck</span><span class="beb-item-price">14,90</span></div>
+    </div>
+
+    <!-- Coluna 2 -->
+    <div>
+      <div class="beb-cat">Suco Copo</div>
+      <div class="beb-item"><span class="beb-item-name">DUE Especiale</span><span class="beb-item-price">16,90</span></div>
+      <div class="beb-item"><span class="beb-item-name">Capim santo, limão e gengibre</span><span class="beb-item-price">16,90</span></div>
+      <div class="beb-item"><span class="beb-item-name">Frutas vermelhas com laranja</span><span class="beb-item-price">16,90</span></div>
+      <div class="beb-item"><span class="beb-item-name">Uva tinta, hibisco e limão siciliano</span><span class="beb-item-price">16,90</span></div>
+      <div class="beb-item"><span class="beb-item-name">Suco de uva integral</span><span class="beb-item-price">9,90</span></div>
+      <div class="beb-item"><span class="beb-item-name">Suco de laranja <span class="beb-item-sub">380 ml</span></span><span class="beb-item-price">9,90</span></div>
+
+      <div class="beb-cat">Soda Italiana</div>
+      <div class="beb-item"><span class="beb-item-name">Consultar sabores</span><span class="beb-item-price">18,90</span></div>
+
+      <div class="beb-cat">Destilados <span style="font-weight:300;font-size:9px;letter-spacing:1px;">(dose)</span></div>
+      <div class="beb-item"><span class="beb-item-name">Licor</span><span class="beb-item-price">25,50</span></div>
+      <div class="beb-item"><span class="beb-item-name">Whisky 8 anos</span><span class="beb-item-price">17,50</span></div>
+      <div class="beb-item"><span class="beb-item-name">Whisky 12 anos</span><span class="beb-item-price">24,90</span></div>
+
+      <div class="beb-cat">Café</div>
+      <div class="beb-item"><span class="beb-item-name">Café Expresso</span><span class="beb-item-price">9,90</span></div>
+    </div>
+
+  </div>
+  <div class="page-foot">
+    <span class="pf-word">D</span><span class="pf-dot"></span>
+    <span class="pf-word">U</span><span class="pf-dot"></span>
+    <span class="pf-word">E</span>
+  </div>
+</div>
+
+<!-- ══════════════════════════════
+  PÁGINA 8 — DRINKS
+══════════════════════════════════ -->
+<div class="page page-drinks" id="drinks">
+  <div class="drinks-accent"></div>
+  <div class="drinks-header">
+    <div class="drinks-title">Drinks</div>
+    <div class="drinks-sub">Coquetéis &middot; Clássicos &middot; Assinaturas DUE</div>
+  </div>
+  <div class="drinks-grid">
+
+    <div class="drink">
+      <div class="drink-hd"><span class="drink-name">Aperol Spritz</span><span class="drink-price">35</span></div>
+      <div class="drink-desc">Aperol, Espumante Brut, Água com gás, Laranja Baia.</div>
+    </div>
+
+    <div class="drink">
+      <div class="drink-hd"><span class="drink-name">Penicillin</span><span class="drink-price">30</span></div>
+      <div class="drink-desc">Scotch Whisky, Suco de limão, Xarope de mel e gengibre.</div>
+    </div>
+
+    <div class="drink">
+      <div class="drink-hd"><span class="drink-name">Amaretto Sour</span><span class="drink-price">35</span></div>
+      <div class="drink-desc">Amaretto, Jack Daniel's, Limão siciliano, Xarope de açúcar.</div>
+    </div>
+
+    <div class="drink">
+      <div class="drink-hd"><span class="drink-name">Pornstar Martini</span><span class="drink-price">35</span></div>
+      <div class="drink-desc">Vodka, Suco de limão, Xarope de baunilha, Suco de maracujá, Espumante.</div>
+    </div>
+
+    <div class="drink">
+      <div class="drink-hd"><span class="drink-name">Canelaê</span><span class="drink-price">32</span></div>
+      <div class="drink-desc">Blend Whisky, Cordial de canela, Suco de limão, Soda de maçã.</div>
+    </div>
+
+    <div class="drink">
+      <div class="drink-hd"><span class="drink-name">Negroni</span><span class="drink-price">35</span></div>
+      <div class="drink-desc">Gin, Campari, Vermute rosso, Bitter de laranja.</div>
+    </div>
+
+    <div class="drink">
+      <div class="drink-hd"><span class="drink-name">Jack Banana</span><span class="drink-price">35</span></div>
+      <div class="drink-desc">Jack Daniel's, Xarope de banana, Suco de limão.</div>
+    </div>
+
+    <div class="drink">
+      <div class="drink-hd"><span class="drink-name">White Lady</span><span class="drink-price">35</span></div>
+      <div class="drink-desc">Gin, Triple sec, Xarope de açúcar, Limão.</div>
+    </div>
+
+    <div class="drink">
+      <div class="drink-hd"><span class="drink-name">Embolada <span style="font-size:10px;opacity:.5;letter-spacing:1px;">DUE</span></span><span class="drink-price">35</span></div>
+      <div class="drink-desc">Gin, Suco de mangaba, Cordial de capim santo, Suco de limão, Xarope simples.</div>
+    </div>
+
+    <div class="drink">
+      <div class="drink-hd"><span class="drink-name">Fitzgerald</span><span class="drink-price">35</span></div>
+      <div class="drink-desc">Gin, Suco de limão, Xarope de açúcar, Angostura bitter.</div>
+    </div>
+
+  </div>
+  <div class="drinks-footer">
+    <span class="drinks-footer-text">DUE Restaurante &nbsp;&middot;&nbsp; Jardim Europa, Aracaju &nbsp;&middot;&nbsp; Abril 2026</span>
+  </div>
+</div>
+
+</body>
+</html>

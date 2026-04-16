@@ -1,0 +1,1201 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Manual do Cozinheiro v4 — DUE Restaurante</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #FAFAF7;
+  --bg2: #F2F0E8;
+  --white: #FFFFFF;
+  --border: #DDD9CC;
+  --text: #0E0C08;
+  --muted: #7A7668;
+  --gold: #6A4E10;
+  --gold2: #9A7820;
+  --gold-border: #C8A830;
+  --gold-bg: #FAF3DF;
+  --red: #7A1515;
+  --red-bg: #FDF0F0;
+  --red-border: #CC4444;
+  --green: #1A4A1A;
+  --sidebar-w: 240px;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); display: flex; min-height: 100vh; }
+
+/* ── SIDEBAR ── */
+.sidebar {
+  width: var(--sidebar-w);
+  min-height: 100vh;
+  background: var(--bg2);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  top: 0; left: 0; bottom: 0;
+  z-index: 100;
+  overflow-y: auto;
+}
+.sb-logo {
+  padding: 24px 20px 18px;
+  border-bottom: 1px solid var(--border);
+}
+.sb-logo a { text-decoration: none; }
+.sb-wordmark {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--gold);
+  letter-spacing: 6px;
+  display: block;
+}
+.sb-sub {
+  font-family: 'DM Mono', monospace;
+  font-size: 8px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: var(--muted);
+  margin-top: 3px;
+}
+.sb-section { padding: 16px 0 8px; }
+.sb-section-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 8px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: #A09888;
+  padding: 0 16px 8px;
+  display: block;
+}
+.sb-link {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  font-size: 12px;
+  color: var(--muted);
+  text-decoration: none;
+  transition: all .15s;
+  border-left: 2px solid transparent;
+}
+.sb-link:hover { color: var(--gold); background: rgba(106,78,16,.06); border-left-color: var(--gold-border); }
+.sb-link.active { color: var(--gold); background: rgba(106,78,16,.08); border-left-color: var(--gold); font-weight: 500; }
+.sb-icon { font-size: 13px; min-width: 16px; text-align: center; }
+.sb-badge {
+  margin-left: auto;
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  background: var(--gold-bg);
+  color: var(--gold);
+  border: 1px solid var(--gold-border);
+  padding: 1px 5px;
+  border-radius: 2px;
+}
+.sb-footer {
+  margin-top: auto;
+  padding: 16px;
+  border-top: 1px solid var(--border);
+}
+.sb-footer-text {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  color: #B0A898;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+/* ── MAIN ── */
+.main {
+  margin-left: var(--sidebar-w);
+  flex: 1;
+  min-height: 100vh;
+}
+
+/* ── PAGE HEADER ── */
+.page-header {
+  background: var(--text);
+  padding: 40px 48px 36px;
+  position: relative;
+  overflow: hidden;
+}
+.page-header::before {
+  content: '⊡';
+  position: absolute;
+  right: 40px; top: 50%;
+  transform: translateY(-50%);
+  font-size: 180px;
+  color: #fff;
+  opacity: .03;
+  line-height: 1;
+}
+.ph-eyebrow {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  color: rgba(232,200,112,.5);
+  margin-bottom: 10px;
+}
+.ph-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 44px;
+  font-weight: 700;
+  color: #E8C870;
+  line-height: 1.1;
+  margin-bottom: 12px;
+}
+.ph-subtitle {
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-size: 16px;
+  color: rgba(232,200,112,.6);
+  margin-bottom: 16px;
+}
+.ph-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.ph-pill {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: rgba(232,200,112,.6);
+  background: rgba(232,200,112,.08);
+  border: 1px solid rgba(232,200,112,.2);
+  padding: 4px 10px;
+  border-radius: 2px;
+}
+
+/* ── TOOLBAR ── */
+.toolbar {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: var(--white);
+  border-bottom: 1px solid var(--border);
+  padding: 10px 48px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.tb-search {
+  flex: 1;
+  min-width: 180px;
+  max-width: 280px;
+  padding: 7px 12px;
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 12px;
+  background: var(--bg);
+  color: var(--text);
+  outline: none;
+  transition: border-color .15s;
+}
+.tb-search:focus { border-color: var(--gold-border); }
+.tb-chips { display: flex; gap: 6px; flex-wrap: wrap; flex: 1; }
+.chip {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  padding: 5px 10px;
+  border: 1px solid var(--border);
+  border-radius: 2px;
+  background: var(--bg);
+  color: var(--muted);
+  cursor: pointer;
+  transition: all .15s;
+  white-space: nowrap;
+}
+.chip:hover { border-color: var(--gold-border); color: var(--gold); }
+.chip.active { background: var(--gold-bg); border-color: var(--gold-border); color: var(--gold); font-weight: 500; }
+.tb-btn {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  padding: 6px 12px;
+  border: 1px solid var(--border);
+  border-radius: 2px;
+  background: var(--bg);
+  color: var(--muted);
+  cursor: pointer;
+  transition: all .15s;
+  white-space: nowrap;
+}
+.tb-btn:hover { border-color: var(--gold-border); color: var(--gold); }
+.tb-btn.gold { background: var(--gold-bg); border-color: var(--gold-border); color: var(--gold); }
+
+/* ── CONTENT ── */
+.content { padding: 40px 48px 60px; }
+
+/* ── SECTION ── */
+.sec-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 40px 0 20px;
+}
+.sec-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--text);
+  white-space: nowrap;
+}
+.sec-line {
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, var(--gold-border) 0%, transparent 100%);
+}
+.sec-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 8px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: var(--gold2);
+}
+
+/* ── TABLE ── */
+.due-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12.5px;
+  margin: 12px 0 20px;
+}
+.due-table th {
+  background: var(--text);
+  color: #E8C870;
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  padding: 9px 12px;
+  text-align: left;
+  font-weight: 500;
+}
+.due-table td {
+  padding: 9px 12px;
+  border-bottom: 1px solid var(--border);
+  color: var(--text);
+  vertical-align: top;
+  line-height: 1.5;
+}
+.due-table tr:nth-child(even) td { background: rgba(242,240,232,.5); }
+.due-table tr:hover td { background: var(--gold-bg); }
+.due-table .td-mono {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  color: var(--gold2);
+}
+.due-table .td-muted { color: var(--muted); font-size: 11.5px; }
+
+/* ── ALERT BOXES ── */
+.alert {
+  border-left: 3px solid var(--gold-border);
+  background: var(--gold-bg);
+  padding: 12px 16px;
+  margin: 12px 0;
+  font-size: 12.5px;
+  line-height: 1.6;
+  border-radius: 0 3px 3px 0;
+}
+.alert strong { color: var(--gold); }
+.alert-red {
+  border-left-color: var(--red-border);
+  background: var(--red-bg);
+}
+.alert-red strong { color: var(--red); }
+.alert-dark {
+  background: var(--text);
+  color: #E8C870;
+  border-left-color: #E8C870;
+}
+
+/* ── ACCORDION CARDS ── */
+.acc-card {
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  margin-bottom: 6px;
+  overflow: hidden;
+  transition: border-color .15s;
+}
+.acc-card:hover { border-color: var(--gold-border); }
+.acc-card.crit { border-left: 3px solid var(--red-border); }
+.acc-card.gold-card { border-left: 3px solid var(--gold-border); background: #FFFEF8; }
+
+.acc-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  background: var(--white);
+  cursor: pointer;
+  user-select: none;
+  transition: background .15s;
+}
+.acc-header:hover { background: var(--bg2); }
+.acc-num {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  color: var(--muted);
+  min-width: 28px;
+}
+.acc-name {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--text);
+  flex: 1;
+}
+.acc-tags { display: flex; gap: 4px; flex-wrap: wrap; }
+.acc-tag {
+  font-family: 'DM Mono', monospace;
+  font-size: 8px;
+  text-transform: uppercase;
+  letter-spacing: .5px;
+  padding: 2px 6px;
+  border-radius: 2px;
+}
+.tag-crit { background: var(--red-bg); color: var(--red); border: 1px solid var(--red-border); }
+.tag-gold { background: var(--gold-bg); color: var(--gold); border: 1px solid var(--gold-border); }
+.tag-gray { background: var(--bg2); color: var(--muted); border: 1px solid var(--border); }
+.acc-arrow {
+  font-size: 10px;
+  color: var(--muted);
+  transition: transform .2s;
+  flex-shrink: 0;
+}
+.acc-card.open .acc-arrow { transform: rotate(180deg); }
+
+.acc-body {
+  display: none;
+  padding: 16px;
+  border-top: 1px solid var(--border);
+  background: var(--bg);
+}
+.acc-card.open .acc-body { display: block; }
+
+/* ── CHECKLIST ── */
+.checklist { margin: 8px 0; }
+.cl-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 6px 0;
+  border-bottom: 1px solid rgba(221,217,204,.4);
+  font-size: 12.5px;
+  line-height: 1.5;
+  cursor: pointer;
+}
+.cl-item:last-child { border-bottom: none; }
+.cl-cb {
+  width: 14px;
+  height: 14px;
+  border: 1.5px solid var(--gold-border);
+  border-radius: 2px;
+  flex-shrink: 0;
+  margin-top: 1px;
+  transition: all .15s;
+  position: relative;
+}
+.cl-item.checked .cl-cb {
+  background: var(--gold);
+  border-color: var(--gold);
+}
+.cl-item.checked .cl-cb::after {
+  content: '✓';
+  position: absolute;
+  top: -2px; left: 1px;
+  font-size: 11px;
+  color: #fff;
+}
+.cl-item.checked .cl-text {
+  text-decoration: line-through;
+  color: var(--muted);
+}
+.cl-text { flex: 1; }
+.cl-crit { color: var(--red); font-weight: 500; }
+
+/* ── PROGRESS BAR ── */
+.progress-wrap { margin: 12px 0; }
+.progress-label {
+  display: flex;
+  justify-content: space-between;
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--muted);
+  margin-bottom: 5px;
+}
+.progress-bar {
+  height: 4px;
+  background: var(--border);
+  border-radius: 2px;
+  overflow: hidden;
+}
+.progress-fill {
+  height: 100%;
+  background: var(--gold);
+  border-radius: 2px;
+  transition: width .3s ease;
+}
+
+/* ── PILLS ROW ── */
+.pills-row { display: flex; flex-wrap: wrap; gap: 6px; margin: 10px 0; }
+.pill {
+  font-size: 11px;
+  padding: 4px 10px;
+  border-radius: 2px;
+  border: 1px solid var(--border);
+  background: var(--bg2);
+  color: var(--muted);
+}
+.pill-gold { background: var(--gold-bg); border-color: var(--gold-border); color: var(--gold); }
+.pill-red { background: var(--red-bg); border-color: var(--red-border); color: var(--red); }
+
+/* ── QUOTE ── */
+.quote {
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-size: 16px;
+  color: var(--gold2);
+  text-align: center;
+  padding: 20px;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  margin: 24px 0;
+}
+
+/* ── GRID 2 ── */
+.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 12px 0; }
+
+/* ── PRINT ── */
+@media print {
+  @page { size: A4; margin: 14mm; }
+  .sidebar, .toolbar { display: none !important; }
+  .main { margin-left: 0; }
+  .page-header { background: #111009 !important; -webkit-print-color-adjust: exact; }
+  .acc-body { display: block !important; }
+  .acc-card { page-break-inside: avoid; }
+  .due-table th { background: #111009 !important; -webkit-print-color-adjust: exact; }
+}
+
+/* ── RESPONSIVE ── */
+@media (max-width: 900px) {
+  :root { --sidebar-w: 52px; }
+  .sb-sub, .sb-section-label, .sb-link span:not(.sb-icon), .sb-badge, .sb-footer-text { display: none; }
+  .sb-wordmark { font-size: 16px; letter-spacing: 2px; }
+  .sb-link { padding: 10px; justify-content: center; }
+  .page-header, .toolbar, .content { padding-left: 24px; padding-right: 24px; }
+  .grid2 { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="sb-logo">
+    <a href="index.html">
+      <span class="sb-wordmark">DUE</span>
+      <span class="sb-sub">Manual Cozinheiro</span>
+    </a>
+  </div>
+
+  <div class="sb-section">
+    <span class="sb-section-label">Identidade</span>
+    <a class="sb-link active" href="#identidade"><span class="sb-icon">◎</span><span>O DUE &amp; Filosofia</span></a>
+    <a class="sb-link" href="#equipe"><span class="sb-icon">⊞</span><span>Equipe &amp; Horários</span></a>
+    <a class="sb-link" href="#intervalos"><span class="sb-icon">◷</span><span>Protocolo de Intervalos</span></a>
+  </div>
+
+  <div class="sb-section">
+    <span class="sb-section-label">Operação</span>
+    <a class="sb-link" href="#equipamentos"><span class="sb-icon">⊕</span><span>Equipamentos</span></a>
+    <a class="sb-link" href="#proteinas"><span class="sb-icon">☀</span><span>Pontos de Proteína</span><span class="sb-badge">6</span></a>
+    <a class="sb-link" href="#pratos"><span class="sb-icon">◇</span><span>Seus Pratos</span><span class="sb-badge">11</span></a>
+  </div>
+
+  <div class="sb-section">
+    <span class="sb-section-label">Produção</span>
+    <a class="sb-link" href="#d1"><span class="sb-icon">⚑</span><span>Bases D-1</span><span class="sb-badge">5</span></a>
+    <a class="sb-link" href="#calendário"><span class="sb-icon">▦</span><span>Calendário Semanal</span></a>
+    <a class="sb-link" href="#mise"><span class="sb-icon">★</span><span>Mise en Place</span></a>
+    <a class="sb-link" href="#virada"><span class="sb-icon">⇄</span><span>Virada de Turno</span></a>
+  </div>
+
+  <div class="sb-footer">
+    <div class="sb-footer-text">v4.0 · Abril 2026</div>
+    <div class="sb-footer-text" style="margin-top:3px;">François Ozanne</div>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<main class="main">
+
+  <!-- PAGE HEADER -->
+  <div class="page-header">
+    <div class="ph-eyebrow">DUE Restaurante · Cozinha Contemporânea Autoral</div>
+    <div class="ph-title">Manual do Cozinheiro</div>
+    <div class="ph-subtitle">Guia técnico e operacional completo — Turno A e Turno B</div>
+    <div class="ph-pills">
+      <span class="ph-pill">Rafael Cardozo Maciel · Turno A</span>
+      <span class="ph-pill">Edmar Barbosa · Turno B</span>
+      <span class="ph-pill">11 pratos · 5 D-1</span>
+      <span class="ph-pill">Abril 2026 · v4</span>
+    </div>
+  </div>
+
+  <!-- TOOLBAR -->
+  <div class="toolbar">
+    <input class="tb-search" type="text" id="searchInput" placeholder="Buscar seção, prato, técnica..." oninput="filterContent()">
+    <div class="tb-chips">
+      <div class="chip active" onclick="filterSection('all',this)">Tudo</div>
+      <div class="chip" onclick="filterSection('proteinas',this)">Proteínas</div>
+      <div class="chip" onclick="filterSection('pratos',this)">Pratos</div>
+      <div class="chip" onclick="filterSection('d1',this)">D-1</div>
+      <div class="chip" onclick="filterSection('mise',this)">Mise en Place</div>
+    </div>
+    <button class="tb-btn gold" onclick="window.print()">⎙ PDF</button>
+    <button class="tb-btn" onclick="expandAll()">⊞ Expandir</button>
+  </div>
+
+  <!-- CONTENT -->
+  <div class="content">
+
+    <!-- ═══ IDENTIDADE ═══ -->
+    <div id="identidade" class="sec-header">
+      <span class="sec-title">O DUE · Identidade e Filosofia</span>
+      <div class="sec-line"></div>
+    </div>
+
+    <p style="font-size:13px;line-height:1.7;margin-bottom:16px;">
+      O DUE é um restaurante de cozinha contemporânea autoral no Jardim Europa, em Aracaju. O cardápio eleva ingredientes sergipanos e do Nordeste — polvo, carne do sol, tucupi, maxixe, jambu, coalho, costela — através de técnica precisa e consistente. O que diferencia o DUE não é apenas o que está no prato: é a <strong>consistência</strong>. O mesmo prato na terça ao almoço e no sábado lotado precisa ser idêntico. Essa é a sua responsabilidade direta.
+    </p>
+
+    <table class="due-table">
+      <thead><tr><th>Valor</th><th>O que significa na prática</th></tr></thead>
+      <tbody>
+        <tr><td>Consistência</td><td>O prato do almoço de terça tem que ser igual ao do jantar de sábado.</td></tr>
+        <tr><td>Precisão</td><td>Gramaturas, pontos de cocção e finalização seguem as fichas técnicas — sempre.</td></tr>
+        <tr><td>Comunicação</td><td>Informação errada ou ausente durante o serviço gera erro em cadeia.</td></tr>
+        <tr><td>Limpeza contínua</td><td>Estação limpa não é estética — é segurança alimentar e eficiência operacional.</td></tr>
+        <tr><td>Proatividade</td><td>Ver o problema antes que vire crise. Avisar antes de acabar, não depois.</td></tr>
+      </tbody>
+    </table>
+
+    <div class="quote">"Ingredientes que têm endereço. Técnica que tem propósito."</div>
+
+    <!-- ═══ EQUIPE ═══ -->
+    <div id="equipe" class="sec-header" style="margin-top:32px;">
+      <span class="sec-title">Equipe &amp; Horários</span>
+      <div class="sec-line"></div>
+    </div>
+
+    <p style="font-size:13px;line-height:1.7;margin-bottom:14px;">
+      Rafael e Edmar operam em turnos contínuos distintos — escala 5×2, 44h semanais. Rafael cobre o Turno A (Manhã). Edmar cobre o Turno B (Tarde/Noite). <strong>Horário partido é exceção, nunca regra.</strong>
+    </p>
+
+    <table class="due-table">
+      <thead><tr><th>Dia</th><th>Rafael · Coz. A (Turno Manhã)</th><th>Edmar · Coz. B (Turno Tarde/Noite)</th></tr></thead>
+      <tbody>
+        <tr><td>Segunda</td><td class="td-muted">FOLGA</td><td>09:00–18:00</td></tr>
+        <tr><td>Terça</td><td>09:00–18:00</td><td class="td-muted">FOLGA</td></tr>
+        <tr><td>Quarta</td><td>09:00–19:00</td><td>14:00–23:30</td></tr>
+        <tr><td>Quinta</td><td>09:00–19:00</td><td>14:00–23:30</td></tr>
+        <tr><td>Sexta</td><td>09:00–19:00</td><td>14:00–23:30</td></tr>
+        <tr><td>Sábado</td><td>09:00–19:00</td><td>14:00–23:30</td></tr>
+        <tr><td>Domingo</td><td class="td-muted">FECHADO</td><td class="td-muted">FECHADO</td></tr>
+      </tbody>
+    </table>
+
+    <div class="grid2">
+      <div class="alert"><strong>TURNO A</strong> — Terça: 09:00–18:00 = 8h efetivas. Qua–Sáb: 09:00–19:00 = 9h ef × 4 = 36h. Total: 44h</div>
+      <div class="alert"><strong>TURNO B</strong> — Segunda: 09:00–18:00 = 8h efetivas. Qua–Sáb: 14:00–23:30 = 9h ef × 4 = 36h. Total: 44h</div>
+    </div>
+    <div class="alert alert-red"><strong>EDMAR:</strong> De quarta a sábado cobre almoço + jantar. Checklist de virada de turno assinado por Rafael antes de sair é obrigatório.</div>
+
+    <p style="font-size:13px;font-weight:600;margin:16px 0 8px;">Função de François · Ambos os Turnos</p>
+    <table class="due-table">
+      <thead><tr><th>Função</th><th>Responsabilidade</th></tr></thead>
+      <tbody>
+        <tr><td>Pass (conferência final)</td><td>Todo prato sai pela mão de François. Montagem, ponto, temperatura, estética.</td></tr>
+        <tr><td>Proteínas premium</td><td>Arroz de Polvo DUE, Carré de Cordeiro, Robalo — os pratos de maior ticket saem do chef.</td></tr>
+        <tr><td>Expedição e timing</td><td>Lê as comandas, define sequência, coordena tempos entre mesas.</td></tr>
+        <tr><td>Resolução de crises</td><td>Prato voltou, ingrediente acabou, equipamento falhou — François decide.</td></tr>
+        <tr><td>Cozinheiro de apoio</td><td>Com François no pass, o cozinheiro foca nas demais proteínas e molhos.</td></tr>
+      </tbody>
+    </table>
+
+    <!-- ═══ INTERVALOS ═══ -->
+    <div id="intervalos" class="sec-header">
+      <span class="sec-title">Protocolo de Intervalos · Cozinha Nunca Vazia</span>
+      <div class="sec-line"></div>
+    </div>
+
+    <p style="font-size:13px;line-height:1.7;margin-bottom:14px;">
+      Regra mestre: a cozinha <strong>nunca</strong> fica vazia durante o serviço. A ordem é fixa — SG sai primeiro, Auxiliar depois, Cozinheiro por último. O próximo só sai quando o anterior retorna e confirma.
+    </p>
+
+    <p style="font-size:13px;font-weight:600;margin:16px 0 8px;">Intervalo da manhã — coletivo</p>
+    <table class="due-table">
+      <thead><tr><th>Cargo</th><th>Horário</th><th>Duração</th><th>Observação</th></tr></thead>
+      <tbody>
+        <tr><td>Toda a equipe</td><td class="td-mono">11:00–11:30</td><td>30 min</td><td>Saem todos juntos — casa ainda fechada para o almoço.</td></tr>
+      </tbody>
+    </table>
+
+    <p style="font-size:13px;font-weight:600;margin:16px 0 8px;">Turno A — Intervalo da tarde (Qua–Sáb)</p>
+    <table class="due-table">
+      <thead><tr><th>Ordem</th><th>Cargo</th><th>Horário</th><th>Regra</th></tr></thead>
+      <tbody>
+        <tr><td class="td-mono">1º</td><td>Aux. Serviços Gerais</td><td class="td-mono">14:00–14:30</td><td>Sai primeiro — menos crítico no pós-almoço.</td></tr>
+        <tr><td class="td-mono">2º</td><td>Auxiliar de Cozinha</td><td class="td-mono">14:30–15:00</td><td>Sai quando o SG retorna.</td></tr>
+        <tr><td class="td-mono">3º</td><td>Cozinheiro</td><td class="td-mono">15:00–15:30</td><td>Sai por último — retorna para prep do jantar.</td></tr>
+      </tbody>
+    </table>
+
+    <p style="font-size:13px;font-weight:600;margin:16px 0 8px;">Turno B — Intervalo da noite (Qua–Sáb)</p>
+    <table class="due-table">
+      <thead><tr><th>Ordem</th><th>Cargo</th><th>Horário</th><th>Regra</th></tr></thead>
+      <tbody>
+        <tr><td class="td-mono">1º</td><td>Aux. Serviços Gerais</td><td class="td-mono">16:45–17:15</td><td>Sai primeiro — retorna às 17:15, antes do serviço.</td></tr>
+        <tr><td class="td-mono">2º</td><td>Auxiliar de Cozinha</td><td class="td-mono">17:15–17:45</td><td>Sai quando o SG retorna — volta às 17:45.</td></tr>
+        <tr><td class="td-mono">3º</td><td>Cozinheiro</td><td class="td-mono">17:30–18:00</td><td>Sai por último — retorna às 18:00 exato para o serviço.</td></tr>
+      </tbody>
+    </table>
+
+    <p style="font-size:13px;font-weight:600;margin:16px 0 8px;">Regras inegociáveis de intervalo</p>
+    <div class="checklist" id="cl-intervalos">
+      <div class="cl-item" onclick="toggleCheck(this)"><div class="cl-cb"></div><span class="cl-text">Nunca dois cargos fora ao mesmo tempo — um sempre na cozinha.</span></div>
+      <div class="cl-item" onclick="toggleCheck(this)"><div class="cl-cb"></div><span class="cl-text">O próximo só sai quando o anterior retornar e confirmar presença.</span></div>
+      <div class="cl-item cl-crit" onclick="toggleCheck(this)"><div class="cl-cb"></div><span class="cl-text cl-crit">Em dia de pico (sábado lotado): o chef pode atrasar ou cancelar o intervalo do Cozinheiro.</span></div>
+      <div class="cl-item" onclick="toggleCheck(this)"><div class="cl-cb"></div><span class="cl-text">O SG nunca adia intervalo por iniciativa própria — aguarda liberação do Cozinheiro.</span></div>
+      <div class="cl-item" onclick="toggleCheck(this)"><div class="cl-cb"></div><span class="cl-text">Intervalo partido ou fracionado não é permitido como regra.</span></div>
+      <div class="cl-item" onclick="toggleCheck(this)"><div class="cl-cb"></div><span class="cl-text">Troca de ordem (Coz sair antes do SG) somente com autorização do chef.</span></div>
+    </div>
+
+    <!-- ═══ EQUIPAMENTOS ═══ -->
+    <div id="equipamentos" class="sec-header">
+      <span class="sec-title">Equipamentos · Uso e Protocolo</span>
+      <div class="sec-line"></div>
+    </div>
+
+    <p style="font-size:13px;line-height:1.7;margin-bottom:16px;">Conhecer os equipamentos é pré-requisito para trabalhar no DUE. Antes de usar qualquer equipamento pela primeira vez, informe François.</p>
+
+    <div class="acc-card gold-card open" id="acc-forno">
+      <div class="acc-header" onclick="toggleAcc('acc-forno')">
+        <span class="acc-num">EQ01</span>
+        <span class="acc-name">Forno Combinado · Ativo Estratégico #1</span>
+        <div class="acc-tags"><span class="acc-tag tag-gold">Crítico</span></div>
+        <span class="acc-arrow">▼</span>
+      </div>
+      <div class="acc-body">
+        <table class="due-table">
+          <thead><tr><th>Função</th><th>Modo</th><th>Temp.</th><th>Aplicação no DUE</th></tr></thead>
+          <tbody>
+            <tr><td>Terminar proteínas seladas</td><td>Calor seco</td><td class="td-mono">180–200 °C</td><td>Filé (2–3 min), carré (4–5 min), robalo (6–8 min).</td></tr>
+            <tr><td>Batch do executivo</td><td>Calor seco</td><td class="td-mono">180 °C</td><td>Até 10 porções simultâneas no almoço.</td></tr>
+            <tr><td>Manutenção de temperatura</td><td>Vapor leve</td><td class="td-mono">65 °C</td><td>Pratos aquecidos sem ocupar o fogão.</td></tr>
+            <tr><td>Pato confit</td><td>Vapor + calor</td><td class="td-mono">140 °C</td><td>3h — produção D-1 obrigatória.</td></tr>
+            <tr><td>Pré-aquecer pratos</td><td>Vapor 20%</td><td class="td-mono">60 °C</td><td>Manter temperatura de serviço.</td></tr>
+          </tbody>
+        </table>
+        <div class="alert alert-dark"><strong>REGRA DE OURO DO FORNO:</strong> selar na chapa 90 segundos cada lado, terminar no forno. Isso libera a chapa para a próxima proteína. Quem domina o fluxo forno-chapa domina o serviço.</div>
+      </div>
+    </div>
+
+    <div class="acc-card crit" id="acc-chapa">
+      <div class="acc-header" onclick="toggleAcc('acc-chapa')">
+        <span class="acc-num">EQ02</span>
+        <span class="acc-name">Chapa · Gargalo #1 da Cozinha</span>
+        <div class="acc-tags"><span class="acc-tag tag-crit">Gargalo</span></div>
+        <span class="acc-arrow">▼</span>
+      </div>
+      <div class="acc-body">
+        <table class="due-table">
+          <thead><tr><th>Parâmetro</th><th>Regra</th></tr></thead>
+          <tbody>
+            <tr><td>Máxima capacidade</td><td>3 proteínas simultâneas. A 4ª espera no forno aquecido ou no pass.</td></tr>
+            <tr><td>Temperatura de trabalho</td><td>Fogo alto para selar, médio para terminar. Nunca água na chapa quente.</td></tr>
+            <tr><td>Limpeza entre porções</td><td>Raspar com espátula metálica entre cada porção. Chapa limpa = selagem correta.</td></tr>
+            <tr><td>Protocolo do carré</td><td>O carré de cordeiro trava mais tempo. Em pico 55+ covers, François pode retirá-lo do cardápio.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="acc-card" id="acc-fogao">
+      <div class="acc-header" onclick="toggleAcc('acc-fogao')">
+        <span class="acc-num">EQ03</span>
+        <span class="acc-name">Fogão de 6 Bocas · Gestão de Prioridades</span>
+        <span class="acc-arrow">▼</span>
+      </div>
+      <div class="acc-body">
+        <div class="checklist">
+          <div class="cl-item"><div class="cl-cb" style="border-color:var(--gold-border);background:var(--gold);"></div><span class="cl-text"><strong>Bisque e ragù travam 2 bocas fixas.</strong> As 4 restantes são disputadas entre saltear, reduzir, arroz e outras demandas.</span></div>
+          <div class="cl-item"><div class="cl-cb" style="border-color:var(--gold-border);background:var(--gold);"></div><span class="cl-text">Rotular o que está em cada boca no início do serviço para que todos saibam.</span></div>
+          <div class="cl-item"><div class="cl-cb" style="border-color:var(--gold-border);background:var(--gold);"></div><span class="cl-text">Usar o forno para liberar bocas quando possível — sempre.</span></div>
+          <div class="cl-item"><div class="cl-cb" style="border-color:var(--gold-border);background:var(--gold);"></div><span class="cl-text">Nunca deixar panela sem tampa em ebulição sem monitoramento.</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="acc-card" id="acc-balancas">
+      <div class="acc-header" onclick="toggleAcc('acc-balancas')">
+        <span class="acc-num">EQ04</span>
+        <span class="acc-name">Balanças · Precisão Antes de Tudo</span>
+        <div class="acc-tags"><span class="acc-tag tag-crit">Inegociável</span></div>
+        <span class="acc-arrow">▼</span>
+      </div>
+      <div class="acc-body">
+        <div class="alert alert-red"><strong>INEGOCIÁVEL:</strong> nas primeiras 2 semanas de operação, TODAS as gramaturas são pesadas. Sem exceção. Só depois de provar que o olho acerta é que François libera a medição visual.</div>
+      </div>
+    </div>
+
+    <!-- ═══ PROTEÍNAS ═══ -->
+    <div id="proteinas" class="sec-header">
+      <span class="sec-title">Pontos de Proteína · Temperaturas Internas</span>
+      <div class="sec-line"></div>
+      <span class="sec-label">6 proteínas</span>
+    </div>
+
+    <div class="alert alert-red" style="margin-bottom:16px;"><strong>Errar o ponto de uma proteína = 4–5 minutos de retrabalho + mesa esperando + prato voltando ao pass.</strong> Um erro em pico cascateia em 3 outras mesas.</div>
+
+    <table class="due-table" id="tb-proteinas">
+      <thead><tr><th>Proteína</th><th>Malpassado</th><th>Ao Ponto</th><th>Bem Passado</th><th>Padrão DUE</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Filé mignon</strong></td><td class="td-mono">52 °C (vermelho)</td><td class="td-mono">60–63 °C</td><td class="td-mono">70 °C+</td><td>Malpassado</td></tr>
+        <tr><td><strong>Flat Iron</strong></td><td class="td-mono">55 °C (rosado)</td><td class="td-mono">60–63 °C</td><td class="td-mono">70 °C+</td><td>Ao ponto ou conforme pedido</td></tr>
+        <tr><td><strong>Carré de cordeiro</strong></td><td class="td-mono">55–58 °C (rosado)</td><td class="td-mono">63 °C</td><td class="td-mono">70 °C+</td><td>Rosado — comunicar ao salão</td></tr>
+        <tr><td><strong>Robalo</strong></td><td>—</td><td class="td-mono">58–60 °C (opaco)</td><td>—</td><td>Pele crocante obrigatória</td></tr>
+        <tr><td><strong>Coxa de pato</strong></td><td>—</td><td class="td-mono">75 °C (bem cozida)</td><td>—</td><td>Pele crocante + interior macio</td></tr>
+        <tr><td><strong>Frango (P33)</strong></td><td>—</td><td class="td-mono">75 °C</td><td>—</td><td>Sem rosa no centro</td></tr>
+      </tbody>
+    </table>
+
+    <!-- ═══ PRATOS ═══ -->
+    <div id="pratos" class="sec-header">
+      <span class="sec-title">Seus Pratos · Composições + Técnica</span>
+      <div class="sec-line"></div>
+      <span class="sec-label">11 pratos</span>
+    </div>
+
+    <p style="font-size:13px;line-height:1.7;margin-bottom:16px;">Execute cada prato sem hesitar, sem consultar papel. Composições atualizadas do cardápio de abertura (abril de 2026).</p>
+
+    <p style="font-size:13.5px;font-weight:600;margin:20px 0 10px;">Principais · Carnes (5 pratos | Rafael A + Edmar B)</p>
+
+    <div id="pratos-list">
+
+      <div class="acc-card" id="acc-file-alto">
+        <div class="acc-header" onclick="toggleAcc('acc-file-alto')">
+          <span class="acc-num">P01</span>
+          <span class="acc-name">Filé Alto com Crosta de Ervas</span>
+          <div class="acc-tags"><span class="acc-tag tag-gray">R$ 125</span><span class="acc-tag tag-gray">Carnes</span></div>
+          <span class="acc-arrow">▼</span>
+        </div>
+        <div class="acc-body">
+          <div class="grid2">
+            <div>
+              <p style="font-size:11px;font-family:'DM Mono',monospace;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:6px;">Composição</p>
+              <p style="font-size:12.5px;line-height:1.6;">Filé mignon · xerém cremoso c/ manteiga de garrafa · crosta de ervas · demi-glace · azeite verde</p>
+            </div>
+            <div>
+              <p style="font-size:11px;font-family:'DM Mono',monospace;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:6px;">Técnica</p>
+              <p style="font-size:12.5px;line-height:1.6;">Selar na chapa 2–3 min cada lado. Terminar no forno 180 °C 2–3 min.</p>
+            </div>
+          </div>
+          <div class="alert" style="margin-top:10px;"><strong>Ponto crítico:</strong> Malpassado — 52 °C. Centro vermelho. Crítico.</div>
+        </div>
+      </div>
+
+      <div class="acc-card" id="acc-pato">
+        <div class="acc-header" onclick="toggleAcc('acc-pato')">
+          <span class="acc-num">P02</span>
+          <span class="acc-name">Coxa de Pato Confitada</span>
+          <div class="acc-tags"><span class="acc-tag tag-gold">D-1</span><span class="acc-tag tag-gray">R$ 139</span></div>
+          <span class="acc-arrow">▼</span>
+        </div>
+        <div class="acc-body">
+          <div class="grid2">
+            <div>
+              <p style="font-size:11px;font-family:'DM Mono',monospace;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:6px;">Composição</p>
+              <p style="font-size:12.5px;line-height:1.6;">Pato confit · purê de raízes (mandioquinha+cenoura) · farofa de castanha · confit de laranja/tangerina · demi-glace</p>
+            </div>
+            <div>
+              <p style="font-size:11px;font-family:'DM Mono',monospace;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:6px;">Técnica</p>
+              <p style="font-size:12.5px;line-height:1.6;">Pato chega do D-1 (cura 24h + forno 3h). Pele crocante no forno combinado 200 °C.</p>
+            </div>
+          </div>
+          <div class="alert alert-red" style="margin-top:10px;"><strong>D-1 obrigatório:</strong> Cura 24h + 3h forno. Produzir 2 dias antes do serviço.</div>
+        </div>
+      </div>
+
+      <div class="acc-card crit" id="acc-carre">
+        <div class="acc-header" onclick="toggleAcc('acc-carre')">
+          <span class="acc-num">P03</span>
+          <span class="acc-name">Carré de Cordeiro</span>
+          <div class="acc-tags"><span class="acc-tag tag-crit">★ Assinatura</span><span class="acc-tag tag-gray">R$ 165</span></div>
+          <span class="acc-arrow">▼</span>
+        </div>
+        <div class="acc-body">
+          <div class="grid2">
+            <div>
+              <p style="font-size:11px;font-family:'DM Mono',monospace;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:6px;">Composição</p>
+              <p style="font-size:12.5px;line-height:1.6;">3 costelas · pappardelle fresca · manteiga trufada · gremolata · demi-glace</p>
+            </div>
+            <div>
+              <p style="font-size:11px;font-family:'DM Mono',monospace;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:6px;">Técnica</p>
+              <p style="font-size:12.5px;line-height:1.6;">Selar na chapa 90s. Forno 180 °C 4–5 min. 55–58 °C rosado. Trava a chapa — François define saída.</p>
+            </div>
+          </div>
+          <div class="alert alert-red" style="margin-top:10px;"><strong>Protocolo pico:</strong> Em 55+ covers, François pode retirar temporariamente. Não questionar — é estratégia de serviço.</div>
+        </div>
+      </div>
+
+      <div class="acc-card" id="acc-flat">
+        <div class="acc-header" onclick="toggleAcc('acc-flat')">
+          <span class="acc-num">P04</span>
+          <span class="acc-name">Flat Iron</span>
+          <div class="acc-tags"><span class="acc-tag tag-gray">R$ 115</span><span class="acc-tag tag-gray">Carnes</span></div>
+          <span class="acc-arrow">▼</span>
+        </div>
+        <div class="acc-body">
+          <div class="grid2">
+            <div>
+              <p style="font-size:11px;font-family:'DM Mono',monospace;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:6px;">Composição</p>
+              <p style="font-size:12.5px;line-height:1.6;">Flat iron grelhado · rigatoni · fonduta de parmesão · pomodoro artesanal · manjericão</p>
+            </div>
+            <div>
+              <p style="font-size:11px;font-family:'DM Mono',monospace;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:6px;">Técnica</p>
+              <p style="font-size:12.5px;line-height:1.6;">Ao ponto. Descanso obrigatório em banho-maria o serviço todo.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="acc-card" id="acc-sertao">
+        <div class="acc-header" onclick="toggleAcc('acc-sertao')">
+          <span class="acc-num">P05</span>
+          <span class="acc-name">Filé do Sertão</span>
+          <div class="acc-tags"><span class="acc-tag tag-gold">D-1</span><span class="acc-tag tag-gray">R$ 119</span></div>
+          <span class="acc-arrow">▼</span>
+        </div>
+        <div class="acc-body">
+          <div class="grid2">
+            <div>
+              <p style="font-size:11px;font-family:'DM Mono',monospace;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:6px;">Composição</p>
+              <p style="font-size:12.5px;line-height:1.6;">Carne do sol grelhada · rubacão (feijão verde + charque) · couve crocante</p>
+            </div>
+            <div>
+              <p style="font-size:11px;font-family:'DM Mono',monospace;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:6px;">Técnica</p>
+              <p style="font-size:12.5px;line-height:1.6;">Chapa + calha + manteiga de garrafa. Iniciar rubacão às 09:00.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /pratos-list -->
+
+    <p style="font-size:13.5px;font-weight:600;margin:20px 0 10px;">Principais · Peixes + Massas (4 pratos)</p>
+
+    <div class="acc-card" id="acc-robalo">
+      <div class="acc-header" onclick="toggleAcc('acc-robalo')">
+        <span class="acc-num">P06</span>
+        <span class="acc-name">Robalo com Pele Crocante</span>
+        <div class="acc-tags"><span class="acc-tag tag-gray">R$ 118</span><span class="acc-tag tag-gray">Peixes</span></div>
+        <span class="acc-arrow">▼</span>
+      </div>
+      <div class="acc-body">
+        <div class="grid2">
+          <div><p style="font-size:12.5px;line-height:1.6;"><strong>Composição:</strong> Mousseline de banana da terra · picles de maxixe · tomate cereja · azeite verde · limão tahiti</p></div>
+          <div><p style="font-size:12.5px;line-height:1.6;"><strong>Técnica:</strong> Pele para baixo com pressão constante. Chapa 3–4 min. Forno apenas se necessário.</p></div>
+        </div>
+        <div class="alert" style="margin-top:10px;"><strong>Ponto crítico:</strong> 58–60 °C. Pele crocante ao ponto. Nunca retirar da chapa antes de largar.</div>
+      </div>
+    </div>
+
+    <div class="acc-card crit" id="acc-polvo">
+      <div class="acc-header" onclick="toggleAcc('acc-polvo')">
+        <span class="acc-num">P07</span>
+        <span class="acc-name">Arroz de Polvo DUE</span>
+        <div class="acc-tags"><span class="acc-tag tag-crit">★ Assinatura</span><span class="acc-tag tag-gold">D-1</span><span class="acc-tag tag-gray">R$ 145</span></div>
+        <span class="acc-arrow">▼</span>
+      </div>
+      <div class="acc-body">
+        <div class="grid2">
+          <div><p style="font-size:12.5px;line-height:1.6;"><strong>Composição:</strong> Polvo grelhado · arroz arbório · bisque de crustáceos · parmesão · azeite</p></div>
+          <div><p style="font-size:12.5px;line-height:1.6;"><strong>Técnica:</strong> D-1: polvo cozido em pressão 1h. Serviço: bisque base criada no início. Arroz risoto no momento.</p></div>
+        </div>
+        <div class="alert alert-red" style="margin-top:10px;"><strong>D-1 obrigatório:</strong> Polvo cozido na Qua para Qui · Sex para Sáb. Sem D-1, sem polvo.</div>
+      </div>
+    </div>
+
+    <div class="acc-card" id="acc-pappardelle">
+      <div class="acc-header" onclick="toggleAcc('acc-pappardelle')">
+        <span class="acc-num">P08</span>
+        <span class="acc-name">Pappardelle DUE</span>
+        <div class="acc-tags"><span class="acc-tag tag-gold">Massa fresca</span><span class="acc-tag tag-gray">R$ 110</span></div>
+        <span class="acc-arrow">▼</span>
+      </div>
+      <div class="acc-body">
+        <div class="grid2">
+          <div><p style="font-size:12.5px;line-height:1.6;"><strong>Composição:</strong> Massa fresca · camarão + lulas + mexilhões · bisque de crustáceos · azeite trufado</p></div>
+          <div><p style="font-size:12.5px;line-height:1.6;"><strong>Técnica:</strong> Pappardelle: 2–3 min cozido. Bisque envolvente. Frutos do mar grelhados separados.</p></div>
+        </div>
+        <div class="alert" style="margin-top:10px;"><strong>Ponto crítico:</strong> Coordenar com Aux Quente. Timing com bisque — base criada no início do serviço.</div>
+      </div>
+    </div>
+
+    <div class="acc-card" id="acc-rigatoni">
+      <div class="acc-header" onclick="toggleAcc('acc-rigatoni')">
+        <span class="acc-num">P09</span>
+        <span class="acc-name">Rigatoni com Ragù de Costela</span>
+        <div class="acc-tags"><span class="acc-tag tag-gold">D-1</span><span class="acc-tag tag-gray">R$ 89</span></div>
+        <span class="acc-arrow">▼</span>
+      </div>
+      <div class="acc-body">
+        <div class="grid2">
+          <div><p style="font-size:12.5px;line-height:1.6;"><strong>Composição:</strong> Costela desfiada lentamente · pomodoro artesanal · rigatoni al dente · parmesão RALADO NA HORA.</p></div>
+          <div><p style="font-size:12.5px;line-height:1.6;"><strong>Técnica:</strong> Ragù D-1 obrigatório. Nunca pré-ralar o parmesão.</p></div>
+        </div>
+      </div>
+    </div>
+
+    <p style="font-size:13.5px;font-weight:600;margin:20px 0 10px;">Menu Executivo · Almoço | Responsabilidade: Cozinheiro</p>
+    <table class="due-table">
+      <thead><tr><th>Prato</th><th>Tempo</th><th>Base Compartilhada</th></tr></thead>
+      <tbody>
+        <tr><td>Robalo Território</td><td class="td-mono">18–20 min</td><td>Mesma técnica do Robalo à la carte.</td></tr>
+        <tr><td>Frango Tucupi &amp; Jambu</td><td class="td-mono">22–25 min</td><td>B14 Dry Rub — base única. <span class="acc-tag tag-crit" style="display:inline;">Avisar jambu: adormece língua.</span></td></tr>
+        <tr><td>Salada Morna de Camarão</td><td class="td-mono">12–15 min</td><td>B26 Picles Maxixe · B27 Creme de Abacate.</td></tr>
+        <tr><td>Arroz Sertão Verde (vegan)</td><td class="td-mono">12–15 min</td><td>B26 Picles · B27 Creme de Abacate · feijão verde.</td></tr>
+        <tr><td>Rigatoni da Nonna</td><td class="td-mono">12–15 min</td><td>B12 Costela desfiada + B01 Pomodoro.</td></tr>
+        <tr><td>Arroz de Sol DUE</td><td class="td-mono">15–18 min</td><td>Base própria — carne do sol dessalgada D-1.</td></tr>
+      </tbody>
+    </table>
+
+    <!-- ═══ D-1 ═══ -->
+    <div id="d1" class="sec-header">
+      <span class="sec-title">Bases D-1 · Produção Antecipada Obrigatória</span>
+      <div class="sec-line"></div>
+      <span class="sec-label">5 bases</span>
+    </div>
+
+    <div class="alert alert-red" style="margin-bottom:16px;"><strong>D-1 não é sugestão. É obrigação.</strong> Se o polvo não foi cozido na quarta, não tem croqueta nem arroz de polvo na quinta. O calendário é inegociável.</div>
+
+    <table class="due-table">
+      <thead><tr><th>Base</th><th>Tempo</th><th>Pratos que dependem</th><th>Quando produzir</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Polvo cozido</strong></td><td class="td-mono">45–60 min (pressão)</td><td>Croqueta + Arroz de Polvo DUE</td><td>Qua para Qui · Sex para Sáb</td></tr>
+        <tr><td><strong>Costela desfiada</strong></td><td class="td-mono">12h braseado lento</td><td>Toast de Costela + Rigatoni Ragù + Rigatoni Nonna</td><td>Seg para ter · Qua para qui</td></tr>
+        <tr><td><strong>Pato confit</strong></td><td class="td-mono">Cura 24h + 3h forno</td><td>Coxa de Pato Confitada</td><td>2 dias antes do serviço</td></tr>
+        <tr><td><strong>Carne do sol</strong></td><td class="td-mono">Dessalgar 4h mín.</td><td>Filé do Sertão + Arroz de Sol DUE</td><td>Overnight ou manhã cedo</td></tr>
+        <tr><td><strong>Charque</strong></td><td class="td-mono">Dessalgar 4h mín.</td><td>Rubacão (Filé do Sertão)</td><td>Overnight ou manhã cedo</td></tr>
+      </tbody>
+    </table>
+
+    <p style="font-size:13.5px;font-weight:600;margin:20px 0 10px;">Bases do dia · Produção no serviço (cozinheiro inicia às 09:00)</p>
+    <table class="due-table">
+      <thead><tr><th>Base</th><th>Tempo</th><th>Pratos que alimenta</th><th>Iniciar às</th></tr></thead>
+      <tbody>
+        <tr><td>Bisque de frutos do mar</td><td class="td-mono">45 min</td><td>Pappardelle DUE + Taco Camarão (caldo)</td><td class="td-mono">09:00 (ao chegar)</td></tr>
+        <tr><td>Mousseline de banana</td><td class="td-mono">25 min</td><td>Robalo + Robalo Território</td><td class="td-mono">até 10:00</td></tr>
+        <tr><td>Fonduta de parmesão</td><td class="td-mono">20 min</td><td>Flat Iron + Rigatoni</td><td class="td-mono">até 10:00 · banho-maria</td></tr>
+        <tr><td>Xerém cremoso</td><td class="td-mono">30 min</td><td>Filé Alto</td><td class="td-mono">até 10:00</td></tr>
+        <tr><td>Rubacão</td><td class="td-mono">40 min</td><td>Filé do Sertão</td><td class="td-mono">09:00 mínimo</td></tr>
+        <tr><td>Purê de raízes</td><td class="td-mono">25 min</td><td>Coxa de Pato</td><td class="td-mono">até 10:00</td></tr>
+        <tr><td>Demi-glace / reduções</td><td class="td-mono">60–90 min</td><td>Filé Alto, Flat Iron, Carré, Pato</td><td class="td-mono">Batch semanal: seg e qui</td></tr>
+        <tr><td>Leite de tigre sergipano</td><td class="td-mono">20 min</td><td>Tiradito de Peixe</td><td class="td-mono">Aux Frios — até 10:30</td></tr>
+        <tr><td>Pesto sergipano</td><td class="td-mono">15 min</td><td>Burrata + Camarão Confitado</td><td class="td-mono">Aux Frios — até 10:30</td></tr>
+        <tr><td>Aioli de páprica</td><td class="td-mono">10 min</td><td>Croqueta de Polvo DUE</td><td class="td-mono">Aux Frios — até 10:30</td></tr>
+        <tr><td>Teriyaki de hibisco (B28)</td><td class="td-mono">25 min</td><td>Frutos do Mar Tempurá</td><td class="td-mono">Aux Cozinha — em squeeze</td></tr>
+      </tbody>
+    </table>
+
+    <!-- ═══ CALENDÁRIO ═══ -->
+    <div id="calendário" class="sec-header">
+      <span class="sec-title">Calendário Semanal de Produção</span>
+      <div class="sec-line"></div>
+    </div>
+
+    <table class="due-table">
+      <thead><tr><th>Dia</th><th>Produção Obrigatória</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Segunda</strong></td><td>Demi-glace + bisque (batch grande). Costela para terça e quarta. Polvo para terça.</td></tr>
+        <tr><td><strong>Terça</strong></td><td>Verificar estoque. Pato confit INICIAR CURA (precisa 24h antes do serviço de quarta).</td></tr>
+        <tr><td><strong>Quarta</strong></td><td>Polvo para quinta + sexta. Costela para quinta + sexta. Pato entra no forno (3h).</td></tr>
+        <tr><td><strong>Quinta</strong></td><td>Produção intensa: polvo, costela, reposição de bases. A semana vira aqui.</td></tr>
+        <tr><td><strong>Sexta</strong></td><td>Verificar todas as bases para fim de semana. Reforçar mise en place.</td></tr>
+        <tr><td><strong>Sábado</strong></td><td>Polvo + costela para domingo (repouso). Conferência geral de mise en place.</td></tr>
+        <tr><td><strong>Domingo</strong></td><td style="color:var(--muted);">FOLGA COLETIVA. Sem operação.</td></tr>
+      </tbody>
+    </table>
+
+    <!-- ═══ MISE EN PLACE ═══ -->
+    <div id="mise" class="sec-header">
+      <span class="sec-title">Mise en Place · Ritual de Abertura (Turno A)</span>
+      <div class="sec-line"></div>
+    </div>
+
+    <p style="font-size:13px;line-height:1.7;margin-bottom:14px;">Rafael chega às 09:00 e segue o intervalo coletivo da manhã às 11:00. Franciele e Josilene chegam junto.</p>
+
+    <table class="due-table">
+      <thead><tr><th>Horário</th><th>Cozinheiro (Rafael)</th><th>Aux Cozinha (Franciele)</th><th>SG (Josilene)</th></tr></thead>
+      <tbody>
+        <tr><td class="td-mono">09:00–09:30</td><td>Verificar temperatura câmeras. Conferir produção D-1.</td><td>Ligar equipamentos. Mise place frios: cortes.</td><td>Limpeza inicial: pisos, ralos, bancadas.</td></tr>
+        <tr><td class="td-mono">09:30–10:00</td><td>Briefing. Delegar tarefas. Checar lista D-1.</td><td>Mise place frios: cortes, marinadas.</td><td>Lixeiras. Verificar sanitários.</td></tr>
+        <tr><td class="td-mono">10:00–10:45</td><td>Iniciar bisque (45 min) + rubacão (40 min). Bases do dia.</td><td>Lavar folhas. Curar sobremesas.</td><td>Caixas de abertura. Apoio transporte.</td></tr>
+        <tr><td class="td-mono">10:45–11:00</td><td>Conferir mise en place. Provar e ajustar.</td><td>Terminar sobremesas (pannacota, cheesecake).</td><td>Asseclas conforme demanda.</td></tr>
+        <tr><td class="td-mono">11:00–11:30</td><td colspan="3" style="text-align:center;color:var(--gold);font-weight:500;">INTERVALO COLETIVO</td></tr>
+        <tr><td class="td-mono">11:30–11:55</td><td>Organizar linha. Montar pass.</td><td>Conferência final frios — cada componente.</td><td>Última limpeza pré-serviço.</td></tr>
+        <tr><td class="td-mono">12:00</td><td colspan="3" style="text-align:center;background:var(--gold-bg);color:var(--gold);font-weight:600;">PORTAS ABREM — SERVIÇO ALMOÇO</td></tr>
+      </tbody>
+    </table>
+
+    <p style="font-size:13.5px;font-weight:600;margin:16px 0 8px;">Protocolo de confirmação · liberação do serviço</p>
+    <div class="checklist" id="cl-mise">
+      <div class="cl-item" onclick="toggleCheck(this)"><div class="cl-cb"></div><span class="cl-text">Aux Cozinha confere cada componente e reporta: <strong>"FRIOS OK"</strong> ou <strong>"QUENTE OK"</strong>.</span></div>
+      <div class="cl-item" onclick="toggleCheck(this)"><div class="cl-cb"></div><span class="cl-text">Cozinheiro confere todas as bases, temperaturas e banho-maria e libera: <strong>"BRIGADA LIBERADA"</strong>.</span></div>
+      <div class="cl-item cl-crit" onclick="toggleCheck(this)"><div class="cl-cb"></div><span class="cl-text cl-crit">À noite, François faz a conferência final pessoalmente. Se algo faltar às 17:45, há 15 min para resolver.</span></div>
+      <div class="cl-item cl-crit" onclick="toggleCheck(this)"><div class="cl-cb"></div><span class="cl-text cl-crit">Se o protocolo não for cumprido, o serviço <strong>não abre</strong>.</span></div>
+    </div>
+
+    <div class="progress-wrap" id="progress-mise" style="margin-top:12px;">
+      <div class="progress-label"><span>Mise en Place</span><span id="progress-mise-pct">0%</span></div>
+      <div class="progress-bar"><div class="progress-fill" id="progress-mise-fill" style="width:0%"></div></div>
+    </div>
+
+    <!-- ═══ VIRADA DE TURNO ═══ -->
+    <div id="virada" class="sec-header">
+      <span class="sec-title">Virada de Turno · A Janela Mais Crítica</span>
+      <div class="sec-line"></div>
+    </div>
+
+    <div class="alert alert-red"><strong>ATENÇÃO EDMAR:</strong> você chega às 14:00 e abre o jantar às 18h. O mise en place tem que estar 100% pronto às 17:45.</div>
+
+    <table class="due-table" style="margin-top:16px;">
+      <thead><tr><th>Tarefa Obrigatória</th><th>Responsável</th><th>Prazo</th></tr></thead>
+      <tbody>
+        <tr><td>Receber briefing da Equipe A (D-1 ok? Base ok? Incidentes?)</td><td>Edmar (Coz B)</td><td class="td-mono">até 14:15</td></tr>
+        <tr><td>Verificar bases críticas: bisque, ragù, mousseline, demi-glace.</td><td>Edmar (Coz B)</td><td class="td-mono">até 17:30</td></tr>
+        <tr><td>Repor mise en place frios: componentes consumidos no almoço.</td><td>Beatriz (Aux B)</td><td class="td-mono">até 17:30</td></tr>
+        <tr><td>PRÉ-MONTAR todas as sobremesas (pannacota, cheesecake no prato)</td><td>Beatriz (Aux B)</td><td class="td-mono">até 17:45</td></tr>
+        <tr><td>Trocar óleo das fritadeiras se almoço foi pesado em frituras</td><td>Beatriz (Aux B)</td><td class="td-mono">até 17:00</td></tr>
+        <tr><td>Limpeza profunda rápida: pisos, ralos, bancadas, sanitários</td><td>Rayanne (SG B)</td><td class="td-mono">até 17:45</td></tr>
+        <tr><td><strong>CHECKLIST ASSINADO pelo Rafael antes de sair</strong></td><td>Rafael (Coz A)</td><td class="td-mono">até 16:20</td></tr>
+        <tr><td>Conferência final pessoal — 19 pratos 1 a 1</td><td>François</td><td class="td-mono">até 17:55</td></tr>
+      </tbody>
+    </table>
+
+    <div class="checklist" id="cl-virada">
+      <div class="cl-item" onclick="toggleCheck(this)"><div class="cl-cb"></div><span class="cl-text">Briefing recebido de Rafael — D-1 e incidentes documentados.</span></div>
+      <div class="cl-item" onclick="toggleCheck(this)"><div class="cl-cb"></div><span class="cl-text">Bisque verificado e suficiente para o jantar.</span></div>
+      <div class="cl-item" onclick="toggleCheck(this)"><div class="cl-cb"></div><span class="cl-text">Ragù aquecido e no ponto.</span></div>
+      <div class="cl-item" onclick="toggleCheck(this)"><div class="cl-cb"></div><span class="cl-text">Mousseline de banana pronta e a temperatura.</span></div>
+      <div class="cl-item" onclick="toggleCheck(this)"><div class="cl-cb"></div><span class="cl-text">Demi-glace suficiente — se baixo, comunicar François.</span></div>
+      <div class="cl-item cl-crit" onclick="toggleCheck(this)"><div class="cl-cb"></div><span class="cl-text cl-crit">Sobremesas PRÉ-MONTADAS antes de 17:45.</span></div>
+      <div class="cl-item cl-crit" onclick="toggleCheck(this)"><div class="cl-cb"></div><span class="cl-text cl-crit">Checklist assinado por Rafael — virada oficializada.</span></div>
+    </div>
+
+    <div class="progress-wrap" id="progress-virada" style="margin-top:12px;">
+      <div class="progress-label"><span>Virada de Turno</span><span id="progress-virada-pct">0%</span></div>
+      <div class="progress-bar"><div class="progress-fill" id="progress-virada-fill" style="width:0%"></div></div>
+    </div>
+
+    <div class="quote" style="margin-top:40px;">"O cardápio de abertura é viável. O diferencial está na execução."</div>
+
+  </div><!-- /content -->
+</main>
+
+<script>
+// ── ACCORDION ──
+function toggleAcc(id) {
+  const card = document.getElementById(id);
+  card.classList.toggle('open');
+}
+
+// ── CHECKLIST + PROGRESS ──
+function toggleCheck(item) {
+  item.classList.toggle('checked');
+  updateProgress(item.closest('.checklist'));
+}
+function updateProgress(cl) {
+  if (!cl) return;
+  const items = cl.querySelectorAll('.cl-item');
+  const checked = cl.querySelectorAll('.cl-item.checked').length;
+  const pct = items.length ? Math.round(checked / items.length * 100) : 0;
+  const wrap = cl.nextElementSibling;
+  if (wrap && wrap.classList.contains('progress-wrap')) {
+    const fill = wrap.querySelector('.progress-fill');
+    const lbl = wrap.querySelector('[id$="-pct"]');
+    if (fill) fill.style.width = pct + '%';
+    if (lbl) lbl.textContent = pct + '%';
+  }
+}
+
+// ── EXPAND ALL ──
+let allOpen = false;
+function expandAll() {
+  allOpen = !allOpen;
+  document.querySelectorAll('.acc-card').forEach(c => {
+    if (allOpen) c.classList.add('open'); else c.classList.remove('open');
+  });
+}
+
+// ── FILTER ──
+function filterContent() {
+  const q = document.getElementById('searchInput').value.toLowerCase();
+  document.querySelectorAll('.acc-card').forEach(card => {
+    const txt = card.textContent.toLowerCase();
+    card.style.display = txt.includes(q) ? '' : 'none';
+  });
+}
+
+function filterSection(sec, el) {
+  document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  const sections = {
+    'proteinas': ['proteinas'],
+    'pratos': ['pratos', 'pratos-list'],
+    'd1': ['d1'],
+    'mise': ['mise', 'virada'],
+    'all': null
+  };
+  if (sec === 'all') {
+    document.querySelectorAll('.sec-header, .acc-card, .due-table, .alert, .checklist, .progress-wrap').forEach(e => e.style.display = '');
+    return;
+  }
+  const ids = sections[sec] || [];
+  document.querySelectorAll('[id]').forEach(el => {
+    if (ids.includes(el.id)) {
+      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  });
+}
+
+// ── SIDEBAR ACTIVE ──
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      const id = e.target.id;
+      document.querySelectorAll('.sb-link').forEach(l => {
+        l.classList.toggle('active', l.getAttribute('href') === '#' + id);
+      });
+    }
+  });
+}, { threshold: 0.3 });
+document.querySelectorAll('[id]').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>

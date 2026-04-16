@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Calendário de Forno D-1 — DUE Restaurante</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,600&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #FAFAF7;
+  --bg2: #F2F0E8;
+  --bg3: #F5F3EC;
+  --white: #FFFFFF;
+  --border: #DDD9CC;
+  --text: #0E0C08;
+  --text2: #3A3730;
+  --muted: #7A7668;
+  --gold: #6A4E10;
+  --gold2: #9A7820;
+  --gold-bg: #FAF3DF;
+  --gold-border: #C8A830;
+  --red: #7A1515;
+  --red-bg: #FDF0F0;
+  --red-border: #CC4444;
+  --green: #1A4A1A;
+  --green-bg: #EFF5EF;
+  --green-border: #4A8A4A;
+
+  /* cluster colors */
+  --c-d: #1A4A6A;   --c-d-bg: #EAF2FA;   --c-d-border: #5A9ACA;
+  --c-a: #4A3A10;   --c-a-bg: #FBF5E4;   --c-a-border: #C8A830;
+  --c-b: #5A2A08;   --c-b-bg: #FDF0E4;   --c-b-border: #CC7730;
+  --c-c: #7A1515;   --c-c-bg: #FDF0F0;   --c-c-border: #CC4444;
+  --c-fog: #2A3A2A; --c-fog-bg: #EFF5EF; --c-fog-border: #4A8A4A;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); display: flex; min-height: 100vh; }
+
+/* ── SIDEBAR ── */
+.sidebar {
+  width: 230px; min-height: 100vh; background: #F2F0E8;
+  border-right: 1px solid #DDD9CC;
+  position: fixed; top: 0; left: 0; z-index: 100; overflow-y: auto;
+  display: flex; flex-direction: column;
+}
+.s-logo { padding: 26px 20px 18px; border-bottom: 1px solid #DDD9CC; }
+.s-due { font-family: 'Cormorant Garamond', serif; font-size: 28px; font-weight: 700; letter-spacing: 6px; color: #6A4E10; }
+.s-sub { font-size: 10px; text-transform: uppercase; letter-spacing: 2px; color: #8A8676; margin-top: 4px; }
+.s-label { font-size: 9px; text-transform: uppercase; letter-spacing: 2px; color: #8A8676; padding: 14px 20px 5px; }
+.s-nav a { display: flex; align-items: center; gap: 9px; padding: 8px 20px; color: #5A5748; text-decoration: none; font-size: 12px; font-weight: 500; border-left: 2px solid transparent; transition: all .2s; }
+.s-nav a:hover { color: #6A4E10; background: rgba(106,78,16,0.08); border-left-color: #B89020; }
+.s-nav a.active { color: #6A4E10; background: rgba(106,78,16,0.08); border-left-color: #B89020; }
+.s-cluster-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.s-back { display: flex; align-items: center; gap: 7px; margin: 14px 20px 0; padding: 7px 10px; font-size: 11px; color: #8A8676; text-decoration: none; background: rgba(0,0,0,0.04); border-radius: 6px; transition: all .2s; }
+.s-back:hover { color: #6A4E10; background: rgba(106,78,16,0.08); }
+.s-divider { margin: 14px 20px; border: none; border-top: 1px solid #DDD9CC; }
+.s-summary { padding: 0 20px 20px; }
+.s-summary-title { font-size: 9px; text-transform: uppercase; letter-spacing: 2px; color: #8A8676; margin-bottom: 8px; }
+.s-stat { display: flex; justify-content: space-between; align-items: center; padding: 4px 0; font-size: 11px; color: #5A5748; border-bottom: 1px solid rgba(0,0,0,0.04); }
+.s-stat:last-child { border-bottom: none; }
+.s-stat span { font-family: 'DM Mono', monospace; font-size: 11px; color: #6A4E10; font-weight: 500; }
+
+/* ── MAIN ── */
+.main { margin-left: 230px; flex: 1; padding: 48px 48px 80px; max-width: 980px; }
+
+/* ── HEADER ── */
+.page-header { margin-bottom: 40px; padding-bottom: 24px; border-bottom: 1px solid var(--border); }
+.page-tag { font-size: 10px; text-transform: uppercase; letter-spacing: 3px; color: var(--muted); margin-bottom: 10px; }
+.page-title { font-family: 'Cormorant Garamond', serif; font-size: 36px; font-weight: 700; color: var(--gold); line-height: 1.1; margin-bottom: 8px; }
+.page-sub { font-size: 14px; color: var(--text2); line-height: 1.6; max-width: 600px; }
+
+/* ── ALERT ── */
+.alert { border-radius: 8px; padding: 14px 18px; margin-bottom: 32px; font-size: 13px; line-height: 1.6; }
+.alert-gold { background: var(--gold-bg); border: 1px solid var(--gold-border); color: var(--gold); }
+.alert-red { background: var(--red-bg); border: 1px solid var(--red-border); color: var(--red); }
+.alert strong { font-weight: 600; }
+
+/* ── TIMELINE VIEW ── */
+.timeline-label { font-size: 10px; text-transform: uppercase; letter-spacing: 3px; color: var(--muted); margin-bottom: 20px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
+
+/* ── CLUSTER SECTION ── */
+.cluster { margin-bottom: 40px; }
+.cluster-header { display: flex; align-items: center; gap: 14px; margin-bottom: 16px; }
+.cluster-badge {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 6px 14px; border-radius: 20px;
+  font-family: 'DM Mono', monospace; font-size: 11px; font-weight: 500;
+  letter-spacing: 1px;
+}
+.cluster-title { font-family: 'Cormorant Garamond', serif; font-size: 20px; font-weight: 700; }
+.cluster-desc { font-size: 12px; color: var(--muted); margin-top: 2px; }
+
+/* cluster color variants */
+.cl-d .cluster-badge { background: var(--c-d-bg); color: var(--c-d); border: 1px solid var(--c-d-border); }
+.cl-d .cluster-title { color: var(--c-d); }
+.cl-a .cluster-badge { background: var(--c-a-bg); color: var(--c-a); border: 1px solid var(--c-a-border); }
+.cl-a .cluster-title { color: var(--c-a); }
+.cl-b .cluster-badge { background: var(--c-b-bg); color: var(--c-b); border: 1px solid var(--c-b-border); }
+.cl-b .cluster-title { color: var(--c-b); }
+.cl-c .cluster-badge { background: var(--c-c-bg); color: var(--c-c); border: 1px solid var(--c-c-border); }
+.cl-c .cluster-title { color: var(--c-c); }
+.cl-fog .cluster-badge { background: var(--c-fog-bg); color: var(--c-fog); border: 1px solid var(--c-fog-border); }
+.cl-fog .cluster-title { color: var(--c-fog); }
+
+/* ── CARDS GRID ── */
+.cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px; }
+.card {
+  background: var(--white); border-radius: 10px;
+  border: 1px solid var(--border);
+  padding: 16px 18px;
+  transition: box-shadow .2s;
+}
+.card:hover { box-shadow: 0 2px 12px rgba(0,0,0,0.07); }
+.card-id { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--muted); margin-bottom: 4px; }
+.card-nome { font-size: 14px; font-weight: 600; color: var(--text); margin-bottom: 4px; line-height: 1.3; }
+.card-uso { font-size: 11px; color: var(--muted); margin-bottom: 10px; line-height: 1.4; }
+.card-params { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
+.param {
+  display: inline-flex; align-items: center; gap: 4px;
+  padding: 3px 8px; border-radius: 4px; font-size: 11px; font-family: 'DM Mono', monospace;
+  background: var(--bg2); color: var(--text2); border: 1px solid var(--border);
+}
+.param.temp { background: #FEF9EC; color: #7A4E08; border-color: #E8C870; }
+.param.time { background: #EEF4FE; color: #1A3A6A; border-color: #9AB8E8; }
+.param.mode { background: #F0F5F0; color: #2A4A2A; border-color: #8AAA8A; }
+.card-nota { font-size: 11px; color: var(--text2); line-height: 1.5; padding-top: 8px; border-top: 1px dashed var(--border); }
+.card-nota strong { color: var(--gold); }
+.card-link { display: inline-flex; align-items: center; gap: 4px; margin-top: 8px; font-size: 11px; color: var(--gold2); text-decoration: none; font-weight: 500; }
+.card-link:hover { text-decoration: underline; }
+
+/* ── SEQUÊNCIA DO DIA ── */
+.seq-section { margin-top: 48px; }
+.seq-title { font-family: 'Cormorant Garamond', serif; font-size: 24px; font-weight: 700; color: var(--gold); margin-bottom: 6px; }
+.seq-sub { font-size: 13px; color: var(--muted); margin-bottom: 24px; }
+.seq-table { width: 100%; border-collapse: collapse; }
+.seq-table th { text-align: left; font-size: 10px; text-transform: uppercase; letter-spacing: 2px; color: var(--muted); padding: 8px 14px; border-bottom: 2px solid var(--border); }
+.seq-table td { padding: 11px 14px; border-bottom: 1px solid var(--border); font-size: 13px; vertical-align: top; }
+.seq-table tr:last-child td { border-bottom: none; }
+.seq-table tr:hover td { background: var(--bg2); }
+.seq-hora { font-family: 'DM Mono', monospace; font-weight: 500; color: var(--gold); white-space: nowrap; }
+.seq-acao { font-weight: 500; color: var(--text); }
+.seq-detalhe { font-size: 12px; color: var(--muted); margin-top: 2px; }
+.seq-cluster { display: inline-flex; align-items: center; gap: 5px; }
+.dot { width: 7px; height: 7px; border-radius: 50%; display: inline-block; }
+.dot-d { background: var(--c-d); }
+.dot-a { background: var(--c-a); }
+.dot-b { background: var(--c-b); }
+.dot-c { background: var(--c-c); }
+.dot-fog { background: #4A8A4A; }
+.seq-badge { font-family: 'DM Mono', monospace; font-size: 10px; padding: 2px 7px; border-radius: 4px; }
+.seq-badge.d { background: var(--c-d-bg); color: var(--c-d); }
+.seq-badge.a { background: var(--c-a-bg); color: var(--c-a); }
+.seq-badge.b { background: var(--c-b-bg); color: var(--c-b); }
+.seq-badge.c { background: var(--c-c-bg); color: var(--c-c); }
+.seq-badge.fog { background: var(--c-fog-bg); color: var(--c-fog); }
+.seq-tag-sig { font-size: 10px; color: var(--gold2); font-weight: 600; letter-spacing: 1px; }
+
+/* ── REGRAS ── */
+.rules { margin-top: 48px; display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 14px; }
+.rule-card { background: var(--bg3); border: 1px solid var(--border); border-radius: 8px; padding: 16px 18px; }
+.rule-num { font-family: 'DM Mono', monospace; font-size: 22px; font-weight: 500; color: var(--gold-border); line-height: 1; margin-bottom: 6px; }
+.rule-text { font-size: 13px; color: var(--text2); line-height: 1.6; }
+.rule-text strong { color: var(--text); }
+
+@media print {
+  .sidebar { display: none !important; }
+  .main { margin-left: 0; padding: 20px; }
+  .card { break-inside: avoid; }
+  .seq-table tr { break-inside: avoid; }
+}
+
+@media (max-width: 768px) {
+  .sidebar { display: none; }
+  .main { margin-left: 0; padding: 24px 20px 60px; }
+  .cards { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<nav class="sidebar">
+  <div class="s-logo">
+    <div class="s-due">DUE</div>
+    <div class="s-sub">Calendário de Forno · D-1</div>
+  </div>
+
+  <a href="DUE_Receitas_Base.html" class="s-back">← Grimório de Bases</a>
+  <a href="index.html" class="s-back" style="margin-top:6px;">⌂ Hub de Manuais</a>
+
+  <hr class="s-divider">
+
+  <div class="s-label">Clusters</div>
+  <div class="s-nav">
+    <a href="#cluster-d"><span class="s-cluster-dot" style="background:#5A9ACA;"></span>D · 70–80°C · Desidratação</a>
+    <a href="#cluster-a"><span class="s-cluster-dot" style="background:#C8A830;"></span>A · 90–110°C · Confit / Tuile</a>
+    <a href="#cluster-b"><span class="s-cluster-dot" style="background:#CC7730;"></span>B · 130–150°C · Braseado / Batata</a>
+    <a href="#cluster-c"><span class="s-cluster-dot" style="background:#CC4444;"></span>C · 175–200°C · Alta Temperatura</a>
+    <a href="#cluster-fog"><span class="s-cluster-dot" style="background:#4A8A4A;"></span>Fogão / Geladeira</a>
+  </div>
+
+  <hr class="s-divider">
+
+  <div class="s-label">Sequência do Dia</div>
+  <div class="s-nav">
+    <a href="#sequencia">⏱ Protocolo D-1</a>
+    <a href="#regras">⚑ Regras do Forno</a>
+  </div>
+
+  <hr class="s-divider">
+
+  <div class="s-summary">
+    <div class="s-summary-title">Resumo D-1</div>
+    <div class="s-stat">Total de fichas D-1 <span>15</span></div>
+    <div class="s-stat">Usam forno combinado <span>8</span></div>
+    <div class="s-stat">Usam fogão / sem forno <span>7</span></div>
+    <div class="s-stat">Clusters de temperatura <span>4</span></div>
+    <div class="s-stat">Janela total D-1 <span>~8h</span></div>
+  </div>
+</nav>
+
+<!-- MAIN -->
+<main class="main">
+
+  <div class="page-header">
+    <div class="page-tag">DUE Restaurante · Cozinha · Mise en Place</div>
+    <h1 class="page-title">Calendário de Forno D-1</h1>
+    <p class="page-sub">Sequenciamento de produções por cluster de temperatura. O forno combinado é o maior ativo estratégico da cozinha — este documento governa como ocupá-lo sem conflito e com máxima eficiência.</p>
+  </div>
+
+  <div class="alert alert-gold">
+    <strong>Princípio central:</strong> iniciar sempre pelo cluster D (temperatura mais baixa) e subir progressivamente. Nunca forçar o forno a resfriar entre produções — aproveitar a temperatura residual. A costela é a produção âncora: define o início e a janela de todo o restante.
+  </div>
+
+  <!-- ════ CLUSTER D ════ -->
+  <div id="cluster-d" class="cluster cl-d">
+    <div class="cluster-header">
+      <div>
+        <div class="cluster-badge">D · 70–80°C</div>
+        <div class="cluster-title">Desidratação e Confit Leve</div>
+        <div class="cluster-desc">Calor seco · longo · delicado — iniciar aqui, aproveitando o forno frio</div>
+      </div>
+    </div>
+    <div class="cards">
+
+      <div class="card">
+        <div class="card-id">B03</div>
+        <div class="card-nome">Crocante de Tapioca DUE</div>
+        <div class="card-uso">Tartar do Sertão</div>
+        <div class="card-params">
+          <span class="param temp">80°C</span>
+          <span class="param time">2 horas</span>
+          <span class="param mode">Calor seco</span>
+        </div>
+        <div class="card-nota"><strong>Atenção:</strong> camada única no silpat. Pré-secar 20 min em T.A. antes de ligar o forno. Resfriar completamente antes de fritar.</div>
+        <a href="DUE_Receitas_Base.html" class="card-link">↗ Ver ficha B03</a>
+      </div>
+
+      <div class="card">
+        <div class="card-id">B16</div>
+        <div class="card-nome">Tomates Confitados DUE</div>
+        <div class="card-uso">Burrata</div>
+        <div class="card-params">
+          <span class="param temp">80°C</span>
+          <span class="param time">40 min</span>
+          <span class="param mode">Calor seco</span>
+        </div>
+        <div class="card-nota">Tomate deve permanecer firme com pele intacta. Pode compartilhar o forno com a tapioca — mesma temperatura.</div>
+        <a href="DUE_Receitas_Base.html" class="card-link">↗ Ver ficha B16</a>
+      </div>
+
+      <div class="card">
+        <div class="card-id">B06</div>
+        <div class="card-nome">Folhas Desidratadas DUE</div>
+        <div class="card-uso">Finalização de pratos</div>
+        <div class="card-params">
+          <span class="param temp">70°C</span>
+          <span class="param time">30 min</span>
+          <span class="param mode">Calor seco</span>
+        </div>
+        <div class="card-nota">Pode entrar junto com tomates confitados — posicionar na grade superior. Verificar a cada 10 min.</div>
+        <a href="DUE_Receitas_Base.html" class="card-link">↗ Ver ficha B06</a>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ════ CLUSTER A ════ -->
+  <div id="cluster-a" class="cluster cl-a">
+    <div class="cluster-header">
+      <div>
+        <div class="cluster-badge">A · 90–110°C</div>
+        <div class="cluster-title">Confit e Tuile</div>
+        <div class="cluster-desc">Temperatura baixa sustentada · cuidado com flutuação</div>
+      </div>
+    </div>
+    <div class="cards">
+
+      <div class="card">
+        <div class="card-id">B31</div>
+        <div class="card-nome">Confit de Pato DUE</div>
+        <div class="card-uso">Coxa de Pato Confitada</div>
+        <div class="card-params">
+          <span class="param temp">90°C</span>
+          <span class="param time">4 horas</span>
+          <span class="param mode">Calor seco</span>
+        </div>
+        <div class="card-nota"><strong>Atenção:</strong> gordura deve cobrir completamente as coxas. Temperatura constante — acima de 100°C frita e resseca. Esta é a produção mais longa do D-1.</div>
+        <a href="DUE_Receitas_Base.html" class="card-link">↗ Ver ficha B31</a>
+      </div>
+
+      <div class="card">
+        <div class="card-id">B05</div>
+        <div class="card-nome">Tuile de Parmesão DUE</div>
+        <div class="card-uso">Finalização</div>
+        <div class="card-params">
+          <span class="param temp">110°C</span>
+          <span class="param time">7 min</span>
+          <span class="param mode">Calor seco</span>
+        </div>
+        <div class="card-nota">Rápido — encaixar entre uma produção e outra enquanto o forno sobe de temperatura. Modelar ainda quente.</div>
+        <a href="DUE_Receitas_Base.html" class="card-link">↗ Ver ficha B05</a>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ════ CLUSTER B ════ -->
+  <div id="cluster-b" class="cluster cl-b">
+    <div class="cluster-header">
+      <div>
+        <div class="cluster-badge">B · 130–150°C</div>
+        <div class="cluster-title">Braseado Longo e Batata</div>
+        <div class="cluster-desc">Temperatura sustentada · calor seco · produções estruturantes do cardápio</div>
+      </div>
+    </div>
+    <div class="cards">
+
+      <div class="card">
+        <div class="card-id">B29</div>
+        <div class="card-nome">Costela Desfiada DUE — Fase 2</div>
+        <div class="card-uso">Rigatoni com Ragù · Bruschetta de Costela</div>
+        <div class="card-params">
+          <span class="param temp">130°C</span>
+          <span class="param time">3 horas</span>
+          <span class="param mode">Calor seco</span>
+        </div>
+        <div class="card-nota"><strong>Produção âncora.</strong> Entra na fase 2 após selagem a 200°C. Vedar com papel alumínio duplo + fundo escuro até 2/3 da altura. Desfiar quente.</div>
+        <a href="DUE_Receitas_Base.html" class="card-link">↗ Ver ficha B29</a>
+      </div>
+
+      <div class="card">
+        <div class="card-id">B25</div>
+        <div class="card-nome">Batata para Pão de Batata DUE</div>
+        <div class="card-uso">Pão de Batata DUE (B25)</div>
+        <div class="card-params">
+          <span class="param temp">150°C</span>
+          <span class="param time">40 min</span>
+          <span class="param mode">Calor seco</span>
+        </div>
+        <div class="card-nota">Batata inteira com casca. Após assar: espremer quente, secar 10 min ao ar antes de pesar. Só então montar a massa.</div>
+        <a href="DUE_Receitas_Base.html" class="card-link">↗ Ver ficha B25</a>
+      </div>
+
+      <div class="card">
+        <div class="card-id">B09</div>
+        <div class="card-nome">Cheesecake Basco DUE — Fase 2</div>
+        <div class="card-uso">Cheesecake Artesanal</div>
+        <div class="card-params">
+          <span class="param temp">150°C</span>
+          <span class="param time">20 min</span>
+          <span class="param mode">Calor seco</span>
+        </div>
+        <div class="card-nota">Entra na fase 2 após crosta a 180°C. Centro deve sair com leve tremor. Depois: 1h T.A. + mínimo 6h geladeira antes de porcionar.</div>
+        <a href="DUE_Receitas_Base.html" class="card-link">↗ Ver ficha B09</a>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ════ CLUSTER C ════ -->
+  <div id="cluster-c" class="cluster cl-c">
+    <div class="cluster-header">
+      <div>
+        <div class="cluster-badge">C · 175–200°C</div>
+        <div class="cluster-title">Alta Temperatura — Selagem e Douramento</div>
+        <div class="cluster-desc">Rápido · crosta · caramelização — produções que exigem Maillard</div>
+      </div>
+    </div>
+    <div class="cards">
+
+      <div class="card">
+        <div class="card-id">B29</div>
+        <div class="card-nome">Costela Desfiada DUE — Fase 1</div>
+        <div class="card-uso">Rigatoni com Ragù · Bruschetta de Costela</div>
+        <div class="card-params">
+          <span class="param temp">200°C</span>
+          <span class="param time">30 min</span>
+          <span class="param mode">Calor seco</span>
+        </div>
+        <div class="card-nota"><strong>Iniciar aqui no D-1.</strong> Sem cobertura — formar crosta escura. Imediatamente após: reduzir para 130°C e vedar para o braseado longo.</div>
+        <a href="DUE_Receitas_Base.html" class="card-link">↗ Ver ficha B29</a>
+      </div>
+
+      <div class="card">
+        <div class="card-id">B09</div>
+        <div class="card-nome">Cheesecake Basco DUE — Fase 1</div>
+        <div class="card-uso">Cheesecake Artesanal</div>
+        <div class="card-params">
+          <span class="param temp">180°C</span>
+          <span class="param time">6 min</span>
+          <span class="param mode">Calor seco</span>
+        </div>
+        <div class="card-nota">Crosta escura é o objetivo — não retirar cedo. Reduzir imediatamente para 150°C para os 20 min finais.</div>
+        <a href="DUE_Receitas_Base.html" class="card-link">↗ Ver ficha B09</a>
+      </div>
+
+      <div class="card">
+        <div class="card-id">B11</div>
+        <div class="card-nome">Demi-glace DUE — Torrefação dos Ossos</div>
+        <div class="card-uso">Filé Alto · Pato · Carré de Cordeiro</div>
+        <div class="card-params">
+          <span class="param temp">180°C</span>
+          <span class="param time">~40 min</span>
+          <span class="param mode">Calor seco</span>
+        </div>
+        <div class="card-nota">Ossos e legumes até caramelização profunda. Continua no fogão em panela larga. Produção longa — planejar em dia de menor movimento.</div>
+        <a href="DUE_Receitas_Base.html" class="card-link">↗ Ver ficha B11</a>
+      </div>
+
+      <div class="card">
+        <div class="card-id">B25</div>
+        <div class="card-nome">Pão de Batata DUE — Assado</div>
+        <div class="card-uso">Bruschetta de Costela · Toast</div>
+        <div class="card-params">
+          <span class="param temp">175°C</span>
+          <span class="param time">14 min</span>
+          <span class="param mode">Calor seco</span>
+        </div>
+        <div class="card-nota">Entra após fermentação de 1h nos aros de 8cm. Pincelar eggwash sem pressionar. Retirar dos aros ainda quente.</div>
+        <a href="DUE_Receitas_Base.html" class="card-link">↗ Ver ficha B25</a>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ════ CLUSTER FOGÃO / GELADEIRA ════ -->
+  <div id="cluster-fog" class="cluster cl-fog">
+    <div class="cluster-header">
+      <div>
+        <div class="cluster-badge">Fogão · Geladeira · Cura</div>
+        <div class="cluster-title">Sem Forno Combinado</div>
+        <div class="cluster-desc">Produções paralelas — podem rodar simultaneamente ao forno</div>
+      </div>
+    </div>
+    <div class="cards">
+
+      <div class="card">
+        <div class="card-id">B01</div>
+        <div class="card-nome">Pappardelle Artesanal DUE</div>
+        <div class="card-uso">Pappardelle DUE · Carré de Cordeiro</div>
+        <div class="card-params">
+          <span class="param mode">Fogão · 2 min fervura</span>
+        </div>
+        <div class="card-nota">Cozinhar 2 min, sem óleo, umedecer com bisque frio. Porções de 160g em ninho. Geladeira em GN perfurada.</div>
+        <a href="DUE_Receitas_Base.html" class="card-link">↗ Ver ficha B01</a>
+      </div>
+
+      <div class="card">
+        <div class="card-id">B10</div>
+        <div class="card-nome">Bisque de Crustáceos DUE ⦿</div>
+        <div class="card-uso">Pappardelle DUE · Arroz de Polvo DUE</div>
+        <div class="card-params">
+          <span class="param mode">Fogão · 45 min</span>
+        </div>
+        <div class="card-nota">Assinatura. Flambar com conhaque. Reduzir até napar. Produzir antes da pappardelle — o bisque é o agente de hidratação do pré-batch.</div>
+        <a href="DUE_Receitas_Base.html" class="card-link">↗ Ver ficha B10</a>
+      </div>
+
+      <div class="card">
+        <div class="card-id">B28</div>
+        <div class="card-nome">Polvo DUE</div>
+        <div class="card-uso">Arroz de Polvo · Pappardelle · Croqueta</div>
+        <div class="card-params">
+          <span class="param mode">Fogão · 40–50 min</span>
+        </div>
+        <div class="card-nota">Mergulhar 3× antes de submergir. Resfriar FORA do caldo. Serviço só em frigideira — sem forno.</div>
+        <a href="DUE_Receitas_Base.html" class="card-link">↗ Ver ficha B28</a>
+      </div>
+
+      <div class="card">
+        <div class="card-id">B13</div>
+        <div class="card-nome">Gema Curada DUE ⦿</div>
+        <div class="card-uso">Tartar do Sertão</div>
+        <div class="card-params">
+          <span class="param mode">Geladeira · 48h</span>
+        </div>
+        <div class="card-nota">Assinatura. Curar em shoyu por 12h mínimo. Sem forno.</div>
+        <a href="DUE_Receitas_Base.html" class="card-link">↗ Ver ficha B13</a>
+      </div>
+
+      <div class="card">
+        <div class="card-id">B14</div>
+        <div class="card-nome">Picles de Maxixe DUE ⦿</div>
+        <div class="card-uso">Taco de Camarão · Robalo</div>
+        <div class="card-params">
+          <span class="param mode">Geladeira · 12h mínimo</span>
+        </div>
+        <div class="card-nota">Assinatura. Acidez aumenta com o tempo. Produzir com folga.</div>
+        <a href="DUE_Receitas_Base.html" class="card-link">↗ Ver ficha B14</a>
+      </div>
+
+      <div class="card">
+        <div class="card-id">B35</div>
+        <div class="card-nome">Charque · Dessalga DUE</div>
+        <div class="card-uso">Arroz de Feijão Verde com Charque</div>
+        <div class="card-params">
+          <span class="param mode">Fogão · água morna · 2–4h</span>
+        </div>
+        <div class="card-nota">Provar a cada 30–45 min. Cortar em cubos APÓS a dessalga. Emergência: ferver 30 min em água abundante.</div>
+        <a href="DUE_Receitas_Base.html" class="card-link">↗ Ver ficha B35</a>
+      </div>
+
+      <div class="card">
+        <div class="card-id">B36</div>
+        <div class="card-nome">Arroz de Feijão Verde com Charque DUE</div>
+        <div class="card-uso">Filé do Sertão</div>
+        <div class="card-params">
+          <span class="param mode">Fogão · ~40 min total</span>
+        </div>
+        <div class="card-nota">Branquear feijão verde separado (3–4 min + banho de gelo). Refogar charque em manteiga de garrafa. Feijão entra nos últimos 2 min. Cuidado com sal.</div>
+        <a href="DUE_Receitas_Base.html" class="card-link">↗ Ver ficha B36</a>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ════ SEQUÊNCIA DO DIA ════ -->
+  <div id="sequencia" class="seq-section">
+    <div class="seq-title">Protocolo D-1 — Sequência Sugerida</div>
+    <div class="seq-sub">Janela de trabalho aproximada para uma produção completa. Ajustar conforme cardápio do dia seguinte e nível de estoque.</div>
+
+    <div class="alert alert-gold" style="margin-bottom:20px;">
+      <strong>Regra de ouro:</strong> a costela começa o dia. Ela define a temperatura de partida (200°C), depois cai para 130°C liberando o forno para subir em seguida para o cheesecake e o pão. Tudo gira em torno da costela.
+    </div>
+
+    <table class="seq-table">
+      <thead>
+        <tr>
+          <th>Horário</th>
+          <th>Produção</th>
+          <th>Ação / Observação</th>
+          <th>Cluster</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="seq-hora">08:00</td>
+          <td><div class="seq-acao">Mise en place D-1</div><div class="seq-detalhe">Separar insumos, pré-aquecer forno a 200°C</div></td>
+          <td>Retirar costela da marinada. Montar aros para pão de batata. Conferir estoque de bisque.</td>
+          <td>—</td>
+        </tr>
+        <tr>
+          <td class="seq-hora">08:20</td>
+          <td><div class="seq-acao">B29 Costela — Fase 1</div><div class="seq-detalhe">200°C · 30 min · sem cobertura</div></td>
+          <td>Forno a 200°C calor seco. Costela sem cobertura para formar crosta.</td>
+          <td><span class="seq-badge c">C</span></td>
+        </tr>
+        <tr>
+          <td class="seq-hora">08:50</td>
+          <td><div class="seq-acao">B29 Costela — Fase 2 + B31 Pato inicia</div><div class="seq-detalhe">Forno cai para 130°C · 3h braseado</div></td>
+          <td>Vedar costela com alumínio + fundo escuro. Reduzir para 130°C. Enquanto isso: iniciar confit de pato no fogão a 90°C.</td>
+          <td><span class="seq-badge b">B</span></td>
+        </tr>
+        <tr>
+          <td class="seq-hora">09:00</td>
+          <td><div class="seq-acao">B35 Charque — Dessalga inicia</div><div class="seq-detalhe">Água morna · 2–4h · provar a cada 30–45 min</div></td>
+          <td>Paralelo ao forno. Submergir peça inteira em água morna.</td>
+          <td><span class="seq-badge fog">Fogão</span></td>
+        </tr>
+        <tr>
+          <td class="seq-hora">09:10</td>
+          <td><div class="seq-acao">B13 Gema Curada + B14 Picles Maxixe</div><div class="seq-detalhe">Geladeira · 12h mínimo</div></td>
+          <td>Iniciar curas. Paralelo a tudo.</td>
+          <td><span class="seq-badge fog">Geladeira</span></td>
+        </tr>
+        <tr>
+          <td class="seq-hora">09:30</td>
+          <td><div class="seq-acao">B03 Tapioca + B16 Tomates — forno livre</div><div class="seq-detalhe">Forno sobe para 80°C após costela entrar em 130°C</div></td>
+          <td>Pré-secar tapioca 20 min em T.A. Montar tomates em assadeira. Forno a 80°C — ambos podem entrar juntos. Tapioca: 2h. Tomates: 40 min.</td>
+          <td><span class="seq-badge d">D</span></td>
+        </tr>
+        <tr>
+          <td class="seq-hora">10:10</td>
+          <td><div class="seq-acao">Tomates prontos. Folhas desidratadas entram.</div><div class="seq-detalhe">70°C · 30 min</div></td>
+          <td>Retirar tomates. Inserir folhas na grade superior. Tapioca continua.</td>
+          <td><span class="seq-badge d">D</span></td>
+        </tr>
+        <tr>
+          <td class="seq-hora">10:30</td>
+          <td><div class="seq-acao">B28 Polvo — cozimento</div><div class="seq-detalhe">Fogão · 40–50 min</div></td>
+          <td>Ferver água + leite + sal + louro. Mergulhar 3×. Paralelo ao forno.</td>
+          <td><span class="seq-badge fog">Fogão</span></td>
+        </tr>
+        <tr>
+          <td class="seq-hora">11:00</td>
+          <td><div class="seq-acao">B25 Batata para Pão — forno sobe para 150°C</div><div class="seq-detalhe">150°C · 40 min · com casca</div></td>
+          <td>Tapioca deve estar pronta. Retirar e resfriar. Forno sobe para 150°C. Batata inteira com casca entra.</td>
+          <td><span class="seq-badge b">B</span></td>
+        </tr>
+        <tr>
+          <td class="seq-hora">11:40</td>
+          <td><div class="seq-acao">B25 Batata pronta → montar massa do pão</div><div class="seq-detalhe">Espremer quente · secar 10 min · batedeira</div></td>
+          <td>Espremer, secar ao ar, montar massa na batedeira. Fermentação 1h nos aros.</td>
+          <td><span class="seq-badge fog">Fogão/Bancada</span></td>
+        </tr>
+        <tr>
+          <td class="seq-hora">11:50</td>
+          <td><div class="seq-acao">B10 Bisque + B11 Demi-glace (se necessário)</div><div class="seq-detalhe">Fogão · 45 min / 40 min forno + 4h redução</div></td>
+          <td>Bisque: fogão. Demi-glace: torrefação dos ossos a 180°C se estoque baixo — produzir em dia de menos movimento.</td>
+          <td><span class="seq-badge fog">Fogão</span></td>
+        </tr>
+        <tr>
+          <td class="seq-hora">12:20</td>
+          <td><div class="seq-acao">B09 Cheesecake — Forno sobe para 180°C</div><div class="seq-detalhe">180°C · 6 min → 150°C · 20 min</div></td>
+          <td>Pré-aquecer a 180°C. Montar o cheesecake, verter, assar. Após 6 min: reduzir para 150°C por mais 20 min.</td>
+          <td><span class="seq-badge c">C → B</span></td>
+        </tr>
+        <tr>
+          <td class="seq-hora">12:50</td>
+          <td><div class="seq-acao">Cheesecake sai do forno → resfriamento</div><div class="seq-detalhe">1h T.A. → mínimo 6h geladeira</div></td>
+          <td>Não refrigerar forçado. Após 1h T.A., levar à geladeira. Pronto para o serviço do dia seguinte.</td>
+          <td>—</td>
+        </tr>
+        <tr>
+          <td class="seq-hora">13:00</td>
+          <td><div class="seq-acao">B25 Pão de Batata — forno a 175°C</div><div class="seq-detalhe">175°C · 14 min · calor seco</div></td>
+          <td>Fermentação concluída. Pincelar eggwash. Assar. Retirar dos aros ainda quente.</td>
+          <td><span class="seq-badge c">C</span></td>
+        </tr>
+        <tr>
+          <td class="seq-hora">13:30</td>
+          <td><div class="seq-acao">B29 Costela pronta → desfio</div><div class="seq-detalhe">~5h no forno total</div></td>
+          <td>Verificar com pinça. Desfiar quente com luvas. Umedecer com caldo coado. Porcionar 100g. Refrigerar.</td>
+          <td>—</td>
+        </tr>
+        <tr>
+          <td class="seq-hora">14:00</td>
+          <td><div class="seq-acao">B01 Pappardelle — pré-batch</div><div class="seq-detalhe">Fogão · 2 min · sem óleo</div></td>
+          <td>Bisque já pronto e frio. Cozinhar 2 min. Umedecer com bisque frio. Ninhos de 160g em GN perfurada.</td>
+          <td><span class="seq-badge fog">Fogão</span></td>
+        </tr>
+        <tr>
+          <td class="seq-hora">14:30</td>
+          <td><div class="seq-acao">B35 Charque pronto → cortar + B36 Arroz</div></td>
+          <td>Cortar em cubos após dessalga. Refogar em manteiga de garrafa. Montar arroz com feijão verde branqueado.</td>
+          <td><span class="seq-badge fog">Fogão</span></td>
+        </tr>
+        <tr>
+          <td class="seq-hora">15:00</td>
+          <td><div class="seq-acao">✓ D-1 concluído</div></td>
+          <td>Conferir geladeira: costela, pappardelle, cheesecake (em resfriamento), polvo, bisque, gema curada, picles. Forno desligado.</td>
+          <td>—</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ════ REGRAS DO FORNO ════ -->
+  <div id="regras" class="seq-section" style="margin-top:48px;">
+    <div class="seq-title">Regras do Forno Combinado DUE</div>
+    <div class="seq-sub">Princípios inegociáveis para preservar o ativo mais importante da cozinha.</div>
+    <div class="rules">
+      <div class="rule-card">
+        <div class="rule-num">01</div>
+        <div class="rule-text"><strong>Subir sempre.</strong> Nunca planejar uma produção que exija resfriar o forno entre duas tarefas. A sequência vai sempre do mais frio para o mais quente.</div>
+      </div>
+      <div class="rule-card">
+        <div class="rule-num">02</div>
+        <div class="rule-text"><strong>Costela define o dia.</strong> A produção âncora começa o D-1. Tudo o mais se encaixa ao redor dela.</div>
+      </div>
+      <div class="rule-card">
+        <div class="rule-num">03</div>
+        <div class="rule-text"><strong>Tapioca e tomates juntos.</strong> Mesma temperatura (80°C) — aproveitar sempre que possível para não desperdiçar o forno.</div>
+      </div>
+      <div class="rule-card">
+        <div class="rule-num">04</div>
+        <div class="rule-text"><strong>Tapioca: resfriar completamente antes de fritar.</strong> Fritar morna = borrachuda. Sem exceção.</div>
+      </div>
+      <div class="rule-card">
+        <div class="rule-num">05</div>
+        <div class="rule-text"><strong>Pato: temperatura constante a 90°C.</strong> Acima de 100°C frita. Checar com termômetro se necessário.</div>
+      </div>
+      <div class="rule-card">
+        <div class="rule-num">06</div>
+        <div class="rule-text"><strong>Cheesecake: crosta escura é correta.</strong> Não retirar antes dos 6 min. A redução para 150°C é imediata após o tempo inicial.</div>
+      </div>
+      <div class="rule-card">
+        <div class="rule-num">07</div>
+        <div class="rule-text"><strong>Pão nos aros.</strong> Sem aro de 8cm o pão abre lateralmente. Besuntar com manteiga antes de posicionar.</div>
+      </div>
+      <div class="rule-card">
+        <div class="rule-num">08</div>
+        <div class="rule-text"><strong>Forno não é armário.</strong> Nunca guardar nada dentro do forno desligado. Umidade de bandejas frias compromete a próxima produção.</div>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<script>
+// Highlight active sidebar link on scroll
+const sections = document.querySelectorAll('[id]');
+const navLinks = document.querySelectorAll('.s-nav a');
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      navLinks.forEach(a => {
+        a.classList.toggle('active', a.getAttribute('href') === '#' + entry.target.id);
+      });
+    }
+  });
+}, { threshold: 0.3 });
+sections.forEach(s => observer.observe(s));
+</script>
+</body>
+</html>

@@ -7,133 +7,562 @@
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html, body { font-family: 'DM Sans', sans-serif; color: #111009; min-height: 100vh; background: #FFFFFF; }
+html { scroll-behavior: smooth; }
+body { font-family: 'DM Sans', sans-serif; color: #111009; background: #F8F6F0; min-height: 100vh; }
 
-.wrap { max-width: 1000px; margin: 0 auto; padding: 0 36px; }
+/* ── LAYOUT ── */
+.wrap { max-width: 1040px; margin: 0 auto; padding: 0 32px; }
 
-/* ── HEADER ── */
-header { text-align: center; padding: 80px 0 56px; border-bottom: 1px solid #E8E5DA; margin-bottom: 48px; }
-.wordmark { font-family: 'Cormorant Garamond', serif; font-size: clamp(72px, 14vw, 120px); font-weight: 700; color: #7A5C10; letter-spacing: 18px; line-height: 1; display: block; animation: fadeUp .7s ease both; }
-.hl { width: 40px; height: 2px; background: #C8A030; margin: 20px auto 18px; animation: fadeUp .7s .08s ease both; }
-.city { font-size: 10px; text-transform: uppercase; letter-spacing: 5px; color: #9A9080; animation: fadeUp .7s .12s ease both; margin-bottom: 8px; }
-.tagline { font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: clamp(15px, 2vw, 18px); color: #8A8878; animation: fadeUp .7s .16s ease both; }
+/* ── HERO ── */
+.hero {
+  background: #111009;
+  padding: 72px 0 64px;
+  position: relative;
+  overflow: hidden;
+}
+.hero::before {
+  content: 'DUE';
+  position: absolute;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 320px;
+  font-weight: 700;
+  color: #fff;
+  opacity: 0.025;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  letter-spacing: 30px;
+  pointer-events: none;
+  white-space: nowrap;
+}
+.hero-inner { text-align: center; position: relative; z-index: 1; }
+.wordmark {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(80px, 16vw, 136px);
+  font-weight: 700;
+  color: #E8C870;
+  letter-spacing: 20px;
+  line-height: 1;
+  display: block;
+  animation: fadeUp .7s ease both;
+}
+.hl {
+  width: 36px; height: 1px;
+  background: #E8C870;
+  margin: 22px auto 20px;
+  animation: fadeUp .7s .08s ease both;
+}
+.hero-city {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 5px;
+  color: rgba(232,200,112,.5);
+  margin-bottom: 10px;
+  animation: fadeUp .7s .1s ease both;
+}
+.hero-tagline {
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-size: clamp(14px, 2vw, 17px);
+  color: rgba(232,200,112,.75);
+  animation: fadeUp .7s .14s ease both;
+  letter-spacing: .5px;
+}
+
+/* ── STRIP — status ── */
+.status-strip {
+  background: #E8C870;
+  padding: 10px 0;
+}
+.status-inner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+.status-pill {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 10px;
+  font-family: 'DM Mono', monospace;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: #4A3A00;
+}
+.dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: #4A3A00;
+  animation: pulse 2s ease infinite;
+}
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: .35; }
+}
+.status-sep { color: rgba(74,58,0,.3); font-size: 14px; }
 
 /* ── SECTION LABEL ── */
-.section-label { font-size: 10px; text-transform: uppercase; letter-spacing: 4px; color: #9A9080; text-align: center; margin-bottom: 28px; display: flex; align-items: center; gap: 14px; animation: fadeUp .5s .22s ease both; }
-.section-label::before, .section-label::after { content: ''; flex: 1; height: 1px; background: #E8E5DA; }
+.section-label {
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: 4px;
+  color: #9A9080;
+  text-align: center;
+  margin: 52px 0 28px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.section-label::before, .section-label::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: #E0DDD4;
+}
 
 /* ── GRID ── */
-.cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 12px; }
-.cards-row2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 72px; }
+.grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 10px; }
+.grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 10px; }
+.grid-1 { display: grid; grid-template-columns: 1fr; gap: 10px; margin-bottom: 56px; }
 
 /* ── CARD ── */
 .card {
-  display: flex; flex-direction: column; text-decoration: none;
-  border: 1px solid #E0DDD4; border-radius: 4px; padding: 28px 24px;
-  background: #FFFFFF; transition: all .25s ease; position: relative; overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  text-decoration: none;
+  border: 1px solid #E0DDD4;
+  border-radius: 3px;
+  padding: 26px 22px;
+  background: #FFFFFF;
+  transition: all .22s ease;
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
 }
-.card::before { content: ''; position: absolute; top: 0; left: 0; width: 3px; height: 0; background: #C8A030; transition: height .35s ease; }
-.card:hover { border-color: #C8C4B4; transform: translateY(-2px); background: #FAFAF6; box-shadow: 0 4px 20px rgba(0,0,0,0.06); }
-.card:hover::before { height: 100%; }
+.card::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 2px;
+  background: #E8C870;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform .3s ease;
+}
+.card:hover { border-color: #C8C4B0; transform: translateY(-3px); background: #FFFEF8; box-shadow: 0 8px 28px rgba(0,0,0,0.07); }
+.card:hover::after { transform: scaleX(1); }
+.card:active { transform: translateY(0); }
 
-.card-num { font-family: 'DM Mono', monospace; font-size: 9px; color: #B0A898; letter-spacing: 2px; margin-bottom: 18px; text-transform: uppercase; }
-.card-icon { font-size: 20px; margin-bottom: 14px; display: block; color: #9A7820; }
-.card-title { font-family: 'Cormorant Garamond', serif; font-size: 22px; font-weight: 700; color: #111009; line-height: 1.2; margin-bottom: 10px; flex: 1; }
-.card-desc { font-size: 12px; color: #7A7668; line-height: 1.65; margin-bottom: 18px; }
-.card-tags { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 20px; }
-.card-tag { font-size: 9px; font-family: 'DM Mono', monospace; color: #7A5C10; background: #FAF3DF; border: 1px solid #E0C860; padding: 3px 8px; border-radius: 3px; text-transform: uppercase; letter-spacing: .5px; }
-.card-cta { display: flex; align-items: center; gap: 6px; font-size: 11px; font-weight: 600; color: #9A9080; text-transform: uppercase; letter-spacing: 1.5px; margin-top: auto; transition: all .2s; }
+/* card — destaque */
+.card-feature {
+  border-color: #D8C070;
+  background: linear-gradient(135deg, #FFFEF0 0%, #FFF8DC 100%);
+}
+.card-feature::after { background: #C8A030; }
+.card-feature:hover { border-color: #C8A030; background: #FFFBEA; }
+
+/* card — disabled */
+.card-soon {
+  opacity: .6;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.card-num {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  color: #B0A898;
+  letter-spacing: 2px;
+  margin-bottom: 16px;
+  text-transform: uppercase;
+}
+.card-icon {
+  font-size: 22px;
+  margin-bottom: 12px;
+  display: block;
+  line-height: 1;
+}
+.card-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 21px;
+  font-weight: 700;
+  color: #111009;
+  line-height: 1.25;
+  margin-bottom: 9px;
+  flex: 1;
+}
+.card-feature .card-title { color: #5A3E00; }
+.card-desc {
+  font-size: 12px;
+  color: #7A7668;
+  line-height: 1.65;
+  margin-bottom: 16px;
+}
+.card-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-bottom: 18px;
+}
+.tag {
+  font-size: 9px;
+  font-family: 'DM Mono', monospace;
+  color: #7A5C10;
+  background: #FAF3DF;
+  border: 1px solid #E0C860;
+  padding: 3px 7px;
+  border-radius: 2px;
+  text-transform: uppercase;
+  letter-spacing: .5px;
+}
+.tag-soon {
+  color: #9A9080;
+  background: #F4F2EC;
+  border-color: #D8D5CA;
+}
+.card-cta {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 10px;
+  font-weight: 600;
+  color: #9A9080;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  margin-top: auto;
+  transition: all .2s;
+}
 .card:hover .card-cta { color: #7A5C10; gap: 10px; }
 
-/* Animations */
-.card-1 { animation: fadeUp .45s .3s ease both; }
-.card-2 { animation: fadeUp .45s .36s ease both; }
-.card-3 { animation: fadeUp .45s .42s ease both; }
-.card-4 { animation: fadeUp .45s .48s ease both; }
-.card-5 { animation: fadeUp .45s .54s ease both; }
+/* ── TÉCNICAS STRIP ── */
+.tecnicas {
+  background: #111009;
+  border-radius: 3px;
+  padding: 36px 40px;
+  margin-bottom: 10px;
+  display: flex;
+  gap: 40px;
+  align-items: flex-start;
+}
+.tecnicas-label {
+  font-size: 9px;
+  font-family: 'DM Mono', monospace;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  color: #E8C870;
+  white-space: nowrap;
+  padding-top: 4px;
+  min-width: 120px;
+}
+.tecnicas-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px 24px;
+  flex: 1;
+}
+.tecnica-item {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 15px;
+  color: rgba(232,200,112,.85);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.tecnica-item::before {
+  content: '';
+  width: 4px; height: 4px;
+  border-radius: 50%;
+  background: #E8C870;
+  opacity: .5;
+  flex-shrink: 0;
+}
 
 /* ── FOOTER ── */
-footer { border-top: 1px solid #E8E5DA; padding: 24px 36px; text-align: center; }
-.footer-inner { display: flex; align-items: center; justify-content: center; gap: 14px; flex-wrap: wrap; }
-.f-item { font-family: 'DM Mono', monospace; font-size: 9px; text-transform: uppercase; letter-spacing: 2px; color: #B0A898; }
+footer {
+  border-top: 1px solid #E0DDD4;
+  padding: 28px 32px;
+  background: #F8F6F0;
+}
+.footer-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.footer-brand {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 18px;
+  font-weight: 700;
+  color: #7A5C10;
+  letter-spacing: 4px;
+}
+.footer-meta {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.f-item {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: #B0A898;
+}
 .f-sep { color: #D8D5CA; }
 
-@keyframes fadeUp { from { opacity:0; transform:translateY(14px); } to { opacity:1; transform:translateY(0); } }
+/* ── ANIMATIONS ── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.c1 { animation: fadeUp .4s .28s ease both; }
+.c2 { animation: fadeUp .4s .32s ease both; }
+.c3 { animation: fadeUp .4s .36s ease both; }
+.c4 { animation: fadeUp .4s .40s ease both; }
+.c5 { animation: fadeUp .4s .44s ease both; }
+.c6 { animation: fadeUp .4s .48s ease both; }
+.c7 { animation: fadeUp .4s .52s ease both; }
 
-@media (max-width: 720px) {
-  .cards, .cards-row2 { grid-template-columns: 1fr; }
-  header { padding: 56px 0 40px; }
-  .wordmark { letter-spacing: 10px; }
-  .wrap { padding: 0 20px; }
+/* ── RESPONSIVE ── */
+@media (max-width: 760px) {
+  .grid-3, .grid-2 { grid-template-columns: 1fr; }
+  .tecnicas { flex-direction: column; gap: 20px; }
+  .tecnicas-grid { grid-template-columns: repeat(2, 1fr); }
+  .hero { padding: 56px 0 52px; }
+  .wordmark { letter-spacing: 12px; }
+  .wrap { padding: 0 18px; }
+  .footer-inner { justify-content: center; text-align: center; }
+}
+@media (max-width: 480px) {
+  .tecnicas-grid { grid-template-columns: 1fr; }
+  .status-inner { gap: 12px; }
 }
 </style>
 </head>
 <body>
-<div class="wrap">
 
-  <header>
+<!-- HERO -->
+<div class="hero">
+  <div class="wrap hero-inner">
     <span class="wordmark">DUE</span>
     <div class="hl"></div>
-    <div class="city">Jardim Europa &middot; Aracaju &middot; Sergipe</div>
-    <div class="tagline">Cozinha Contempor&acirc;nea Autoral</div>
-  </header>
+    <div class="hero-city">Jardim Europa &middot; Aracaju &middot; Sergipe</div>
+    <div class="hero-tagline">Ingredientes que têm endereço. Técnica que tem propósito.</div>
+  </div>
+</div>
 
-  <div class="section-label">Sistema Operacional &middot; Abril 2026</div>
+<!-- STATUS STRIP -->
+<div class="status-strip">
+  <div class="wrap status-inner">
+    <div class="status-pill"><span class="dot"></span> Operando — Abertura Abril 2026</div>
+    <span class="status-sep">/</span>
+    <div class="status-pill">Almoço 12h · Jantar 18h</div>
+    <span class="status-sep">/</span>
+    <div class="status-pill">60 lugares + Pet Friendly</div>
+    <span class="status-sep">/</span>
+    <div class="status-pill">Sistema v4.0</div>
+  </div>
+</div>
 
-  <div class="cards">
-    <a class="card card-1" href="DUE_Receitas_Base.html">
-      <div class="card-num">01 &middot; Produ&ccedil;&atilde;o</div>
+<div class="wrap">
+
+  <div class="section-label">Sistema Operacional &middot; Cozinha</div>
+
+  <!-- ROW 1 — 3 cards -->
+  <div class="grid-3">
+
+    <a class="card card-feature c1" href="DUE_Receitas_Base.html">
+      <div class="card-num">01 &middot; Produção</div>
       <span class="card-icon">&#9965;</span>
-      <div class="card-title">Grim&oacute;rio de Bases</div>
-      <div class="card-desc">34 fichas t&eacute;cnicas de produ&ccedil;&atilde;o com ingredientes, quantidades e t&eacute;cnica. Inclui as 6 bases-assinatura do DUE. Exportaç&atilde;o em PDF embutida.</div>
-      <div class="card-tags"><span class="card-tag">34 bases</span><span class="card-tag">6 assinaturas</span><span class="card-tag">11 D-1</span><span class="card-tag">Export PDF</span></div>
+      <div class="card-title">Grimório de Bases</div>
+      <div class="card-desc">37 fichas técnicas de produção com ingredientes, quantidades e técnica. As 6 bases-assinatura do DUE. Exportação em PDF embutida.</div>
+      <div class="card-tags">
+        <span class="tag">37 bases</span>
+        <span class="tag">6 assinaturas</span>
+        <span class="tag">15 D-1</span>
+        <span class="tag">Export PDF</span>
+      </div>
       <div class="card-cta">Abrir <span>&rarr;</span></div>
     </a>
-    <a class="card card-2" href="DUE_Porcionamento.html">
-      <div class="card-num">02 &middot; Compras</div>
-      <span class="card-icon">&#9636;</span>
-      <div class="card-title">Porcionamento &amp; Quantidades</div>
-      <div class="card-desc">Gramaturage por prato e calculadora de compras semanal baseada em 640 covers &mdash; casa cheia.</div>
-      <div class="card-tags"><span class="card-tag">Calculadora</span><span class="card-tag">Fichas reais</span><span class="card-tag">Lista compras</span><span class="card-tag">640 covers</span></div>
+
+    <a class="card c2" href="CARDAPIO_DUE.html">
+      <div class="card-num">02 &middot; Cardápio</div>
+      <span class="card-icon">&#9635;</span>
+      <div class="card-title">Cardápio Completo</div>
+      <div class="card-desc">19 pratos com descrições sensoriais, bebidas e drinks. Cardápio de mesa e menu executivo do almoço.</div>
+      <div class="card-tags">
+        <span class="tag">19 pratos</span>
+        <span class="tag">Menu exec.</span>
+        <span class="tag">Bebidas</span>
+        <span class="tag">Drinks</span>
+      </div>
       <div class="card-cta">Abrir <span>&rarr;</span></div>
     </a>
-    <a class="card card-3" href="DUE_Manual_Cozinheiro_v3.html">
-      <div class="card-num">03 &middot; Opera&ccedil;&atilde;o</div>
+
+    <a class="card c3" href="DUE_Manual_Cozinheiro_v4.html">
+      <div class="card-num">03 &middot; Operação</div>
       <span class="card-icon">&#9673;</span>
       <div class="card-title">Manual do Cozinheiro</div>
-      <div class="card-desc">Rafael &amp; Edmar. Pontos de prote&iacute;na, mise en place, checklist interativo e 8 regras de ouro.</div>
-      <div class="card-tags"><span class="card-tag">Rafael &middot; Edmar</span><span class="card-tag">Chapa &amp; Forno</span><span class="card-tag">Checklist</span></div>
+      <div class="card-desc">Rafael &amp; Edmar. Pontos de proteína, mise en place, checklist interativo, D-1 obrigatório e calendário semanal de produção.</div>
+      <div class="card-tags">
+        <span class="tag">Rafael &middot; Edmar</span>
+        <span class="tag">Chapa &amp; Forno</span>
+        <span class="tag">Checklist</span>
+        <span class="tag">v4.0</span>
+      </div>
       <div class="card-cta">Abrir <span>&rarr;</span></div>
     </a>
+
   </div>
 
-  <div class="cards-row2">
-    <a class="card card-4" href="DUE_Manual_Auxiliar_v1.html">
-      <div class="card-num">04 &middot; Opera&ccedil;&atilde;o</div>
+  <!-- ROW 2 — 2 cards -->
+  <div class="grid-2">
+
+    <a class="card c4" href="DUE_Manual_Auxiliar_Cozinha_v4.html">
+      <div class="card-num">04 &middot; Operação</div>
       <span class="card-icon">&#9671;</span>
-      <div class="card-title">Manual do Auxiliar</div>
-      <div class="card-desc">Franciele &amp; Beatriz. Frios e Quente. Card&aacute;pio por esta&ccedil;&atilde;o, mise en place interativo e bases. Otimizado para celular.</div>
-      <div class="card-tags"><span class="card-tag">Franciele &middot; Beatriz</span><span class="card-tag">Frios + Quente</span><span class="card-tag">Mobile</span><span class="card-tag">Checklist virada</span></div>
+      <div class="card-title">Manual do Auxiliar de Cozinha</div>
+      <div class="card-desc">Franciele &amp; Beatriz. Aux Frios (Garde Manger + Sobremesas) e Aux Quente (Frituras + Massas). Checklists interativos por estação.</div>
+      <div class="card-tags">
+        <span class="tag">Franciele &middot; Beatriz</span>
+        <span class="tag">Frios + Quente</span>
+        <span class="tag">Checklist</span>
+        <span class="tag">v4.0</span>
+      </div>
       <div class="card-cta">Abrir <span>&rarr;</span></div>
     </a>
-    <a class="card card-5" href="DUE_Regras_Casa.html">
-      <div class="card-num">05 &middot; Cultura</div>
-      <span class="card-icon">&#9733;</span>
-      <div class="card-title">Regras da Casa &amp; Conviv&ecirc;ncia</div>
-      <div class="card-desc">Conv&iacute;vio, comunica&ccedil;&atilde;o, sa&uacute;de mental na cozinha e o que a equipe pode esperar do DUE. Tom de carta &mdash; acolhedor e direto.</div>
-      <div class="card-tags"><span class="card-tag">Cultura</span><span class="card-tag">Sa&uacute;de mental</span><span class="card-tag">Conviv&ecirc;ncia</span><span class="card-tag">Inegoci&aacute;veis</span></div>
+
+    <a class="card c5" href="DUE_Manual_Servicos_Gerais_v4.html">
+      <div class="card-num">05 &middot; Operação</div>
+      <span class="card-icon">&#9672;</span>
+      <div class="card-title">Manual de Serviços Gerais</div>
+      <div class="card-desc">Josilene &amp; Rayanne. Protocolo de lavagem 4 etapas, prioridade no pico, código de cores, checklists interativos de abertura, virada e fechamento.</div>
+      <div class="card-tags">
+        <span class="tag">Josilene &middot; Rayanne</span>
+        <span class="tag">Lavagem</span>
+        <span class="tag">Checklist</span>
+        <span class="tag">v4.0</span>
+      </div>
       <div class="card-cta">Abrir <span>&rarr;</span></div>
     </a>
+
+  </div>
+
+  <!-- ROW 2b — Calendário de Forno -->
+  <div class="grid-2" style="margin-top:0;">
+
+    <a class="card c1" href="DUE_Calendario_Forno.html" style="border-left: 3px solid #C8A830;">
+      <div class="card-num">01b &middot; Produção</div>
+      <span class="card-icon">&#9200;</span>
+      <div class="card-title">Calendário de Forno D-1</div>
+      <div class="card-desc">Sequenciamento de todas as produções D-1 por cluster de temperatura. Protocolo completo do dia anterior ao serviço — do forno ao fogão.</div>
+      <div class="card-tags">
+        <span class="tag">15 fichas D-1</span>
+        <span class="tag">4 clusters</span>
+        <span class="tag">Sequência ~8h</span>
+        <span class="tag">Regras do forno</span>
+      </div>
+      <div class="card-cta">Abrir <span>&rarr;</span></div>
+    </a>
+
+    <div class="card card-soon">
+      <div class="card-num">01c &middot; Produção</div>
+      <span class="card-icon" style="color:#C0B898">&#9997;</span>
+      <div class="card-title" style="color:#888">Ficha de Pedido de Compras</div>
+      <div class="card-desc">Calculadora baseada em covers projetados. Gramaturagem automática por prato com base nas fichas técnicas.</div>
+      <div class="card-tags"><span class="tag tag-soon">Em breve</span></div>
+      <div class="card-cta" style="color:#C0B898">Em breve</div>
+    </div>
+
+  </div>
+
+  <!-- ROW 3 — 2 cards -->
+  <div class="grid-2">
+
+    <a class="card c6" href="DUE_Manual_Auxiliar_Limpeza_v1.html">
+      <div class="card-num">06 &middot; Operação</div>
+      <span class="card-icon">&#9670;</span>
+      <div class="card-title">Manual do Auxiliar de Limpeza</div>
+      <div class="card-desc">Josilene &amp; Rayanne. RDC 216, mapa de áreas com frequências, protocolo de sanitários, técnicas por superfície, EPI e checklists interativos.</div>
+      <div class="card-tags">
+        <span class="tag">Josilene &middot; Rayanne</span>
+        <span class="tag">RDC 216</span>
+        <span class="tag">Sanitários</span>
+        <span class="tag">v1.0</span>
+      </div>
+      <div class="card-cta">Abrir <span>&rarr;</span></div>
+    </a>
+
+    <a class="card c7" href="DUE_Manual_Vendas_Garcom_v1.docx">
+      <div class="card-num">07 &middot; Salão</div>
+      <span class="card-icon">&#9734;</span>
+      <div class="card-title">Manual de Vendas &amp; Garçom</div>
+      <div class="card-desc">Script da Experiência DUE, técnicas de venda sugestiva, apresentação de pratos e como apresentar o cardápio a quem vem pela primeira vez.</div>
+      <div class="card-tags">
+        <span class="tag">Experiência DUE</span>
+        <span class="tag">Scripts</span>
+        <span class="tag">Venda sugestiva</span>
+      </div>
+      <div class="card-cta">Abrir <span>&rarr;</span></div>
+    </a>
+
+  </div>
+
+  <!-- TÉCNICAS EXCLUSIVAS -->
+  <div class="tecnicas c6">
+    <div class="tecnicas-label">6 Técnicas<br>Exclusivas DUE</div>
+    <div class="tecnicas-grid">
+      <div class="tecnica-item">Bisque de crustáceos artesanal</div>
+      <div class="tecnica-item">Demi-glace de produção própria</div>
+      <div class="tecnica-item">Gema curada 48h</div>
+      <div class="tecnica-item">Pappardelle artesanal fresca</div>
+      <div class="tecnica-item">Xerém de caju cremoso</div>
+      <div class="tecnica-item">Picles de maxixe artesanal</div>
+    </div>
+  </div>
+
+  <!-- PRÓXIMOS (em breve) -->
+  <div class="section-label">Em desenvolvimento &middot; D+14</div>
+
+  <div class="grid-2">
+    <div class="card card-soon">
+      <div class="card-num">08 &middot; Ferramentas</div>
+      <span class="card-icon" style="color:#C0B898">&#9636;</span>
+      <div class="card-title" style="color:#888">Porcionamento &amp; Compras</div>
+      <div class="card-desc">Calculadora de compras baseada em covers projetados. Gramaturagem por prato.</div>
+      <div class="card-tags"><span class="tag tag-soon">Em breve</span><span class="tag tag-soon">640 covers</span></div>
+      <div class="card-cta" style="color:#C0B898">Em breve</div>
+    </div>
+    <div class="card card-soon">
+      <div class="card-num">09 &middot; Gestão</div>
+      <span class="card-icon" style="color:#C0B898">&#9733;</span>
+      <div class="card-title" style="color:#888">Mise en Place Tracker</div>
+      <div class="card-desc">Checklist interativo de mise en place por turno com histórico e timestamps.</div>
+      <div class="card-tags"><span class="tag tag-soon">Em breve</span><span class="tag tag-soon">D-1/D-2</span></div>
+      <div class="card-cta" style="color:#C0B898">Em breve</div>
+    </div>
   </div>
 
 </div>
+
 <footer>
   <div class="footer-inner">
-    <span class="f-item">DUE Restaurante</span><span class="f-sep">&middot;</span>
-    <span class="f-item">Sistema Operacional v4.0</span><span class="f-sep">&middot;</span>
-    <span class="f-item">Abril 2026</span><span class="f-sep">&middot;</span>
-    <span class="f-item">Fran&ccedil;ois Ozanne Consultoria</span>
+    <div class="footer-brand">DUE</div>
+    <div class="footer-meta">
+      <span class="f-item">Sistema Operacional v4.0</span>
+      <span class="f-sep">&middot;</span>
+      <span class="f-item">Abril 2026</span>
+      <span class="f-sep">&middot;</span>
+      <span class="f-item">François Ozanne Consultoria</span>
+      <span class="f-sep">&middot;</span>
+      <span class="f-item">Jardim Europa &middot; Aracaju &middot; SE</span>
+    </div>
   </div>
 </footer>
+
 </body>
 </html>
