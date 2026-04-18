@@ -430,6 +430,7 @@ main {
   <!-- TABS -->
   <div class="tabs">
     <button type="button" class="tab active" onclick="setTab('imprimir',this)">🖨 Imprimir</button>
+    <button type="button" class="tab" onclick="setTab('lote',this)">📦 Lote</button>
     <button type="button" class="tab" onclick="setTab('log',this)">📋 Log</button>
   </div>
 
@@ -539,6 +540,45 @@ main {
     </div>
 
   </div><!-- /tab-imprimir -->
+
+  <!-- TAB LOTE -->
+  <div class="tab-content" id="tab-lote">
+    <div>
+      <div class="section-label">Impressão em Lote — JSON</div>
+      <div class="card">
+        <div class="field">
+          <label>Cole aqui o JSON com a lista de etiquetas</label>
+          <textarea id="lote-json" placeholder='[{"produto":"Polvo Cozido","chef":"RAFA","tipo":"porcao","peso":"150g","qty":1},...]' style="min-height:120px;font-family:monospace;font-size:11px;resize:vertical"></textarea>
+        </div>
+        <div style="display:flex;gap:8px">
+          <button type="button" onclick="validarLote()" style="flex:1;background:var(--surface2);border:1px solid var(--border);color:var(--text);padding:10px;border-radius:8px;cursor:pointer;font-size:12px;font-weight:700;font-family:inherit">✓ Validar</button>
+          <button type="button" onclick="importarJSON()" style="flex:1;background:var(--surface2);border:1px solid var(--border);color:var(--text);padding:10px;border-radius:8px;cursor:pointer;font-size:12px;font-weight:700;font-family:inherit">📥 Arquivo</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- PREVIEW DO LOTE -->
+    <div id="lote-preview" style="display:none">
+      <div class="section-label">Preview — <span id="lote-count">0</span> etiquetas</div>
+      <div id="lote-items" style="display:flex;flex-direction:column;gap:8px;max-height:200px;overflow-y:auto"></div>
+    </div>
+
+    <!-- BOTÃO DE IMPRIMIR LOTE -->
+    <div id="lote-btn-area" style="display:none;margin-top:16px">
+      <button type="button" id="btn-lote-imprimir" onclick="imprimirLote()" style="width:100%;background:var(--ok);border:none;color:white;padding:14px;border-radius:10px;cursor:pointer;font-size:14px;font-weight:700;min-height:48px;font-family:inherit">🖨 Imprimir Lote (0)</button>
+    </div>
+
+    <!-- PROGRESSO -->
+    <div id="lote-progress" style="display:none;margin-top:16px">
+      <div style="display:flex;justify-content:space-between;margin-bottom:6px">
+        <span style="font-size:11px;color:var(--muted)">Progresso:</span>
+        <span id="lote-progress-text" style="font-size:12px;font-weight:700;color:var(--text)">0 / 0</span>
+      </div>
+      <div style="width:100%;height:6px;background:var(--border);border-radius:3px;overflow:hidden">
+        <div id="lote-progress-bar" style="height:100%;background:var(--ok);width:0%;transition:width 0.2s"></div>
+      </div>
+    </div>
+  </div><!-- /tab-lote -->
 
   <!-- TAB LOG -->
   <div class="tab-content" id="tab-log">
@@ -1287,6 +1327,140 @@ function exportCSV() {
   a.href = URL.createObjectURL(blob);
   a.download = 'DUE_log_' + new Date().toISOString().slice(0,10) + '.csv';
   a.click();
+}
+
+// ===== LOTE (BATCH PRINTING) =====
+let S_lote = null; // array de items a imprimir
+
+function validarLote() {
+  const txt = document.getElementById('lote-json').value.trim();
+  if (!txt) { showToast('Cole um JSON válido', 'warn'); return; }
+  try {
+    const parsed = JSON.parse(txt);
+    if (!Array.isArray(parsed)) throw new Error('Deve ser um array JSON');
+    if (!parsed.length) throw new Error('Array vazio');
+
+    // Validar cada item
+    for (const item of parsed) {
+      if (!item.produto) throw new Error('Campo "produto" obrigatório');
+      if (!item.chef) throw new Error('Campo "chef" obrigatório');
+      if (!item.tipo) throw new Error('Campo "tipo" obrigatório');
+      // Validar se produto existe no catálogo
+      const prodIdx = CONFIG.produtos.findIndex(p => p.nome.toLowerCase() === item.produto.toLowerCase());
+      if (prodIdx < 0) throw new Error('Produto "' + item.produto + '" não encontrado');
+    }
+
+    S_lote = parsed;
+    renderLotePreview();
+    showToast('✓ ' + parsed.length + ' itens validados!', 'ok');
+  } catch(e) {
+    showToast('Erro: ' + e.message, 'error');
+  }
+}
+
+function renderLotePreview() {
+  if (!S_lote) return;
+  const el = document.getElementById('lote-preview');
+  const items = document.getElementById('lote-items');
+  const count = document.getElementById('lote-count');
+  const btn = document.getElementById('btn-lote-imprimir');
+
+  count.textContent = S_lote.length;
+  items.innerHTML = S_lote.map((item, idx) =>
+    '<div style="background:var(--surface2);padding:8px;border-radius:6px;font-size:11px">' +
+      '<div style="font-weight:700;color:var(--accent)">' + (idx + 1) + '. ' + item.produto + '</div>' +
+      '<div style="color:var(--muted);margin-top:2px">' + item.chef + ' · ' + (item.tipo || '—') + ' · ' + (item.qty || 1) + '×</div>' +
+    '</div>'
+  ).join('');
+
+  el.style.display = 'block';
+  document.getElementById('lote-btn-area').style.display = 'block';
+  btn.textContent = '🖨 Imprimir Lote (' + S_lote.length + ')';
+}
+
+function importarJSON() {
+  const input = document.createElement('input');
+  input.type = 'file';
+  input.accept = '.json';
+  input.onchange = (e) => {
+    const file = e.target.files[0];
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      document.getElementById('lote-json').value = ev.target.result;
+      validarLote();
+    };
+    reader.readAsText(file);
+  };
+  input.click();
+}
+
+async function imprimirLote() {
+  if (!S_lote || !S_lote.length) { showToast('Nenhum lote carregado', 'warn'); return; }
+  if (S.btStatus !== 'connected') { showToast('Impressora não conectada', 'error'); return; }
+
+  const btn = document.getElementById('btn-lote-imprimir');
+  const progressDiv = document.getElementById('lote-progress');
+  const progressBar = document.getElementById('lote-progress-bar');
+  const progressText = document.getElementById('lote-progress-text');
+
+  btn.disabled = true;
+  progressDiv.style.display = 'block';
+
+  let sucessos = 0, erros = 0;
+
+  for (let i = 0; i < S_lote.length; i++) {
+    const item = S_lote[i];
+    progressText.textContent = (i + 1) + ' / ' + S_lote.length;
+    progressBar.style.width = ((i + 1) / S_lote.length * 100) + '%';
+
+    try {
+      // Resolver produto
+      const prodIdx = CONFIG.produtos.findIndex(p => p.nome.toLowerCase() === item.produto.toLowerCase());
+      if (prodIdx < 0) throw new Error('Produto não encontrado');
+      const prodObj = CONFIG.produtos[prodIdx];
+
+      // Resolver validade
+      let validadeDias = item.validadeDias;
+      if (!validadeDias) {
+        const storage = item.storage || 'refrig';
+        validadeDias = storage === 'congel' ? prodObj.congel : prodObj.refrig;
+      }
+
+      // Montar dados
+      const dados = {
+        produto: item.produto,
+        tipo: item.tipo || 'porcao',
+        validadeDias: validadeDias,
+        storage: item.storage || 'refrig',
+        qty: item.qty || 1,
+        chef: item.chef,
+        turno: 'A', // default
+        peso: item.peso || '',
+        pesoBruto: item.pesoBruto || '',
+        pesoLiquido: item.pesoLiquido || '',
+        fornecedor: item.fornecedor || '',
+        obs: item.obs || ''
+      };
+
+      const tspl = buildTSPL(dados);
+      await enviarTSPL(tspl);
+      sucessos++;
+
+      // Log
+      S.log.unshift({ produto: item.produto, tipo: item.tipo, qty: item.qty || 1, chef: item.chef, storage: item.storage || 'REFR', hora: new Date().toTimeString().slice(0,5) });
+
+      // Pequeno delay entre envios
+      if (i < S_lote.length - 1) await sleep(200);
+
+    } catch(err) {
+      erros++;
+      console.error('Erro ao imprimir item ' + (i+1), err);
+    }
+  }
+
+  renderLog();
+  btn.disabled = false;
+  showToast('✓ Lote concluído: ' + sucessos + ' OK, ' + erros + ' erros', sucessos === S_lote.length ? 'ok' : 'warn');
 }
 
 // ===== TOAST =====
