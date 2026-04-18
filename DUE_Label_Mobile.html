@@ -6,7 +6,6 @@
 <meta name="theme-color" content="#0f0f0f">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <title>DUE · Etiquetas</title>
 <style>
 :root {
@@ -17,46 +16,35 @@
   --text: #f0ece4;
   --muted: #777;
   --accent: #c8a96e;
-  --accent2: #6b9e7a;
-  --danger: #e05252;
-  --warn: #e67e22;
   --ok: #4caf7d;
+  --warn: #e67e22;
+  --danger: #e05252;
   --radius: 14px;
-  --tap: 52px; /* tamanho mínimo de área de toque */
 }
-
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
 html { font-size: 16px; }
-
 body {
   font-family: system-ui, -apple-system, sans-serif;
   background: var(--bg);
   color: var(--text);
-  min-height: 100vh;
   min-height: 100dvh;
   overflow-x: hidden;
   -webkit-tap-highlight-color: transparent;
 }
 
-/* ===== HEADER ===== */
+/* HEADER */
 .header {
   background: var(--surface);
   border-bottom: 1px solid var(--border);
-  padding: 14px 16px 10px;
-  position: sticky;
-  top: 0;
-  z-index: 200;
+  padding: 12px 16px;
   display: flex;
   align-items: center;
   justify-content: space-between;
 }
-
-.header-left { display: flex; align-items: center; gap: 10px; }
 .logo { font-size: 20px; font-weight: 900; letter-spacing: 4px; color: var(--accent); }
-.logo-sub { font-size: 9px; color: var(--muted); letter-spacing: 2px; text-transform: uppercase; }
+.logo-sub { font-size: 9px; color: var(--muted); letter-spacing: 2px; }
 
-/* Bluetooth status pill */
+/* BT PILL */
 .bt-pill {
   display: flex;
   align-items: center;
@@ -64,23 +52,21 @@ body {
   background: var(--surface2);
   border: 1px solid var(--border);
   border-radius: 20px;
-  padding: 6px 12px;
+  padding: 8px 14px;
   cursor: pointer;
   font-size: 12px;
-  font-weight: 600;
+  font-weight: 700;
   color: var(--muted);
-  transition: all 0.2s;
-  min-height: var(--tap);
-  min-width: 52px;
-  justify-content: center;
+  font-family: inherit;
+  min-height: 44px;
 }
 .bt-pill.connected { border-color: var(--ok); color: var(--ok); background: #0d2218; }
-.bt-pill.connecting { border-color: var(--warn); color: var(--warn); background: #221a0a; }
-.bt-dot { width: 8px; height: 8px; border-radius: 50%; background: currentColor; }
-.bt-dot.pulse { animation: pulse 1.2s infinite; }
+.bt-pill.connecting { border-color: var(--warn); color: var(--warn); }
+.bt-dot { width: 8px; height: 8px; border-radius: 50%; background: currentColor; flex-shrink: 0; }
 @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+.bt-dot.pulse { animation: pulse 1.2s infinite; }
 
-/* ===== CHEF BAR ===== */
+/* CHEF BAR */
 .chef-bar {
   background: var(--surface2);
   border-bottom: 1px solid var(--border);
@@ -89,12 +75,10 @@ body {
   align-items: center;
   gap: 6px;
   overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
   scrollbar-width: none;
 }
 .chef-bar::-webkit-scrollbar { display: none; }
 .chef-label { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; white-space: nowrap; flex-shrink: 0; }
-
 .chef-btn {
   background: var(--surface);
   border: 1.5px solid var(--border);
@@ -108,36 +92,35 @@ body {
   letter-spacing: 1px;
   white-space: nowrap;
   flex-shrink: 0;
-  transition: all 0.15s;
-  -webkit-tap-highlight-color: transparent;
+  font-family: inherit;
 }
-.chef-btn:active { transform: scale(0.95); }
 .chef-btn.active { background: var(--accent); border-color: var(--accent); color: #1a1a1a; }
 
-/* ===== MAIN ===== */
+/* MAIN */
 main {
   padding: 16px;
   display: flex;
   flex-direction: column;
   gap: 16px;
-  padding-bottom: 120px; /* espaço para o botão fixo */
+  padding-bottom: 100px;
 }
 
-/* ===== TIPO SELECTOR ===== */
+/* SECTION LABEL */
 .section-label {
   font-size: 10px;
-  letter-spacing: 1.5px;
+  font-weight: 700;
   text-transform: uppercase;
+  letter-spacing: 1.5px;
   color: var(--muted);
   margin-bottom: 8px;
 }
 
+/* TIPO GRID */
 .tipo-grid {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
   gap: 8px;
 }
-
 .tipo-card {
   background: var(--surface);
   border: 2px solid var(--border);
@@ -145,292 +128,75 @@ main {
   padding: 14px 8px;
   text-align: center;
   cursor: pointer;
-  transition: all 0.15s;
-  -webkit-tap-highlight-color: transparent;
   font-family: inherit;
   color: inherit;
   width: 100%;
-  min-height: 80px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 4px;
 }
-.tipo-card:active { transform: scale(0.96); }
-.tipo-card.active { border-color: var(--accent); background: #2a2418; }
-.tipo-icon { font-size: 24px; }
-.tipo-name { font-size: 11px; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; color: var(--text); }
-.tipo-desc { font-size: 9px; color: var(--muted); }
+.tipo-card.active { border-color: var(--accent); background: #1f1a10; }
+.tipo-icon { font-size: 22px; margin-bottom: 4px; }
+.tipo-name { font-size: 11px; font-weight: 700; color: var(--text); }
+.tipo-desc { font-size: 9px; color: var(--muted); margin-top: 2px; }
 
-/* ===== FORM ===== */
+/* CARD */
 .card {
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--radius);
-  padding: 16px;
+  padding: 14px;
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 12px;
 }
 
+/* FIELD */
 .field { display: flex; flex-direction: column; gap: 6px; }
-.field label { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; }
-
-.field select,
-.field input {
-  width: 100%;
+.field label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); }
+.field input, .field select {
   background: var(--surface2);
   border: 1px solid var(--border);
-  border-radius: 10px;
-  padding: 0 14px;
-  height: var(--tap);
+  border-radius: 8px;
   color: var(--text);
   font-size: 15px;
+  padding: 10px 12px;
+  width: 100%;
   font-family: inherit;
   -webkit-appearance: none;
-  transition: border-color 0.15s;
 }
-.field select:focus,
-.field input:focus { outline: none; border-color: var(--accent); }
-.field select option { background: #1a1a1a; }
+.field input::placeholder { color: var(--muted); }
 
-.field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-
-/* Qty stepper */
-.qty-wrap { display: flex; align-items: center; gap: 0; background: var(--surface2); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; }
+/* QTY */
+.qty-wrap { display: flex; align-items: center; gap: 0; border: 1px solid var(--border); border-radius: 10px; overflow: hidden; }
 .qty-btn {
-  background: transparent;
+  background: var(--surface2);
   border: none;
-  color: var(--accent);
-  font-size: 26px;
-  line-height: 1;
-  width: 56px;
-  height: var(--tap);
+  color: var(--text);
+  font-size: 22px;
+  width: 52px;
+  height: 48px;
   cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  font-family: inherit;
   flex-shrink: 0;
-  -webkit-tap-highlight-color: transparent;
 }
-.qty-btn:active { background: #2a2418; }
-.qty-num { flex: 1; text-align: center; font-size: 20px; font-weight: 800; color: var(--text); }
+.qty-num { flex: 1; text-align: center; font-size: 20px; font-weight: 900; }
 
-/* Validade chip */
+/* VALIDADE CHIP */
 .val-chip {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  background: #0d2218;
-  border: 1px solid var(--ok);
-  color: var(--ok);
+  background: var(--surface2);
+  border: 1px solid var(--border);
   border-radius: 8px;
   padding: 8px 12px;
   font-size: 13px;
   font-weight: 700;
-}
-.val-chip.warn { background: #221a0a; border-color: var(--warn); color: var(--warn); }
-.val-chip.danger { background: #220a0a; border-color: var(--danger); color: var(--danger); }
-
-/* Rendimento bar */
-.rend-wrap { display: flex; flex-direction: column; gap: 4px; }
-.rend-bar-bg { background: var(--border); border-radius: 4px; height: 6px; overflow: hidden; }
-.rend-bar-fill { background: var(--accent); height: 100%; border-radius: 4px; transition: width 0.3s; }
-.rend-pct { font-size: 13px; font-weight: 800; color: var(--accent); text-align: right; }
-
-/* ===== PREVIEW ETIQUETA ===== */
-.preview-wrap {
-  background: #e8e4de;
-  border-radius: var(--radius);
-  padding: 16px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 140px;
+  color: var(--ok);
 }
 
-/* Etiqueta 50x80mm proporcional para mobile */
-.label {
-  width: 160px;
-  height: 256px;
-  background: white;
-  color: #111;
-  font-family: Arial, sans-serif;
-  border-radius: 3px;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-  box-shadow: 0 2px 12px rgba(0,0,0,0.25);
-}
-.label-stripe { height: 5px; flex-shrink: 0; }
-.label-stripe.porcao   { background: #111; }
-.label-stripe.producao { background: #555; }
-.label-stripe.entrada  { background: #999; }
-.label-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 4px 6px 3px;
-  border-bottom: 1px solid #e0e0e0;
-}
-.label-brand { font-size: 11px; font-weight: 900; letter-spacing: 3px; }
-.label-type-tag { font-size: 6px; font-weight: 700; padding: 2px 4px; border: 1px solid #111; letter-spacing: 1px; text-transform: uppercase; }
-.label-produto { padding: 5px 6px 3px; font-size: 12px; font-weight: 700; line-height: 1.2; border-bottom: 1px solid #eee; }
-.label-body { flex: 1; padding: 4px 6px; display: flex; flex-direction: column; gap: 3px; }
-.label-row { display: flex; justify-content: space-between; align-items: baseline; }
-.label-key { font-size: 6px; font-weight: 600; text-transform: uppercase; color: #999; }
-.label-val { font-size: 9px; font-weight: 700; }
-.label-val.big { font-size: 12px; font-weight: 900; }
-.label-div { border: none; border-top: 1px dashed #ddd; margin: 1px 0; }
-.label-validade {
-  background: #111;
-  color: white;
-  padding: 5px 6px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-shrink: 0;
-}
-.label-val-label { font-size: 6px; font-weight: 600; color: #aaa; letter-spacing: 1px; text-transform: uppercase; }
-.label-val-date { font-size: 12px; font-weight: 900; letter-spacing: 0.5px; }
-.label-footer {
-  display: flex;
-  justify-content: space-between;
-  padding: 2px 6px;
-  background: #f7f7f7;
-  border-top: 1px solid #eee;
-}
-.label-footer-item { font-size: 6px; color: #aaa; font-weight: 600; }
+/* RENDIMENTO */
+.rend-bar-bg { height: 6px; background: var(--border); border-radius: 3px; flex: 1; overflow: hidden; }
+.rend-bar-fill { height: 100%; background: var(--ok); border-radius: 3px; transition: width 0.3s; }
+.rend-wrap-inner { display: flex; align-items: center; gap: 10px; }
+.rend-pct { font-size: 13px; font-weight: 900; color: var(--ok); white-space: nowrap; }
 
-/* ===== BOTÃO FIXO ===== */
-.fab-area {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  padding: 12px 16px 16px;
-  background: linear-gradient(transparent, var(--bg) 40%);
-  z-index: 100;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  pointer-events: none; /* gradiente não bloqueia cliques */
-}
-.fab-area > * {
-  pointer-events: auto; /* mas os botões dentro funcionam */
-}
-
-.btn-print {
-  background: var(--accent);
-  color: #1a1a1a;
-  border: none;
-  border-radius: var(--radius);
-  height: 56px;
-  font-size: 15px;
-  font-weight: 900;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  cursor: pointer;
-  width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  transition: all 0.15s;
-  -webkit-tap-highlight-color: transparent;
-}
-.btn-print:active { transform: scale(0.97); background: #d4b87a; }
-.btn-print:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
-.btn-print.sending { background: var(--warn); }
-.btn-print.success { background: var(--ok); }
-
-.btn-teste {
-  background: var(--surface2);
-  color: var(--muted);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  height: 36px;
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 1px;
-  cursor: pointer;
-  width: 100%;
-  -webkit-tap-highlight-color: transparent;
-}
-.btn-teste:active { opacity: 0.7; }
-
-/* ===== MODAL BT ===== */
-.modal-bg {
-  display: none;
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.7);
-  z-index: 500;
-  align-items: flex-end;
-}
-.modal-bg.show { display: flex; }
-.modal {
-  background: var(--surface);
-  border-radius: 20px 20px 0 0;
-  padding: 24px 20px 40px;
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-.modal-title { font-size: 16px; font-weight: 800; letter-spacing: 1px; }
-.modal-sub { font-size: 13px; color: var(--muted); line-height: 1.5; }
-.modal-btn {
-  background: var(--accent);
-  color: #1a1a1a;
-  border: none;
-  border-radius: var(--radius);
-  height: 52px;
-  font-size: 15px;
-  font-weight: 800;
-  cursor: pointer;
-  width: 100%;
-}
-.modal-btn-sec {
-  background: transparent;
-  color: var(--muted);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  height: 48px;
-  font-size: 14px;
-  cursor: pointer;
-  width: 100%;
-}
-
-/* ===== LOG ===== */
-.log-item {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  padding: 12px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-.log-icon { font-size: 20px; flex-shrink: 0; }
-.log-info { flex: 1; min-width: 0; }
-.log-prod { font-size: 14px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.log-meta { font-size: 11px; color: var(--muted); margin-top: 2px; }
-.log-tag {
-  font-size: 9px;
-  font-weight: 700;
-  padding: 3px 8px;
-  border-radius: 6px;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  flex-shrink: 0;
-}
-.log-tag.porcao   { background: #2a2418; color: var(--accent); }
-.log-tag.producao { background: #1a2a20; color: var(--accent2); }
-.log-tag.entrada  { background: #1a1f2a; color: #7aacce; }
-
-/* ===== TABS ===== */
+/* TABS */
 .tabs {
   display: flex;
   background: var(--surface2);
@@ -448,18 +214,147 @@ main {
   border-radius: 8px;
   cursor: pointer;
   color: var(--muted);
-  transition: all 0.15s;
-  -webkit-tap-highlight-color: transparent;
   background: transparent;
   border: none;
   font-family: inherit;
 }
 .tab.active { background: var(--surface); color: var(--text); }
-
 .tab-content { display: none; }
 .tab-content.active { display: flex; flex-direction: column; gap: 12px; }
 
-/* ===== TOAST ===== */
+/* PREVIEW */
+.preview-wrap { display: flex; justify-content: center; }
+.label {
+  width: 189px;
+  height: 302px;
+  background: white;
+  border-radius: 4px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+  color: #111;
+}
+.label-stripe { height: 8px; }
+.label-stripe.porcao { background: #1a1a2e; }
+.label-stripe.producao { background: #1a2e1a; }
+.label-stripe.entrada { background: #2e1a1a; }
+.label-header { display: flex; justify-content: space-between; align-items: center; padding: 4px 6px 2px; border-bottom: 1px solid #eee; }
+.label-brand { font-size: 11px; font-weight: 900; letter-spacing: 3px; }
+.label-type-tag { font-size: 6px; font-weight: 700; padding: 2px 4px; border: 1px solid #111; letter-spacing: 1px; text-transform: uppercase; }
+.label-produto { padding: 5px 6px 3px; font-size: 12px; font-weight: 700; line-height: 1.2; border-bottom: 1px solid #eee; }
+.label-body { flex: 1; padding: 4px 6px; display: flex; flex-direction: column; gap: 3px; }
+.label-row { display: flex; justify-content: space-between; align-items: baseline; }
+.label-key { font-size: 6px; font-weight: 600; text-transform: uppercase; color: #999; }
+.label-val { font-size: 9px; font-weight: 700; }
+.label-val.big { font-size: 12px; font-weight: 900; }
+.label-validade { background: #111; color: white; padding: 6px 6px 4px; }
+.label-val-label { font-size: 6px; font-weight: 700; letter-spacing: 2px; display: block; opacity: 0.7; }
+.label-val-date { font-size: 14px; font-weight: 900; letter-spacing: 1px; }
+.label-footer { display: flex; justify-content: space-between; padding: 2px 6px; background: #f7f7f7; border-top: 1px solid #eee; }
+.label-footer-item { font-size: 6px; color: #aaa; font-weight: 600; }
+
+/* LOG */
+.log-item { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 10px 12px; display: flex; flex-direction: column; gap: 4px; }
+.log-item-nome { font-size: 13px; font-weight: 700; }
+.log-item-meta { font-size: 11px; color: var(--muted); }
+
+/* BOTÃO FIXO */
+.fab-area {
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  padding: 10px 16px 20px;
+  background: linear-gradient(transparent, var(--bg) 35%);
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  pointer-events: none;
+}
+.fab-area > * { pointer-events: auto; }
+
+.btn-print {
+  background: var(--accent);
+  color: #1a1a1a;
+  border: none;
+  border-radius: var(--radius);
+  height: 56px;
+  font-size: 15px;
+  font-weight: 900;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  cursor: pointer;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-family: inherit;
+}
+.btn-print:disabled { opacity: 0.35; cursor: not-allowed; }
+.btn-print.sending { background: var(--warn); }
+.btn-print.success { background: var(--ok); }
+
+.btn-teste {
+  background: var(--surface2);
+  color: var(--muted);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  height: 34px;
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+  width: 100%;
+  font-family: inherit;
+  display: none;
+}
+
+/* MODAL */
+.modal-bg {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.75);
+  z-index: 500;
+  align-items: flex-end;
+}
+.modal-bg.show { display: flex; }
+.modal {
+  background: var(--surface);
+  border-radius: 20px 20px 0 0;
+  padding: 24px 20px 36px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.modal-title { font-size: 16px; font-weight: 800; letter-spacing: 1px; }
+.modal-sub { font-size: 13px; color: var(--muted); line-height: 1.5; }
+.modal-btn {
+  background: var(--accent);
+  color: #1a1a1a;
+  border: none;
+  border-radius: var(--radius);
+  height: 52px;
+  font-size: 14px;
+  font-weight: 800;
+  cursor: pointer;
+  font-family: inherit;
+  width: 100%;
+}
+.modal-btn-sec {
+  background: transparent;
+  color: var(--muted);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  height: 44px;
+  font-size: 13px;
+  cursor: pointer;
+  font-family: inherit;
+  width: 100%;
+}
+
+/* TOAST */
 .toast {
   position: fixed;
   top: 80px;
@@ -480,32 +375,17 @@ main {
 .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 .toast.error { background: var(--danger); }
 .toast.warn { background: var(--warn); }
-
-/* ===== ALERTA BT NAO SUPORTADO ===== */
-.alert {
-  background: #221a0a;
-  border: 1px solid var(--warn);
-  border-radius: var(--radius);
-  padding: 14px;
-  font-size: 13px;
-  color: var(--warn);
-  line-height: 1.5;
-  display: none;
-}
-.alert.show { display: block; }
 </style>
 </head>
 <body>
 
 <!-- HEADER -->
 <div class="header">
-  <div class="header-left">
-    <div>
-      <div class="logo">DUE</div>
-      <div class="logo-sub">Etiquetas</div>
-    </div>
+  <div>
+    <div class="logo">DUE</div>
+    <div class="logo-sub" style="font-size:9px;color:var(--muted);letter-spacing:2px">Etiquetas</div>
   </div>
-  <button class="bt-pill" id="bt-pill" onclick="toggleBluetooth()" type="button">
+  <button type="button" class="bt-pill" id="bt-pill" onclick="toggleBluetooth()">
     <div class="bt-dot" id="bt-dot"></div>
     <span id="bt-label">Bluetooth</span>
   </button>
@@ -514,30 +394,23 @@ main {
 <!-- CHEF BAR -->
 <div class="chef-bar">
   <span class="chef-label">Chef:</span>
-  <button class="chef-btn" onclick="setChef('RAF',this)">RAF</button>
-  <button class="chef-btn" onclick="setChef('FRA',this)">FRA</button>
-  <button class="chef-btn" onclick="setChef('BEA',this)">BEA</button>
-  <button class="chef-btn" onclick="setChef('FRZ',this)">FRZ</button>
-  <button class="chef-btn" onclick="setChef('COZ-B',this)">COZ-B</button>
+  <button type="button" class="chef-btn" onclick="setChef('RAF',this)">RAF</button>
+  <button type="button" class="chef-btn" onclick="setChef('FRA',this)">FRA</button>
+  <button type="button" class="chef-btn" onclick="setChef('BEA',this)">BEA</button>
+  <button type="button" class="chef-btn" onclick="setChef('FRZ',this)">FRZ</button>
+  <button type="button" class="chef-btn" onclick="setChef('COZ-B',this)">COZ-B</button>
 </div>
 
 <!-- MAIN -->
 <main>
 
-  <!-- ALERTA BT NÃO SUPORTADO -->
-  <div class="alert" id="bt-alert">
-    ⚠️ <strong>Web Bluetooth não disponível.</strong><br>
-    Use o <strong>Chrome para Android</strong>. No iPhone, o Web Bluetooth não é suportado pelo Safari.<br><br>
-    Se estiver no Chrome Android, acesse via <strong>HTTPS ou localhost</strong> — não funciona em <code>file://</code>.
-  </div>
-
   <!-- TABS -->
   <div class="tabs">
-    <button type="button" class="tab active" onclick="setTab('imprimir', this)">🖨 Imprimir</button>
-    <button type="button" class="tab" onclick="setTab('log', this)">📋 Log</button>
+    <button type="button" class="tab active" onclick="setTab('imprimir',this)">🖨 Imprimir</button>
+    <button type="button" class="tab" onclick="setTab('log',this)">📋 Log</button>
   </div>
 
-  <!-- TAB: IMPRIMIR -->
+  <!-- TAB IMPRIMIR -->
   <div class="tab-content active" id="tab-imprimir">
 
     <!-- TIPO -->
@@ -562,7 +435,7 @@ main {
       </div>
     </div>
 
-    <!-- PRODUTO + CAMPOS -->
+    <!-- PRODUTO -->
     <div class="card">
       <div class="field">
         <label>Produto</label>
@@ -595,7 +468,7 @@ main {
             <option value="Ragù de Cordeiro|3|producao">Ragù de Cordeiro</option>
             <option value="Manteiga Noisette|3|producao">Manteiga Noisette</option>
           </optgroup>
-          <optgroup label="🥗 Entradas Frias">
+          <optgroup label="🥗 Entradas">
             <option value="Burrata Preparada|1|porcao">Burrata Preparada</option>
             <option value="Carpaccio Fatiado|1|porcao">Carpaccio Fatiado</option>
           </optgroup>
@@ -618,9 +491,9 @@ main {
         <div class="val-chip" id="val-chip">—</div>
       </div>
 
-      <!-- RENDIMENTO (producao) -->
+      <!-- RENDIMENTO -->
       <div id="rend-wrap" style="display:none">
-        <div class="rend-wrap">
+        <div class="rend-wrap-inner">
           <div class="rend-bar-bg">
             <div class="rend-bar-fill" id="rend-bar" style="width:0%"></div>
           </div>
@@ -634,9 +507,9 @@ main {
       <div class="field">
         <label>Quantidade de etiquetas</label>
         <div class="qty-wrap">
-          <button class="qty-btn" onclick="changeQty(-1)">−</button>
+          <button type="button" class="qty-btn" onclick="changeQty(-1)">−</button>
           <div class="qty-num" id="qty-num">1</div>
-          <button class="qty-btn" onclick="changeQty(+1)">+</button>
+          <button type="button" class="qty-btn" onclick="changeQty(+1)">+</button>
         </div>
       </div>
     </div>
@@ -657,14 +530,13 @@ main {
               <span class="label-key">Peso / Qtd</span>
               <span class="label-val big" id="prev-peso">—</span>
             </div>
-            <hr class="label-div">
             <div class="label-row">
               <span class="label-key">Prep</span>
               <span class="label-val" id="prev-prep">—</span>
             </div>
           </div>
           <div class="label-validade">
-            <span class="label-val-label">Validade</span>
+            <span class="label-val-label">VALIDADE</span>
             <span class="label-val-date" id="prev-val">—</span>
           </div>
           <div class="label-footer">
@@ -676,13 +548,13 @@ main {
       </div>
     </div>
 
-  </div><!-- /tab imprimir -->
+  </div><!-- /tab-imprimir -->
 
-  <!-- TAB: LOG -->
+  <!-- TAB LOG -->
   <div class="tab-content" id="tab-log">
     <div style="display:flex;justify-content:space-between;align-items:center">
       <div class="section-label" style="margin:0">Histórico da sessão</div>
-      <button onclick="exportCSV()" style="background:transparent;border:1px solid var(--border);color:var(--muted);border-radius:8px;padding:6px 12px;font-size:11px;font-weight:700;cursor:pointer">⬇ CSV</button>
+      <button type="button" onclick="exportCSV()" style="background:transparent;border:1px solid var(--border);color:var(--muted);border-radius:8px;padding:6px 12px;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit">⬇ CSV</button>
     </div>
     <div id="log-lista">
       <div style="text-align:center;color:var(--muted);padding:40px;font-size:13px">Nenhuma impressão ainda</div>
@@ -693,12 +565,10 @@ main {
 
 <!-- BOTÃO FIXO -->
 <div class="fab-area">
-  <button class="btn-print" id="btn-imprimir" disabled onclick="imprimir()">
+  <button type="button" class="btn-teste" id="btn-teste" onclick="imprimirTeste()">🔧 TESTE MÍNIMO</button>
+  <button type="button" class="btn-print" id="btn-imprimir" disabled onclick="imprimir()">
     <span id="btn-icon">📡</span>
     <span id="btn-text">IMPRIMIR VIA BLUETOOTH</span>
-  </button>
-  <button class="btn-teste" id="btn-teste" style="display:none" onclick="imprimirTeste()">
-    🔧 TESTE
   </button>
 </div>
 
@@ -707,11 +577,11 @@ main {
   <div class="modal">
     <div class="modal-title">📡 Conectar Impressora</div>
     <div class="modal-sub">
-      O Chrome vai abrir uma lista de dispositivos Bluetooth próximos.<br><br>
-      Certifique-se de que a <strong>XD210 está ligada</strong> e com Bluetooth ativo. Selecione-a na lista.
+      Chrome vai abrir a lista de dispositivos BLE próximos.<br>
+      Ligue a <strong>XD210 / PT260</strong> e selecione na lista.
     </div>
-    <button class="modal-btn" onclick="conectarBluetooth()">Buscar Impressora</button>
-    <button class="modal-btn-sec" onclick="fecharModal()">Cancelar</button>
+    <button type="button" class="modal-btn" onclick="conectarBluetooth()">Buscar Impressora</button>
+    <button type="button" class="modal-btn-sec" onclick="fecharModal()">Cancelar</button>
   </div>
 </div>
 
@@ -722,191 +592,249 @@ main {
 // ===== ESTADO =====
 const S = {
   chef: null,
+  turno: 'A',
   tipo: 'porcao',
   produto: null,
   validadeDias: null,
   qty: 1,
   btDevice: null,
   btChar: null,
-  btStatus: 'off', // off | connecting | connected
+  btStatus: 'off',
   log: []
 };
 
-// ===== TSPL ENGINE =====
-// Gera comandos TSPL para impressora XD210/PT260 50x80mm
-// TSPL TEXT sintaxe: TEXT x,y,"font",rotation,xmul,ymul,"data"
-// Fontes built-in: "0"=tiny "1"=small "2"=medium "3"=large "4"=xlarge
-// \r\n obrigatório como terminador de linha
-function buildTSPL(dados) {
-  const { produto, peso, pesoBruto, pesoLiquido, fornecedor, obs,
-          turno, chef, tipo, validadeDias, qty } = dados;
+// ===== CHEF =====
+function setChef(nome, el) {
+  S.chef = nome;
+  S.turno = (nome === 'RAF' || nome === 'FRA') ? 'A' : 'B';
+  document.querySelectorAll('.chef-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  atualizar();
+}
 
-  const agora = new Date();
-  const dataPrep = fmt(agora);
-  let dataVal = 'SEM VALIDADE';
-  if (validadeDias) {
+// ===== TIPO =====
+function setTipo(tipo, el) {
+  S.tipo = tipo;
+  document.querySelectorAll('.tipo-card').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  renderCampos();
+  atualizar();
+}
+
+// ===== TABS =====
+function setTab(id, el) {
+  document.querySelectorAll('.tab').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(d => d.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('tab-' + id).classList.add('active');
+}
+
+// ===== PRODUTO =====
+function onProduto() {
+  const sel = document.getElementById('sel-produto');
+  const val = sel.value;
+  if (!val) { S.produto = null; S.validadeDias = null; atualizar(); return; }
+  const [nome, dias, tipoSugerido] = val.split('|');
+  S.produto = nome;
+  S.validadeDias = parseInt(dias);
+  renderCampos();
+  atualizar();
+}
+
+// ===== CAMPOS DINÂMICOS =====
+function renderCampos() {
+  const el = document.getElementById('campos');
+  const tipo = S.tipo;
+  let html = '';
+
+  if (tipo === 'porcao') {
+    html += field('peso', 'Peso / Quantidade', 'text', 'Ex: 200g, 6 unid');
+    html += field('obs', 'Observação (opcional)', 'text', 'Ex: sem sal');
+  } else if (tipo === 'producao') {
+    html += field('pesoBruto', 'Peso Bruto', 'text', 'Ex: 1,5kg');
+    html += field('pesoLiquido', 'Peso Líquido / Rendimento', 'text', 'Ex: 1,2kg');
+    html += field('obs', 'Observação (opcional)', 'text', '');
+  } else if (tipo === 'entrada') {
+    html += field('fornecedor', 'Fornecedor', 'text', 'Ex: Peixaria Central');
+    html += field('peso', 'Quantidade recebida', 'text', 'Ex: 5kg');
+    html += field('obs', 'Observação (opcional)', 'text', '');
+  }
+
+  el.innerHTML = html;
+
+  // Adicionar listeners nos campos
+  el.querySelectorAll('input').forEach(inp => {
+    inp.addEventListener('input', atualizar);
+  });
+
+  renderValidade();
+}
+
+function field(id, label, type, placeholder) {
+  return `<div class="field">
+    <label>${label}</label>
+    <input type="${type}" id="campo-${id}" placeholder="${placeholder}" autocomplete="off" autocorrect="off" spellcheck="false">
+  </div>`;
+}
+
+function renderValidade() {
+  const wrap = document.getElementById('val-wrap');
+  const chip = document.getElementById('val-chip');
+  if (S.validadeDias) {
     const d = new Date();
-    d.setDate(d.getDate() + validadeDias);
-    dataVal = fmt(d);
+    d.setDate(d.getDate() + S.validadeDias);
+    chip.textContent = `Validade: ${fmt(d)} (${S.validadeDias}d)`;
+    wrap.style.display = 'block';
+  } else {
+    wrap.style.display = 'none';
   }
-  const hora = agora.toTimeString().slice(0,5);
+}
 
-  const tipoLabel = {porcao:'PORCAO', producao:'PRODUCAO', entrada:'ENTRADA'}[tipo] || tipo;
+// ===== QTY =====
+function changeQty(delta) {
+  S.qty = Math.max(1, Math.min(20, S.qty + delta));
+  document.getElementById('qty-num').textContent = S.qty;
+  atualizar();
+}
 
-  // Peso display
-  let pesoLine = peso || '-';
-  let rendLine = '';
-  if (tipo === 'producao' && pesoBruto && pesoLiquido) {
-    const pct = ((parseFloat(pesoLiquido)/parseFloat(pesoBruto))*100).toFixed(0);
-    pesoLine = pesoBruto;
-    rendLine = `Rend: ${pesoLiquido} (${pct}%)`;
-  }
+// ===== ATUALIZAR UI =====
+function atualizar() {
+  const btn = document.getElementById('btn-imprimir');
+  const podeImprimir = S.chef && S.produto && S.btStatus === 'connected';
+  btn.disabled = !podeImprimir;
 
-  // TSPL: 50mm x 80mm @ 203dpi = 400 x 640 dots
-  const R = '\r\n'; // terminador obrigatório
-  const W = 400;
-
-  let c = '';
-  c += 'SIZE 50 mm, 80 mm' + R;
-  c += 'GAP 3 mm, 0' + R;
-  c += 'DIRECTION 1' + R;
-  c += 'REFERENCE 0,0' + R;
-  c += 'OFFSET 0 mm' + R;
-  c += 'SET PEEL OFF' + R;
-  c += 'SET CUTTER OFF' + R;
-  c += 'CLS' + R;
-
-  // Barra topo
-  c += `BAR 0,0,${W},8` + R;
-
-  // DUE + tipo
-  c += `TEXT 10,12,"3",0,1,1,"DUE"` + R;
-  c += `TEXT 200,16,"1",0,1,1,"${tipoLabel}"` + R;
-
-  // Separador
-  c += `BAR 0,46,${W},2` + R;
-
-  // Produto
-  const prodTrunc = produto.length > 20 ? produto.substring(0,20) : produto;
-  c += `TEXT 10,52,"3",0,1,1,"${prodTrunc}"` + R;
-
-  // Sep
-  c += `BAR 0,88,${W},1` + R;
-
-  // Peso
-  c += `TEXT 10,96,"1",0,1,1,"PESO/QTD"` + R;
-  c += `TEXT 10,112,"2",0,1,1,"${pesoLine}"` + R;
-
-  let yPos = 140;
-
-  // Rendimento
-  if (rendLine) {
-    c += `TEXT 10,${yPos},"1",0,1,1,"${rendLine}"` + R;
-    yPos += 22;
+  const txt = document.getElementById('btn-text');
+  const icon = document.getElementById('btn-icon');
+  if (!S.chef) { txt.textContent = 'SELECIONE O CHEF'; icon.textContent = '👤'; }
+  else if (!S.produto) { txt.textContent = 'SELECIONE O PRODUTO'; icon.textContent = '📋'; }
+  else if (S.btStatus !== 'connected') { txt.textContent = 'CONECTE A IMPRESSORA'; icon.textContent = '📡'; }
+  else {
+    txt.textContent = `IMPRIMIR ${S.qty > 1 ? S.qty + ' ETIQUETAS' : '1 ETIQUETA'}`;
+    icon.textContent = '🖨';
   }
 
-  // Fornecedor
-  if (fornecedor) {
-    c += `BAR 0,${yPos},${W},1` + R; yPos += 6;
-    c += `TEXT 10,${yPos},"1",0,1,1,"FORN: ${fornecedor.substring(0,18)}"` + R;
-    yPos += 20;
+  // Botão teste visível quando conectado
+  document.getElementById('btn-teste').style.display = S.btStatus === 'connected' ? 'block' : 'none';
+
+  renderPreview();
+}
+
+// ===== PREVIEW =====
+function renderPreview() {
+  const agora = new Date();
+
+  // stripe
+  const stripe = document.getElementById('prev-stripe');
+  stripe.className = 'label-stripe ' + S.tipo;
+
+  // tipo tag
+  const tags = { porcao: 'Porção', producao: 'Produção', entrada: 'Entrada' };
+  document.getElementById('prev-tipo-tag').textContent = tags[S.tipo] || S.tipo;
+
+  // produto
+  const pp = document.getElementById('prev-produto');
+  if (S.produto) {
+    pp.textContent = S.produto;
+    pp.style.fontStyle = 'normal';
+    pp.style.color = '#111';
+    pp.style.fontSize = '12px';
+  } else {
+    pp.textContent = 'Selecione produto';
+    pp.style.fontStyle = 'italic';
+    pp.style.color = '#bbb';
+    pp.style.fontSize = '10px';
   }
 
-  // Obs
-  if (obs) {
-    c += `TEXT 10,${yPos},"1",0,1,1,"Obs: ${obs.substring(0,20)}"` + R;
-    yPos += 20;
+  // peso
+  const pesoEl = document.getElementById('prev-peso');
+  const pesoInput = document.getElementById('campo-peso');
+  pesoEl.textContent = pesoInput ? (pesoInput.value || '—') : '—';
+
+  // prep
+  document.getElementById('prev-prep').textContent = fmt(agora) + ' ' + agora.toTimeString().slice(0,5);
+
+  // validade
+  const valEl = document.getElementById('prev-val');
+  if (S.validadeDias) {
+    const d = new Date();
+    d.setDate(d.getDate() + S.validadeDias);
+    valEl.textContent = fmt(d);
+  } else {
+    valEl.textContent = '—';
   }
 
-  // Data prep
-  c += `BAR 0,460,${W},1` + R;
-  c += `TEXT 10,468,"1",0,1,1,"PREP: ${dataPrep}  ${hora}"` + R;
-
-  // Bloco validade invertido
-  c += `BAR 0,494,${W},90` + R;
-  c += `REVERSE 0,494,${W},90` + R;
-  c += `TEXT 10,500,"1",0,1,1,"VALIDADE"` + R;
-  c += `TEXT 10,518,"3",0,1,1,"${dataVal}"` + R;
-
-  // Rodapé
-  c += `BAR 0,588,${W},1` + R;
-  c += `TEXT 10,594,"1",0,1,1,"Chef: ${chef}   Turno ${turno}"` + R;
-
-  c += `PRINT ${qty},1` + R;
-
-  return c;
+  // chef / turno / hora
+  document.getElementById('prev-chef').textContent = 'CHEF ' + (S.chef || '—');
+  document.getElementById('prev-turno').textContent = 'T' + S.turno;
+  document.getElementById('prev-hora').textContent = agora.toTimeString().slice(0,5);
 }
 
 function fmt(d) {
-  return d.toLocaleDateString('pt-BR', {day:'2-digit',month:'2-digit',year:'2-digit'});
+  return d.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: '2-digit' });
 }
 
 // ===== BLUETOOTH =====
-const BT_SERVICE   = '000018f0-0000-1000-8000-00805f9b34fb'; // Seagull/TSC service UUID
-const BT_CHAR_WRITE = '00002af1-0000-1000-8000-00805f9b34fb'; // write characteristic
+function toggleBluetooth() {
+  if (!navigator.bluetooth) {
+    showToast('Web Bluetooth não suportado. Use Chrome Android via HTTPS.', 'error');
+    return;
+  }
+  if (S.btStatus === 'connected') {
+    if (S.btDevice && S.btDevice.gatt.connected) S.btDevice.gatt.disconnect();
+    setBtStatus('off');
+    return;
+  }
+  document.getElementById('modal-bt').classList.add('show');
+}
 
-// UUIDs alternativos — impressoras TSC podem usar SPP (Serial Port Profile)
-const SPP_SERVICE  = '00001101-0000-1000-8000-00805f9b34fb';
+function fecharModal() {
+  document.getElementById('modal-bt').classList.remove('show');
+}
 
 async function conectarBluetooth() {
   fecharModal();
   setBtStatus('connecting');
-
   try {
     const device = await navigator.bluetooth.requestDevice({
-      // Aceitar qualquer dispositivo — usuário seleciona na lista
       acceptAllDevices: true,
       optionalServices: [
-        BT_SERVICE,
-        SPP_SERVICE,
-        '000018f0-0000-1000-8000-00805f9b34fb',
-        '00001101-0000-1000-8000-00805f9b34fb',
         '0000ff00-0000-1000-8000-00805f9b34fb',
-        'e7810a71-73ae-499d-8c15-faa9aef0c3f2', // TSC BLE service (alguns modelos)
+        '000018f0-0000-1000-8000-00805f9b34fb',
+        'e7810a71-73ae-499d-8c15-faa9aef0c3f2',
+        '00001101-0000-1000-8000-00805f9b34fb'
       ]
     });
 
     S.btDevice = device;
     device.addEventListener('gattserverdisconnected', onDisconnect);
 
-    showToast('Conectando...', 'warn');
-
     const server = await device.gatt.connect();
     let char = null;
 
-    // Tentar encontrar característica de escrita
     const services = await server.getPrimaryServices();
-    for (const service of services) {
+    for (const svc of services) {
       try {
-        const chars = await service.getCharacteristics();
+        const chars = await svc.getCharacteristics();
         for (const c of chars) {
-          const props = c.properties;
-          if (props.write || props.writeWithoutResponse) {
-            char = c;
-            break;
+          if (c.properties.write || c.properties.writeWithoutResponse) {
+            char = c; break;
           }
         }
         if (char) break;
-      } catch(e) { /* service sem acesso — continuar */ }
+      } catch(e) {}
     }
 
-    if (!char) {
-      throw new Error('Característica de escrita não encontrada. A impressora pode não suportar BLE direto.');
-    }
+    if (!char) throw new Error('Característica de escrita não encontrada');
 
     S.btChar = char;
     setBtStatus('connected', device.name || 'Impressora');
-    showToast(`✓ Conectado: ${device.name || 'Impressora'}`, 'ok');
+    showToast('✓ Conectado: ' + (device.name || 'Impressora'), 'ok');
     atualizar();
 
   } catch(err) {
     setBtStatus('off');
-    if (err.name === 'NotFoundError') {
-      showToast('Nenhum dispositivo selecionado', 'warn');
-    } else {
-      showToast('Erro: ' + err.message, 'error');
-      console.error(err);
-    }
+    if (err.name !== 'NotFoundError') showToast('Erro: ' + err.message, 'error');
+    else showToast('Nenhum dispositivo selecionado', 'warn');
   }
 }
 
@@ -917,59 +845,26 @@ function onDisconnect() {
   atualizar();
 }
 
-function toggleBluetooth() {
-  if (!navigator.bluetooth) {
-    document.getElementById('bt-alert').classList.add('show');
-    showToast('Web Bluetooth não suportado neste browser', 'error');
-    return;
-  }
-  if (S.btStatus === 'connected') {
-    // Desconectar
-    if (S.btDevice && S.btDevice.gatt.connected) {
-      S.btDevice.gatt.disconnect();
-    }
-    setBtStatus('off');
-    return;
-  }
-  // Abrir modal
-  document.getElementById('modal-bt').classList.add('show');
-}
-
-function fecharModal() {
-  document.getElementById('modal-bt').classList.remove('show');
-}
-
 function setBtStatus(status, name) {
   S.btStatus = status;
   const pill = document.getElementById('bt-pill');
   const dot  = document.getElementById('bt-dot');
   const lbl  = document.getElementById('bt-label');
-
-  pill.className = 'bt-pill ' + (status === 'connected' ? 'connected' : status === 'connecting' ? 'connecting' : '');
+  pill.className = 'bt-pill' + (status === 'connected' ? ' connected' : status === 'connecting' ? ' connecting' : '');
   dot.className  = 'bt-dot' + (status === 'connecting' ? ' pulse' : '');
-
-  if (status === 'connected') lbl.textContent = name || 'Conectado';
-  else if (status === 'connecting') lbl.textContent = 'Conectando…';
-  else lbl.textContent = 'Bluetooth';
+  lbl.textContent = status === 'connected' ? (name || 'Conectado') : status === 'connecting' ? 'Conectando…' : 'Bluetooth';
 }
 
-// ===== ENVIO BLUETOOTH =====
+// ===== ENVIO BLE =====
 async function enviarTSPL(tspl) {
   if (!S.btChar) throw new Error('Impressora não conectada');
-
   const data = new TextEncoder().encode(tspl);
-
-  // BLE MTU padrão = 20 bytes. Chunks maiores causam falha silenciosa.
   const CHUNK = 20;
-  const DELAY = 30; // ms entre chunks — necessário para buffer da impressora
-
+  const DELAY = 30;
   for (let i = 0; i < data.length; i += CHUNK) {
     const chunk = data.slice(i, i + CHUNK);
-    if (S.btChar.properties.writeWithoutResponse) {
-      await S.btChar.writeValueWithoutResponse(chunk);
-    } else {
-      await S.btChar.writeValue(chunk);
-    }
+    if (S.btChar.properties.writeWithoutResponse) await S.btChar.writeValueWithoutResponse(chunk);
+    else await S.btChar.writeValue(chunk);
     if (i + CHUNK < data.length) await sleep(DELAY);
   }
 }
@@ -977,20 +872,18 @@ async function enviarTSPL(tspl) {
 function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
 
 // ===== TESTE MÍNIMO =====
-// Envia comando TSPL mínimo para verificar se BLE→impressora funciona
 async function imprimirTeste() {
   if (!S.btChar) { showToast('Impressora não conectada', 'error'); return; }
   const R = '\r\n';
-  let t = '';
-  t += 'SIZE 50 mm, 80 mm' + R;
-  t += 'GAP 3 mm, 0' + R;
-  t += 'DIRECTION 1' + R;
-  t += 'CLS' + R;
-  t += 'TEXT 10,30,"3",0,1,1,"DUE TESTE"' + R;
-  t += 'TEXT 10,80,"1",0,1,1,"TSPL OK"' + R;
-  t += 'PRINT 1,1' + R;
+  const t = 'SIZE 50 mm, 80 mm' + R
+    + 'GAP 3 mm, 0' + R
+    + 'DIRECTION 1' + R
+    + 'CLS' + R
+    + 'TEXT 10,30,"3",0,1,1,"DUE TESTE"' + R
+    + 'TEXT 10,80,"1",0,1,1,"TSPL OK - ' + new Date().toTimeString().slice(0,5) + '"' + R
+    + 'PRINT 1,1' + R;
   try {
-    showToast('Enviando teste...', 'warn');
+    showToast('Enviando teste…', 'warn');
     await enviarTSPL(t);
     showToast('✓ Teste enviado!', 'ok');
   } catch(e) {
@@ -998,28 +891,110 @@ async function imprimirTeste() {
   }
 }
 
+// ===== BUILD TSPL =====
+function buildTSPL(dados) {
+  const { produto, tipo, validadeDias, qty, chef, turno } = dados;
+  const peso = dados.peso || '';
+  const pesoBruto = dados.pesoBruto || '';
+  const pesoLiquido = dados.pesoLiquido || '';
+  const fornecedor = dados.fornecedor || '';
+  const obs = dados.obs || '';
+
+  const agora = new Date();
+  const dataPrep = fmt(agora);
+  const hora = agora.toTimeString().slice(0, 5);
+
+  let dataVal = 'SEM VALIDADE';
+  if (validadeDias) {
+    const d = new Date();
+    d.setDate(d.getDate() + validadeDias);
+    dataVal = fmt(d);
+  }
+
+  const tipoLabel = { porcao: 'PORCAO', producao: 'PRODUCAO', entrada: 'ENTRADA' }[tipo] || tipo;
+
+  let pesoLine = peso || '-';
+  let rendLine = '';
+  if (tipo === 'producao' && pesoBruto && pesoLiquido) {
+    const pb = parseFloat(pesoBruto.replace(',', '.'));
+    const pl = parseFloat(pesoLiquido.replace(',', '.'));
+    if (pb > 0) {
+      const pct = ((pl / pb) * 100).toFixed(0);
+      pesoLine = pesoBruto;
+      rendLine = 'Rend: ' + pesoLiquido + ' (' + pct + '%)';
+    }
+  }
+
+  const R = '\r\n';
+  const W = 400;
+  let c = '';
+
+  c += 'SIZE 50 mm, 80 mm' + R;
+  c += 'GAP 3 mm, 0' + R;
+  c += 'DIRECTION 1' + R;
+  c += 'REFERENCE 0,0' + R;
+  c += 'OFFSET 0 mm' + R;
+  c += 'SET PEEL OFF' + R;
+  c += 'SET CUTTER OFF' + R;
+  c += 'CLS' + R;
+
+  c += 'BAR 0,0,' + W + ',8' + R;
+  c += 'TEXT 10,12,"3",0,1,1,"DUE"' + R;
+  c += 'TEXT 200,16,"1",0,1,1,"' + tipoLabel + '"' + R;
+  c += 'BAR 0,46,' + W + ',2' + R;
+
+  const prodTrunc = produto.length > 20 ? produto.substring(0, 20) : produto;
+  c += 'TEXT 10,52,"3",0,1,1,"' + prodTrunc + '"' + R;
+  c += 'BAR 0,88,' + W + ',1' + R;
+
+  c += 'TEXT 10,96,"1",0,1,1,"PESO/QTD"' + R;
+  c += 'TEXT 10,112,"2",0,1,1,"' + pesoLine + '"' + R;
+
+  let y = 140;
+  if (rendLine) { c += 'TEXT 10,' + y + ',"1",0,1,1,"' + rendLine + '"' + R; y += 22; }
+  if (fornecedor) {
+    c += 'BAR 0,' + y + ',' + W + ',1' + R; y += 6;
+    c += 'TEXT 10,' + y + ',"1",0,1,1,"FORN: ' + fornecedor.substring(0, 18) + '"' + R; y += 20;
+  }
+  if (obs) { c += 'TEXT 10,' + y + ',"1",0,1,1,"Obs: ' + obs.substring(0, 20) + '"' + R; y += 20; }
+
+  c += 'BAR 0,460,' + W + ',1' + R;
+  c += 'TEXT 10,468,"1",0,1,1,"PREP: ' + dataPrep + '  ' + hora + '"' + R;
+
+  c += 'BAR 0,494,' + W + ',90' + R;
+  c += 'REVERSE 0,494,' + W + ',90' + R;
+  c += 'TEXT 10,500,"1",0,1,1,"VALIDADE"' + R;
+  c += 'TEXT 10,518,"3",0,1,1,"' + dataVal + '"' + R;
+
+  c += 'BAR 0,588,' + W + ',1' + R;
+  c += 'TEXT 10,594,"1",0,1,1,"Chef: ' + chef + '   Turno ' + turno + '"' + R;
+  c += 'PRINT ' + qty + ',1' + R;
+
+  return c;
+}
+
 // ===== IMPRIMIR =====
 async function imprimir() {
-  if (!S.chef || !S.produto) return;
+  if (!S.chef || !S.produto || S.btStatus !== 'connected') return;
 
   const btn = document.getElementById('btn-imprimir');
   const icon = document.getElementById('btn-icon');
   const txt  = document.getElementById('btn-text');
 
-  // Coletar dados
-  const turnoEl = document.getElementById('f-turno');
+  const getCampo = id => { const el = document.getElementById('campo-' + id); return el ? el.value.trim() : ''; };
+
   const dados = {
     produto: S.produto,
-    peso: document.getElementById('f-peso')?.value || '',
-    pesoBruto: document.getElementById('f-pesobruto')?.value || '',
-    pesoLiquido: document.getElementById('f-pesoliquido')?.value || '',
-    fornecedor: document.getElementById('f-fornecedor')?.value || '',
-    obs: document.getElementById('f-obs')?.value || '',
-    turno: turnoEl?.value || 'A',
-    chef: S.chef,
     tipo: S.tipo,
     validadeDias: S.validadeDias,
-    qty: S.qty
+    qty: S.qty,
+    chef: S.chef,
+    turno: S.turno,
+    peso: getCampo('peso'),
+    pesoBruto: getCampo('pesoBruto'),
+    pesoLiquido: getCampo('pesoLiquido'),
+    fornecedor: getCampo('fornecedor'),
+    obs: getCampo('obs')
   };
 
   const tspl = buildTSPL(dados);
@@ -1034,242 +1009,63 @@ async function imprimir() {
     btn.classList.remove('sending');
     btn.classList.add('success');
     icon.textContent = '✓';
-    txt.textContent = `${S.qty} ETIQUETA${S.qty > 1 ? 'S' : ''} ENVIADA${S.qty > 1 ? 'S' : ''}`;
-    showToast(`✓ ${S.qty} etiqueta${S.qty>1?'s':''} impressa${S.qty>1?'s':''}!`, 'ok');
-    registrarLog(dados);
+    txt.textContent = S.qty + ' ETIQUETA' + (S.qty > 1 ? 'S' : '') + ' ENVIADA' + (S.qty > 1 ? 'S' : '') + '!';
+    showToast('✓ ' + S.qty + ' etiqueta' + (S.qty > 1 ? 's' : '') + ' impressa' + (S.qty > 1 ? 's' : '') + '!', 'ok');
+
+    // Log
+    S.log.unshift({ produto: S.produto, tipo: S.tipo, qty: S.qty, chef: S.chef, hora: new Date().toTimeString().slice(0,5) });
+    renderLog();
+
     setTimeout(() => {
       btn.classList.remove('success');
       btn.disabled = false;
-      icon.textContent = '📡';
-      txt.textContent = 'IMPRIMIR VIA BLUETOOTH';
-    }, 2000);
+      icon.textContent = '🖨';
+      txt.textContent = 'IMPRIMIR ' + (S.qty > 1 ? S.qty + ' ETIQUETAS' : '1 ETIQUETA');
+    }, 2500);
+
   } catch(err) {
     btn.classList.remove('sending');
     btn.disabled = false;
     icon.textContent = '📡';
     txt.textContent = 'IMPRIMIR VIA BLUETOOTH';
     showToast('Erro: ' + err.message, 'error');
-    console.error(err);
   }
-}
-
-// ===== CAMPOS DINÂMICOS =====
-const camposTpl = {
-  porcao: `
-    <div class="field-row">
-      <div class="field">
-        <label>Peso / Quantidade</label>
-        <input id="f-peso" type="text" placeholder="ex: 85g" oninput="atualizar()">
-      </div>
-      <div class="field">
-        <label>Turno</label>
-        <select id="f-turno" onchange="atualizar()">
-          <option>A</option><option>B</option><option>NOTURNO</option>
-        </select>
-      </div>
-    </div>
-    <div class="field">
-      <label>Observação (opcional)</label>
-      <input id="f-obs" type="text" placeholder="ex: tempero limão" oninput="atualizar()">
-    </div>
-  `,
-  producao: `
-    <div class="field-row">
-      <div class="field">
-        <label>Peso Bruto</label>
-        <input id="f-pesobruto" type="text" placeholder="ex: 2400g" oninput="calcRend()">
-      </div>
-      <div class="field">
-        <label>Rend. Final</label>
-        <input id="f-pesoliquido" type="text" placeholder="ex: 1850g" oninput="calcRend()">
-      </div>
-    </div>
-    <div class="field">
-      <label>Turno</label>
-      <select id="f-turno" onchange="atualizar()">
-        <option>A</option><option>B</option><option>NOTURNO</option>
-      </select>
-    </div>
-  `,
-  entrada: `
-    <div class="field">
-      <label>Peso / Quantidade</label>
-      <input id="f-peso" type="text" placeholder="ex: 5200g" oninput="atualizar()">
-    </div>
-    <div class="field">
-      <label>Fornecedor</label>
-      <input id="f-fornecedor" type="text" placeholder="ex: Pescados NE" oninput="atualizar()">
-    </div>
-    <div class="field">
-      <label>Recebido por</label>
-      <select id="f-turno" onchange="atualizar()">
-        <option value="RAF">Rafael</option>
-        <option value="FRA">Franciele</option>
-        <option value="BEA">Beatriz</option>
-        <option value="FRZ">François</option>
-        <option value="COZ-B">COZ-B</option>
-      </select>
-    </div>
-  `
-};
-
-function renderCampos() {
-  document.getElementById('campos').innerHTML = camposTpl[S.tipo];
-}
-
-// ===== CONTROLES =====
-function setChef(code, btn) {
-  S.chef = code;
-  document.querySelectorAll('.chef-btn').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-  atualizar();
-}
-
-function setTipo(tipo, card) {
-  S.tipo = tipo;
-  document.querySelectorAll('.tipo-card').forEach(c => c.classList.remove('active'));
-  card.classList.add('active');
-  renderCampos();
-  document.getElementById('rend-wrap').style.display = 'none';
-  atualizar();
-}
-
-function changeQty(d) {
-  S.qty = Math.max(1, Math.min(99, S.qty + d));
-  document.getElementById('qty-num').textContent = S.qty;
-  atualizar();
-}
-
-function onProduto() {
-  const val = document.getElementById('sel-produto').value;
-  if (!val) { S.produto = null; S.validadeDias = null; atualizar(); return; }
-  const [nome, dias, tipoSug] = val.split('|');
-  S.produto = nome;
-  S.validadeDias = parseInt(dias);
-
-  // Sugerir tipo
-  if (tipoSug && tipoSug !== S.tipo) {
-    const idx = ['porcao','producao','entrada'].indexOf(tipoSug);
-    if (idx >= 0) {
-      document.querySelectorAll('.tipo-card')[idx].classList.add('active');
-      document.querySelectorAll('.tipo-card').forEach((c,i) => { if(i!==idx) c.classList.remove('active'); });
-      S.tipo = tipoSug;
-      renderCampos();
-    }
-  }
-
-  mostrarValidade();
-  atualizar();
-}
-
-function mostrarValidade() {
-  if (!S.validadeDias) { document.getElementById('val-wrap').style.display='none'; return; }
-  const d = new Date(); d.setDate(d.getDate() + S.validadeDias);
-  const chip = document.getElementById('val-chip');
-  chip.textContent = `⏱ D+${S.validadeDias} — vence ${fmt(d)}`;
-  chip.className = 'val-chip' + (S.validadeDias<=1?' danger':S.validadeDias<=3?' warn':'');
-  document.getElementById('val-wrap').style.display = 'block';
-}
-
-function calcRend() {
-  const b = parseFloat(document.getElementById('f-pesobruto')?.value)||0;
-  const l = parseFloat(document.getElementById('f-pesoliquido')?.value)||0;
-  const wrap = document.getElementById('rend-wrap');
-  if (b>0 && l>0) {
-    const pct = Math.min(100, l/b*100).toFixed(1);
-    document.getElementById('rend-bar').style.width = pct+'%';
-    document.getElementById('rend-pct').textContent = pct+'%';
-    wrap.style.display = 'block';
-  } else {
-    wrap.style.display = 'none';
-  }
-  atualizar();
-}
-
-function atualizar() {
-  const btn = document.getElementById('btn-imprimir');
-  const podeImprimir = S.chef && S.produto && S.btStatus === 'connected';
-  btn.disabled = !podeImprimir;
-
-  // Texto do botão
-  const txt = document.getElementById('btn-text');
-  const icon = document.getElementById('btn-icon');
-  if (!S.chef) {
-    txt.textContent = 'SELECIONE O CHEF';
-    icon.textContent = '👤';
-  } else if (!S.produto) {
-    txt.textContent = 'SELECIONE O PRODUTO';
-    icon.textContent = '📋';
-  } else if (S.btStatus !== 'connected') {
-    txt.textContent = 'CONECTE A IMPRESSORA';
-    icon.textContent = '📡';
-  } else {
-    txt.textContent = `IMPRIMIR ${S.qty > 1 ? S.qty + ' ETIQUETAS' : '1 ETIQUETA'}`;
-    icon.textContent = '🖨';
-  }
-
-  // Mostrar botão de teste quando BLE conectado
-  const btnTeste = document.getElementById('btn-teste');
-  if (btnTeste) btnTeste.style.display = S.btStatus === 'connected' ? 'block' : 'none';
-
-  renderPreview();
-}
-
-function renderPreview() {
-  const agora = new Date();
-  const dataVal = new Date();
-  if (S.validadeDias) dataVal.setDate(dataVal.getDate() + S.validadeDias);
-
-  // Produto
-  const pp = document.getElementById('prev-produto');
-  pp.textContent = S.produto || 'Selecione produto';
-  pp.style.fontStyle = S.produto ? 'normal' : 'italic';
-  pp.style.color = S.produto ? '#000' : '#bbb';
-  pp.style.fontSize = S.produto ? '12px' : '10px';
-
-  // Stripe + tipo tag
-  document.getElementById('prev-stripe').className = 'label-stripe ' + S.tipo;
-  const tipoMap = {porcao:'Porção', producao:'Produção', entrada:'Entrada'};
-  document.getElementById('prev-tipo-tag').textContent = tipoMap[S.tipo];
-
-  // Peso
-  let peso = '—';
-  if (S.tipo === 'producao') {
-    const b = document.getElementById('f-pesobruto')?.value;
-    const l = document.getElementById('f-pesoliquido')?.value;
-    if (b) peso = b + (l ? ' →' + l : '');
-  } else {
-    const p = document.getElementById('f-peso')?.value;
-    if (p) peso = p;
-  }
-  document.getElementById('prev-peso').textContent = peso;
-  document.getElementById('prev-prep').textContent = fmt(agora);
-  document.getElementById('prev-val').textContent = S.validadeDias ? fmt(dataVal) : '—';
-
-  const turnoEl = document.getElementById('f-turno');
-  document.getElementById('prev-chef').textContent = S.chef ? 'Chef:'+S.chef : 'CHEF —';
-  document.getElementById('prev-turno').textContent = 'T'+(turnoEl?.value||'A');
-  document.getElementById('prev-hora').textContent = agora.toTimeString().slice(0,5);
 }
 
 // ===== LOG =====
-function registrarLog(dados) {
-  const agora = new Date();
-  S.log.unshift({
-    hora: agora.toTimeString().slice(0,5),
-    tipo: S.tipo,
-    produto: S.produto,
-    peso: dados.peso || dados.pesoBruto || '—',
-    validade: S.validadeDias ? (() => { const d=new Date(); d.setDate(d.getDate()+S.validadeDias); return fmt(d); })() : '—',
-    qty: S.qty,
-    chef: S.chef
-  });
-  renderLog();
+function renderLog() {
+  const el = document.getElementById('log-lista');
+  if (!S.log.length) { el.innerHTML = '<div style="text-align:center;color:var(--muted);padding:40px;font-size:13px">Nenhuma impressão ainda</div>'; return; }
+  el.innerHTML = S.log.map(l =>
+    '<div class="log-item"><div class="log-item-nome">' + l.produto + ' × ' + l.qty + '</div><div class="log-item-meta">' + l.tipo + ' · ' + l.chef + ' · ' + l.hora + '</div></div>'
+  ).join('');
 }
 
-const tipoIcon = {porcao:'🔪', producao:'🫙', entrada:'📦'};
+function exportCSV() {
+  if (!S.log.length) { showToast('Nenhum dado para exportar', 'warn'); return; }
+  const rows = ['produto,tipo,qty,chef,hora', ...S.log.map(l => [l.produto, l.tipo, l.qty, l.chef, l.hora].join(','))];
+  const blob = new Blob([rows.join('\n')], { type: 'text/csv' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'DUE_log_' + new Date().toISOString().slice(0,10) + '.csv';
+  a.click();
+}
 
-function renderLog() {
-  const lista = document.getElementById('log-lista');
-  if (S.log.length === 0) {
-    lista.innerHTML = '<div style="text-align:center;color:var(--muted);padding:40px;font-size:13px">Nenhuma impressão
+// ===== TOAST =====
+let toastTimer = null;
+function showToast(msg, tipo) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast show' + (tipo === 'error' ? ' error' : tipo === 'warn' ? ' warn' : '');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+// ===== INIT =====
+renderCampos();
+atualizar();
+setInterval(renderPreview, 30000); // atualiza hora no preview
+</script>
+</body>
+</html>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              
