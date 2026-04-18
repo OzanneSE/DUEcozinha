@@ -106,7 +106,6 @@
     flex: 1;
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 0;
     max-width: 1200px;
     margin: 0 auto;
     width: 100%;
@@ -253,6 +252,51 @@
 
   .val-chip.warn { background: #2a1f0e; border-color: var(--warn); color: var(--warn); }
   .val-chip.danger { background: #2a0e0e; border-color: var(--danger); color: var(--danger); }
+
+  /* ===== STORAGE CHIPS ===== */
+  .storage-chips {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 14px;
+  }
+
+  .storage-chip {
+    flex: 1;
+    background: var(--surface);
+    border: 2px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 12px;
+    cursor: pointer;
+    text-align: center;
+    transition: all 0.15s;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--muted);
+  }
+
+  .storage-chip:hover { border-color: var(--accent); color: var(--text); }
+
+  .storage-chip.active {
+    border-color: var(--accent);
+    background: #2a2418;
+    color: var(--text);
+  }
+
+  .storage-chip.disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+
+  .storage-chip .storage-days {
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 2px;
+  }
+
+  .storage-chip.active .storage-days {
+    color: var(--accent);
+  }
 
   /* ===== PRINT BUTTON ===== */
   .btn-print {
@@ -435,6 +479,14 @@
     font-weight: 900;
     letter-spacing: 1px;
     color: white;
+  }
+
+  .label-storage-tag {
+    font-size: 7px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    color: #aaa;
+    margin-left: 4px;
   }
 
   .label-footer {
@@ -642,13 +694,8 @@
 </header>
 
 <!-- CHEF SELECTOR -->
-<div class="chef-bar">
+<div class="chef-bar" id="chef-bar">
   <label>Chef ativo:</label>
-  <button class="chef-btn" onclick="setChef('RAF', this)">RAF</button>
-  <button class="chef-btn" onclick="setChef('FRA', this)">FRA</button>
-  <button class="chef-btn" onclick="setChef('BEA', this)">BEA</button>
-  <button class="chef-btn" onclick="setChef('FRZ', this)">FRZ</button>
-  <button class="chef-btn" onclick="setChef('COZ-B', this)">COZ-B</button>
 </div>
 
 <main>
@@ -681,48 +728,13 @@
       <label>Produto</label>
       <select id="select-produto" onchange="onProdutoChange()">
         <option value="">— selecione —</option>
-        <optgroup label="⭐ Técnicas Exclusivas DUE">
-          <option value="Bisque de Crustáceos|3|producao">Bisque de Crustáceos</option>
-          <option value="Demi-glace DUE|5|producao">Demi-glace DUE</option>
-          <option value="Gema Curada 48h|5|porcao">Gema Curada 48h</option>
-          <option value="Pappardelle Artesanal|2|porcao">Pappardelle Artesanal</option>
-          <option value="Xerém de Caju|3|producao">Xerém de Caju Cremoso</option>
-          <option value="Picles de Maxixe|14|producao">Picles de Maxixe</option>
-        </optgroup>
-        <optgroup label="🥩 Proteínas">
-          <option value="Polvo Fresco|2|entrada">Polvo Fresco</option>
-          <option value="Polvo Porcionado|2|porcao">Polvo Porcionado</option>
-          <option value="Filé Alto|2|porcao">Filé Alto</option>
-          <option value="Flat Iron|2|porcao">Flat Iron</option>
-          <option value="Carré de Cordeiro|2|porcao">Carré de Cordeiro</option>
-          <option value="Frango|2|porcao">Frango</option>
-          <option value="Camarão|2|porcao">Camarão</option>
-        </optgroup>
-        <optgroup label="🐟 Frutos do Mar">
-          <option value="Peixe Fresco|2|entrada">Peixe Fresco</option>
-          <option value="Crustáceos Frescos|1|entrada">Crustáceos Frescos</option>
-          <option value="Polvo Cozido|3|porcao">Polvo Cozido</option>
-        </optgroup>
-        <optgroup label="🍝 Massas & Molhos">
-          <option value="Pappardelle Fresca|2|porcao">Pappardelle Fresca</option>
-          <option value="Molho de Tomate|4|producao">Molho de Tomate</option>
-          <option value="Ragù de Cordeiro|3|producao">Ragù de Cordeiro</option>
-          <option value="Molho de Manteiga|3|producao">Molho de Manteiga Noisette</option>
-        </optgroup>
-        <optgroup label="🥗 Preparações Frias">
-          <option value="Burrata Preparada|1|porcao">Burrata Preparada</option>
-          <option value="Carpaccio Fatiado|1|porcao">Carpaccio Fatiado</option>
-          <option value="Salada Preparada|1|porcao">Salada Preparada</option>
-        </optgroup>
-        <optgroup label="🍮 Sobremesas">
-          <option value="Mousse Prep|3|producao">Mousse Preparado</option>
-          <option value="Sorvete Artesanal|90|producao">Sorvete Artesanal</option>
-          <option value="Crumble Prep|2|porcao">Crumble Preparado</option>
-        </optgroup>
-        <optgroup label="❄️ Congelados">
-          <option value="Qualquer — Congelado|90|producao">Item Congelado (genérico)</option>
-        </optgroup>
       </select>
+    </div>
+
+    <!-- STORAGE CHIPS -->
+    <div id="storage-area" style="display:none">
+      <div class="section-title">Armazenamento</div>
+      <div class="storage-chips" id="storage-chips"></div>
     </div>
 
     <!-- CAMPOS DINÂMICOS -->
@@ -758,7 +770,6 @@
     <div class="preview-wrap">
       <div style="position:relative">
         <div id="preview-label" class="label">
-          <!-- renderizado via JS -->
           <div class="label-stripe porcao"></div>
           <div class="label-header">
             <span class="label-brand">DUE</span>
@@ -810,13 +821,14 @@
             <th>Tipo</th>
             <th>Produto</th>
             <th>Peso/Qtd</th>
+            <th>Armaz.</th>
             <th>Validade</th>
             <th>Qt etiquetas</th>
             <th>Chef</th>
           </tr>
         </thead>
         <tbody id="log-tbody">
-          <tr><td colspan="7" class="log-empty">Nenhuma impressão registrada ainda</td></tr>
+          <tr><td colspan="8" class="log-empty">Nenhuma impressão registrada ainda</td></tr>
         </tbody>
       </table>
     </div>
@@ -831,11 +843,104 @@
 <div class="toast" id="toast">✓ Etiquetas enviadas para impressão</div>
 
 <script>
+// ===== CONFIG =====
+const CONFIG = {
+  marca: 'DUE',
+  equipe: [
+    { code: 'RAFA', nome: 'Rafael', turno: 'A' },
+    { code: 'FRAN', nome: 'Franciele', turno: 'A' },
+    { code: 'BEAT', nome: 'Beatriz', turno: 'B' },
+    { code: 'MANO', nome: 'Edmar', turno: 'B' },
+    { code: 'OZAN', nome: 'François', turno: 'B' },
+    { code: 'CHEF', nome: 'Genérico', turno: null },
+  ],
+  categorias: {
+    tecnicas:   { emoji: '⭐', nome: 'Técnicas Exclusivas DUE' },
+    fundos:     { emoji: '🍲', nome: 'Fundos & Caldos' },
+    molhos:     { emoji: '🫙', nome: 'Molhos & Bases' },
+    proteinas:  { emoji: '🥩', nome: 'Proteínas Porcionadas' },
+    sobremesas: { emoji: '🍮', nome: 'Sobremesas' },
+    pures:      { emoji: '🥕', nome: 'Purês & Guarnições' },
+    crocantes:  { emoji: '🥬', nome: 'Crocantes' },
+    entrada:    { emoji: '📦', nome: 'Entradas (Recebimento)' },
+  },
+  produtos: [
+    // Técnicas Exclusivas DUE
+    { nome: 'Bisque de Crustáceos', cat: 'tecnicas', tipo: 'producao', refrig: 3, congel: 90 },
+    { nome: 'Demi-glace DUE', cat: 'tecnicas', tipo: 'producao', refrig: 5, congel: 90 },
+    { nome: 'Gema Curada 48h', cat: 'tecnicas', tipo: 'porcao', refrig: 5, semCongel: true },
+    { nome: 'Pappardelle Artesanal', cat: 'tecnicas', tipo: 'porcao', refrig: 1, congel: 30 },
+    { nome: 'Xerém Cremoso DUE', cat: 'tecnicas', tipo: 'producao', refrig: 3, congel: 60 },
+    { nome: 'Picles de Maxixe', cat: 'tecnicas', tipo: 'producao', refrig: 14, semCongel: true },
+
+    // Fundos & Caldos
+    { nome: 'Fumet de Peixe', cat: 'fundos', tipo: 'producao', refrig: 2, congel: 60 },
+    { nome: 'Caldo de Legumes', cat: 'fundos', tipo: 'producao', refrig: 3, congel: 90 },
+    { nome: 'Caldo de Camarão', cat: 'fundos', tipo: 'producao', refrig: 2, congel: 60 },
+
+    // Molhos & Bases
+    { nome: 'Molho de Tomate DUE', cat: 'molhos', tipo: 'producao', refrig: 4, congel: 90 },
+    { nome: 'Ragù de Costela', cat: 'molhos', tipo: 'producao', refrig: 3, congel: 90 },
+    { nome: 'Fonduta de Parmesão', cat: 'molhos', tipo: 'producao', refrig: 3, congel: 30 },
+    { nome: 'Aioli / Lactonese', cat: 'molhos', tipo: 'producao', refrig: 5, semCongel: true },
+    { nome: 'Pesto Sergipano', cat: 'molhos', tipo: 'producao', refrig: 1, congel: 30 },
+    { nome: 'Leite de Tigre', cat: 'molhos', tipo: 'producao', refrig: 1, semCongel: true },
+    { nome: 'Azeite Verde DUE', cat: 'molhos', tipo: 'producao', refrig: 7, semCongel: true },
+    { nome: 'Azeite Vermelho DUE', cat: 'molhos', tipo: 'producao', refrig: 14, semCongel: true },
+    { nome: 'Teriaki de Hibisco', cat: 'molhos', tipo: 'producao', refrig: 7, congel: 60 },
+    { nome: 'Tomates Confitados', cat: 'molhos', tipo: 'producao', refrig: 5, semCongel: true },
+    { nome: 'Confit de Laranja', cat: 'molhos', tipo: 'producao', refrig: 14, congel: 90 },
+    { nome: 'Massa do Taco', cat: 'molhos', tipo: 'producao', refrig: 2, congel: 30 },
+    { nome: 'Massa Tempurá', cat: 'molhos', tipo: 'producao', refrig: 0, semCongel: true },
+    { nome: 'Pão de Batata DUE', cat: 'molhos', tipo: 'producao', refrig: 2, congel: 30 },
+
+    // Proteínas Porcionadas
+    { nome: 'Polvo Cozido', cat: 'proteinas', tipo: 'porcao', refrig: 3, congel: 60 },
+    { nome: 'Polvo Porcionado', cat: 'proteinas', tipo: 'porcao', refrig: 2, congel: 60 },
+    { nome: 'Costela Desfiada', cat: 'proteinas', tipo: 'porcao', refrig: 3, congel: 90 },
+    { nome: 'Carne de Sol DUE', cat: 'proteinas', tipo: 'porcao', refrig: 3, congel: 60 },
+    { nome: 'Confit de Pato', cat: 'proteinas', tipo: 'porcao', refrig: 5, congel: 60 },
+    { nome: 'Charque Dessalgado', cat: 'proteinas', tipo: 'porcao', refrig: 1, semCongel: true },
+    { nome: 'Filé Mignon', cat: 'proteinas', tipo: 'porcao', refrig: 2, congel: 90 },
+    { nome: 'Flat Iron', cat: 'proteinas', tipo: 'porcao', refrig: 2, congel: 90 },
+    { nome: 'Carré de Cordeiro', cat: 'proteinas', tipo: 'porcao', refrig: 2, congel: 90 },
+    { nome: 'Camarão', cat: 'proteinas', tipo: 'porcao', refrig: 1, congel: 60 },
+    { nome: 'Robalo', cat: 'proteinas', tipo: 'porcao', refrig: 1, congel: 60 },
+    { nome: 'Peito de Frango', cat: 'proteinas', tipo: 'porcao', refrig: 2, congel: 90 },
+
+    // Sobremesas
+    { nome: 'Pannacota de Baunilha', cat: 'sobremesas', tipo: 'producao', refrig: 3, semCongel: true },
+    { nome: 'Ganache Chocolate 70%', cat: 'sobremesas', tipo: 'producao', refrig: 5, congel: 60 },
+    { nome: 'Cheesecake Basco', cat: 'sobremesas', tipo: 'producao', refrig: 4, congel: 30 },
+
+    // Purês & Guarnições
+    { nome: 'Purê de Mandioquinha', cat: 'pures', tipo: 'producao', refrig: 2, congel: 30 },
+    { nome: 'Mousseline Banana', cat: 'pures', tipo: 'producao', refrig: 2, congel: 30 },
+    { nome: 'Arroz Feijão Verde', cat: 'pures', tipo: 'producao', refrig: 2, congel: 30 },
+
+    // Crocantes
+    { nome: 'Chips Batata Doce', cat: 'crocantes', tipo: 'porcao', refrig: 2, semCongel: true },
+    { nome: 'Crocante de Tapioca', cat: 'crocantes', tipo: 'porcao', refrig: 2, semCongel: true },
+    { nome: 'Tuille Açúcar Mascavo', cat: 'crocantes', tipo: 'porcao', refrig: 2, semCongel: true },
+
+    // Entradas (Recebimento)
+    { nome: 'Polvo Fresco', cat: 'entrada', tipo: 'entrada', refrig: 1, congel: 90 },
+    { nome: 'Peixe Fresco', cat: 'entrada', tipo: 'entrada', refrig: 1, congel: 60 },
+    { nome: 'Crustáceos Frescos', cat: 'entrada', tipo: 'entrada', refrig: 1, congel: 60 },
+    { nome: 'Carnes (genérico)', cat: 'entrada', tipo: 'entrada', refrig: 2, congel: 90 },
+    { nome: 'Laticínios', cat: 'entrada', tipo: 'entrada', refrig: 3, semCongel: true },
+    { nome: 'Hortifruti', cat: 'entrada', tipo: 'entrada', refrig: 3, semCongel: true },
+  ],
+};
+
 // ===== ESTADO =====
 const state = {
   chef: null,
+  chefCode: null,
   tipo: 'porcao',
   produto: null,
+  produtoObj: null,
+  storage: 'refrig',    // 'refrig' ou 'congel'
   validadeDias: null,
   peso: '',
   unidade: 'g',
@@ -844,89 +949,144 @@ const state = {
   fornecedor: '',
   obs: '',
   qty: 1,
-  turno: 'A',
+  turno: null,
   log: []
 };
 
+// ===== AUTO-DETECT TURNO =====
+function detectTurno() {
+  const h = new Date().getHours();
+  // Turno A: 06-14, Turno B: 14-22, Noturno: 22-06
+  if (h >= 6 && h < 14) return 'A';
+  if (h >= 14 && h < 22) return 'B';
+  return 'NOTURNO';
+}
+
+// ===== INIT CHEF BAR =====
+function initChefBar() {
+  const bar = document.getElementById('chef-bar');
+  CONFIG.equipe.forEach(chef => {
+    const btn = document.createElement('button');
+    btn.className = 'chef-btn';
+    btn.textContent = chef.code;
+    btn.title = chef.nome + (chef.turno ? ' (Turno ' + chef.turno + ')' : '');
+    btn.onclick = function() { setChef(chef, this); };
+    bar.appendChild(btn);
+  });
+}
+
+// ===== INIT PRODUCT DROPDOWN =====
+function initProdutoDropdown() {
+  const sel = document.getElementById('select-produto');
+  // Group by cat
+  const catOrder = ['tecnicas','fundos','molhos','proteinas','sobremesas','pures','crocantes','entrada'];
+  catOrder.forEach(catKey => {
+    const catInfo = CONFIG.categorias[catKey];
+    if (!catInfo) return;
+    const items = CONFIG.produtos.filter(p => p.cat === catKey);
+    if (items.length === 0) return;
+    const group = document.createElement('optgroup');
+    group.label = catInfo.emoji + ' ' + catInfo.nome;
+    items.forEach((prod, idx) => {
+      const opt = document.createElement('option');
+      // Store index in CONFIG.produtos
+      const globalIdx = CONFIG.produtos.indexOf(prod);
+      opt.value = globalIdx;
+      opt.textContent = prod.nome;
+      group.appendChild(opt);
+    });
+    sel.appendChild(group);
+  });
+}
+
 // ===== CAMPOS POR TIPO =====
-const camposPorTipo = {
-  porcao: `
-    <div class="form-row">
-      <div class="form-group">
-        <label>Peso / Quantidade</label>
-        <input type="text" id="f-peso" placeholder="ex: 85g, 2 unid" oninput="atualizar()" />
+function getCamposHTML(tipo) {
+  const turnoDetected = detectTurno();
+  const turnoOpts = `
+    <option value="A"${turnoDetected==='A'?' selected':''}>Turno A</option>
+    <option value="B"${turnoDetected==='B'?' selected':''}>Turno B</option>
+    <option value="NOTURNO"${turnoDetected==='NOTURNO'?' selected':''}>Noturno</option>
+  `;
+
+  if (tipo === 'porcao') {
+    return `
+      <div class="form-row">
+        <div class="form-group">
+          <label>Peso / Quantidade</label>
+          <input type="text" id="f-peso" placeholder="ex: 85g, 2 unid" oninput="atualizar()" />
+        </div>
+        <div class="form-group">
+          <label>Turno</label>
+          <select id="f-turno" onchange="atualizar()">${turnoOpts}</select>
+        </div>
       </div>
       <div class="form-group">
-        <label>Turno</label>
-        <select id="f-turno" onchange="atualizar()">
-          <option value="A">Turno A</option>
-          <option value="B">Turno B</option>
-          <option value="NOTURNO">Noturno</option>
-        </select>
+        <label>Observação (opcional)</label>
+        <input type="text" id="f-obs" placeholder="ex: tempero limão" oninput="atualizar()" />
       </div>
-    </div>
-    <div class="form-group">
-      <label>Observação (opcional)</label>
-      <input type="text" id="f-obs" placeholder="ex: tempero limão" oninput="atualizar()" />
-    </div>
-  `,
-  producao: `
-    <div class="form-row">
+    `;
+  }
+  if (tipo === 'producao') {
+    return `
+      <div class="form-row">
+        <div class="form-group">
+          <label>Peso Bruto</label>
+          <input type="text" id="f-pesobruto" placeholder="ex: 2400g" oninput="calcRendimento()" />
+        </div>
+        <div class="form-group">
+          <label>Rendimento Final</label>
+          <input type="text" id="f-pesoliquido" placeholder="ex: 1850g" oninput="calcRendimento()" />
+        </div>
+      </div>
+      <div id="rendimento-display" style="margin-bottom:14px; display:none">
+        <div class="section-title">Rendimento</div>
+        <div class="rendimento-bar-wrap">
+          <div class="rendimento-bar-bg"><div class="rendimento-bar-fill" id="rend-bar" style="width:0%"></div></div>
+          <div class="rendimento-pct" id="rend-pct">—%</div>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Turno</label>
+          <select id="f-turno" onchange="atualizar()">${turnoOpts}</select>
+        </div>
+      </div>
+    `;
+  }
+  if (tipo === 'entrada') {
+    // Build recebido por options from CONFIG.equipe
+    const recebidoOpts = CONFIG.equipe.map(c =>
+      `<option value="${c.code}">${c.nome} (${c.code})</option>`
+    ).join('');
+    return `
+      <div class="form-row">
+        <div class="form-group">
+          <label>Peso / Quantidade</label>
+          <input type="text" id="f-peso" placeholder="ex: 5200g, 10 unid" oninput="atualizar()" />
+        </div>
+      </div>
       <div class="form-group">
-        <label>Peso Bruto</label>
-        <input type="text" id="f-pesobruto" placeholder="ex: 2400g" oninput="calcRendimento()" />
+        <label>Fornecedor</label>
+        <input type="text" id="f-fornecedor" placeholder="ex: Pescados NE" oninput="atualizar()" />
       </div>
       <div class="form-group">
-        <label>Rendimento Final</label>
-        <input type="text" id="f-pesoliquido" placeholder="ex: 1850g" oninput="calcRendimento()" />
+        <label>Recebido por</label>
+        <select id="f-turno" onchange="atualizar()">${recebidoOpts}</select>
       </div>
-    </div>
-    <div id="rendimento-display" style="margin-bottom:14px; display:none">
-      <div class="section-title">Rendimento</div>
-      <div class="rendimento-bar-wrap">
-        <div class="rendimento-bar-bg"><div class="rendimento-bar-fill" id="rend-bar" style="width:0%"></div></div>
-        <div class="rendimento-pct" id="rend-pct">—%</div>
-      </div>
-    </div>
-    <div class="form-row">
-      <div class="form-group">
-        <label>Turno</label>
-        <select id="f-turno" onchange="atualizar()">
-          <option value="A">Turno A</option>
-          <option value="B">Turno B</option>
-          <option value="NOTURNO">Noturno</option>
-        </select>
-      </div>
-    </div>
-  `,
-  entrada: `
-    <div class="form-row">
-      <div class="form-group">
-        <label>Peso / Quantidade</label>
-        <input type="text" id="f-peso" placeholder="ex: 5200g, 10 unid" oninput="atualizar()" />
-      </div>
-    </div>
-    <div class="form-group">
-      <label>Fornecedor</label>
-      <input type="text" id="f-fornecedor" placeholder="ex: Pescados NE" oninput="atualizar()" />
-    </div>
-    <div class="form-group">
-      <label>Recebido por</label>
-      <select id="f-turno" onchange="atualizar()">
-        <option value="RAF">Rafael</option>
-        <option value="FRA">Franciele</option>
-        <option value="BEA">Beatriz</option>
-        <option value="FRZ">François</option>
-        <option value="COZ-B">COZ-B</option>
-      </select>
-    </div>
-  `
-};
+    `;
+  }
+  return '';
+}
 
 // ===== FUNÇÕES DE CONTROLE =====
 
-function setChef(code, btn) {
-  state.chef = code;
+function setChef(chefObj, btn) {
+  state.chef = chefObj.code;
+  state.chefCode = chefObj.code;
+  // Auto-set turno from chef if available
+  if (chefObj.turno) {
+    state.turno = chefObj.turno;
+  }
   document.querySelectorAll('.chef-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
   atualizar();
@@ -941,7 +1101,7 @@ function setTipo(tipo, card) {
 }
 
 function renderCampos() {
-  document.getElementById('campos-dinamicos').innerHTML = camposPorTipo[state.tipo];
+  document.getElementById('campos-dinamicos').innerHTML = getCamposHTML(state.tipo);
 }
 
 function changeQty(delta) {
@@ -956,32 +1116,93 @@ function changeQty(delta) {
 function onProdutoChange() {
   const sel = document.getElementById('select-produto');
   const val = sel.value;
-  if (!val) {
+  if (val === '') {
     state.produto = null;
+    state.produtoObj = null;
     state.validadeDias = null;
+    state.storage = 'refrig';
+    document.getElementById('storage-area').style.display = 'none';
+    document.getElementById('validade-info').style.display = 'none';
     atualizar();
     return;
   }
-  const parts = val.split('|');
-  state.produto = parts[0];
-  state.validadeDias = parseInt(parts[1]);
-  // sugerir tipo
-  const tipoSugerido = parts[2];
+  const idx = parseInt(val);
+  const prod = CONFIG.produtos[idx];
+  state.produtoObj = prod;
+  state.produto = prod.nome;
+  state.storage = 'refrig'; // reset to default
+
+  // Auto-set tipo from product
+  const tipoSugerido = prod.tipo;
   if (tipoSugerido) {
     document.querySelectorAll('.type-card').forEach(c => c.classList.remove('active'));
-    const idx = ['porcao','producao','entrada'].indexOf(tipoSugerido);
-    if (idx >= 0) {
-      document.querySelectorAll('.type-card')[idx].classList.add('active');
+    const tipoIdx = ['porcao','producao','entrada'].indexOf(tipoSugerido);
+    if (tipoIdx >= 0) {
+      document.querySelectorAll('.type-card')[tipoIdx].classList.add('active');
       state.tipo = tipoSugerido;
       renderCampos();
     }
   }
-  mostrarValidade();
+
+  renderStorageChips();
+  updateValidadeFromStorage();
   atualizar();
 }
 
+function renderStorageChips() {
+  const prod = state.produtoObj;
+  const area = document.getElementById('storage-area');
+  const chips = document.getElementById('storage-chips');
+  if (!prod) {
+    area.style.display = 'none';
+    return;
+  }
+  area.style.display = 'block';
+
+  const refrigDias = prod.refrig;
+  const hasCongel = !prod.semCongel && prod.congel !== undefined;
+
+  let html = '';
+  html += `<div class="storage-chip active" onclick="setStorage('refrig', this)">
+    <div>❄️ Refrigerado</div>
+    <div class="storage-days">${refrigDias}d</div>
+  </div>`;
+
+  if (hasCongel) {
+    html += `<div class="storage-chip" onclick="setStorage('congel', this)">
+      <div>🧊 Congelado</div>
+      <div class="storage-days">${prod.congel}d</div>
+    </div>`;
+  }
+
+  chips.innerHTML = html;
+}
+
+function setStorage(mode, chip) {
+  state.storage = mode;
+  document.querySelectorAll('.storage-chip').forEach(c => c.classList.remove('active'));
+  chip.classList.add('active');
+  updateValidadeFromStorage();
+  atualizar();
+}
+
+function updateValidadeFromStorage() {
+  const prod = state.produtoObj;
+  if (!prod) {
+    state.validadeDias = null;
+    document.getElementById('validade-info').style.display = 'none';
+    return;
+  }
+  if (state.storage === 'congel' && !prod.semCongel && prod.congel !== undefined) {
+    state.validadeDias = prod.congel;
+  } else {
+    state.validadeDias = prod.refrig;
+  }
+  mostrarValidade();
+}
+
 function mostrarValidade() {
-  if (!state.validadeDias) {
+  if (state.validadeDias === null || state.validadeDias === undefined) {
     document.getElementById('validade-info').style.display = 'none';
     return;
   }
@@ -989,7 +1210,8 @@ function mostrarValidade() {
   const dataVal = new Date();
   dataVal.setDate(dataVal.getDate() + dias);
   const chip = document.getElementById('validade-chip');
-  chip.textContent = `D+${dias} — Vence ${formatDate(dataVal)}`;
+  const storageTag = state.storage === 'congel' ? 'CONG' : 'REFR';
+  chip.textContent = `${storageTag} · D+${dias} — Vence ${formatDate(dataVal)}`;
   chip.className = 'val-chip' + (dias <= 1 ? ' danger' : dias <= 3 ? ' warn' : '');
   document.getElementById('validade-info').style.display = 'block';
 }
@@ -1019,17 +1241,18 @@ function atualizar() {
 function renderPreview() {
   const agora = new Date();
   const dataVal = new Date();
-  if (state.validadeDias) dataVal.setDate(dataVal.getDate() + state.validadeDias);
+  if (state.validadeDias !== null) dataVal.setDate(dataVal.getDate() + state.validadeDias);
 
   // produto
   const prevProd = document.getElementById('prev-produto');
   prevProd.textContent = state.produto || 'Selecione um produto';
   prevProd.style.fontStyle = state.produto ? 'normal' : 'italic';
   prevProd.style.color = state.produto ? '#000' : '#bbb';
+  prevProd.style.fontSize = state.produto ? '14px' : '12px';
 
   // stripe e tipo tag
-  const stripe = document.querySelector('.label-stripe');
-  const typeTag = document.querySelector('.label-type-tag');
+  const stripe = document.querySelector('#preview-label .label-stripe');
+  const typeTag = document.querySelector('#preview-label .label-type-tag');
   stripe.className = 'label-stripe ' + state.tipo;
   const tipoLabel = {porcao:'Porção', producao:'Produção', entrada:'Entrada'}[state.tipo];
   typeTag.textContent = tipoLabel;
@@ -1051,20 +1274,25 @@ function renderPreview() {
   // prep
   document.getElementById('prev-prep').textContent = formatDate(agora);
 
-  // validade
-  document.getElementById('prev-validade').textContent = state.validadeDias ? formatDate(dataVal) : '—';
+  // validade with storage tag
+  const storageTag = state.storage === 'congel' ? 'CONG' : 'REFR';
+  if (state.validadeDias !== null) {
+    document.getElementById('prev-validade').textContent = formatDate(dataVal) + ' ' + storageTag;
+  } else {
+    document.getElementById('prev-validade').textContent = '—';
+  }
 
   // chef/turno/hora
   document.getElementById('prev-chef').textContent = state.chef ? 'Chef: ' + state.chef : 'CHEF —';
   const turnoEl = document.getElementById('f-turno');
-  const turno = turnoEl?.value || 'A';
+  const turno = turnoEl?.value || detectTurno();
   document.getElementById('prev-turno').textContent = 'Turno ' + turno;
   document.getElementById('prev-hora').textContent = agora.toTimeString().slice(0,5);
 
   // preview info
   const info = document.getElementById('preview-info');
   if (state.produto && state.chef) {
-    info.textContent = `${state.qty} etiqueta${state.qty > 1 ? 's' : ''} · ${state.produto} · Chef ${state.chef}`;
+    info.textContent = `${state.qty} etiqueta${state.qty > 1 ? 's' : ''} · ${state.produto} · Chef ${state.chef} · ${storageTag}`;
   } else if (!state.chef) {
     info.textContent = '⚠️ Selecione o chef ativo no topo da página';
   } else {
@@ -1076,10 +1304,10 @@ function renderPreview() {
 function buildLabelHTML(index) {
   const agora = new Date();
   const dataVal = new Date();
-  if (state.validadeDias) dataVal.setDate(dataVal.getDate() + state.validadeDias);
+  if (state.validadeDias !== null) dataVal.setDate(dataVal.getDate() + state.validadeDias);
 
   const turnoEl = document.getElementById('f-turno');
-  const turno = turnoEl?.value || 'A';
+  const turno = turnoEl?.value || detectTurno();
 
   let pesoText = '—';
   let pesoExtraHTML = '';
@@ -1114,12 +1342,14 @@ function buildLabelHTML(index) {
   const forn = fornecedorEl?.value || '';
 
   const tipoLabel = {porcao:'Porção', producao:'Produção', entrada:'Entrada'}[state.tipo];
+  const storageTag = state.storage === 'congel' ? 'CONG' : 'REFR';
+  const validadeText = state.validadeDias !== null ? formatDate(dataVal) : '—';
 
   return `
     <div class="label">
       <div class="label-stripe ${state.tipo}"></div>
       <div class="label-header">
-        <span class="label-brand">DUE</span>
+        <span class="label-brand">${CONFIG.marca}</span>
         <span class="label-type-tag">${tipoLabel}</span>
       </div>
       <div class="label-produto">${state.produto}</div>
@@ -1138,8 +1368,8 @@ function buildLabelHTML(index) {
         </div>
       </div>
       <div class="label-validade-block">
-        <span class="label-val-label">Validade</span>
-        <span class="label-val-date">${state.validadeDias ? formatDate(dataVal) : '—'}</span>
+        <span class="label-val-label">Validade <span class="label-storage-tag">${storageTag}</span></span>
+        <span class="label-val-date">${validadeText}</span>
       </div>
       <div class="label-footer">
         <span class="label-footer-item">Chef: ${state.chef}</span>
@@ -1185,7 +1415,7 @@ function previewOnly() {
 function registrarLog() {
   const agora = new Date();
   const turnoEl = document.getElementById('f-turno');
-  const turno = turnoEl?.value || 'A';
+  const turno = turnoEl?.value || detectTurno();
 
   let peso = '—';
   if (state.tipo === 'porcao' || state.tipo === 'entrada') {
@@ -1202,15 +1432,18 @@ function registrarLog() {
     } else peso = b || l || '—';
   }
 
-  const dataVal = state.validadeDias ? (() => {
+  const dataVal = state.validadeDias !== null ? (() => {
     const d = new Date(); d.setDate(d.getDate() + state.validadeDias); return formatDate(d);
   })() : '—';
+
+  const storageTag = state.storage === 'congel' ? 'CONG' : 'REFR';
 
   const entry = {
     hora: agora.toTimeString().slice(0,5),
     tipo: state.tipo,
     produto: state.produto,
     peso,
+    storage: storageTag,
     validade: dataVal,
     qty: state.qty,
     chef: state.chef || '—'
@@ -1225,7 +1458,7 @@ function renderLog() {
   document.getElementById('log-count').textContent = state.log.length + ' impressão' + (state.log.length !== 1 ? 'ões' : '');
 
   if (state.log.length === 0) {
-    tbody.innerHTML = '<tr><td colspan="7" class="log-empty">Nenhuma impressão registrada ainda</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="8" class="log-empty">Nenhuma impressão registrada ainda</td></tr>';
     return;
   }
 
@@ -1235,6 +1468,7 @@ function renderLog() {
       <td><span class="tag-tipo ${e.tipo}">${e.tipo}</span></td>
       <td>${e.produto}</td>
       <td>${e.peso}</td>
+      <td>${e.storage}</td>
       <td>${e.validade}</td>
       <td><strong>${e.qty}×</strong></td>
       <td>${e.chef}</td>
@@ -1244,10 +1478,10 @@ function renderLog() {
 
 function exportarCSV() {
   if (state.log.length === 0) { showToast('Nenhum registro para exportar'); return; }
-  const header = 'Data,Hora,Tipo,Produto,Peso/Qtd,Validade,Qt Etiquetas,Chef';
+  const header = 'Data,Hora,Tipo,Produto,Peso/Qtd,Armazenamento,Validade,Qt Etiquetas,Chef';
   const hoje = new Date().toLocaleDateString('pt-BR');
   const rows = state.log.map(e =>
-    `${hoje},${e.hora},${e.tipo},"${e.produto}","${e.peso}",${e.validade},${e.qty},${e.chef}`
+    `${hoje},${e.hora},${e.tipo},"${e.produto}","${e.peso}",${e.storage},${e.validade},${e.qty},${e.chef}`
   );
   const csv = [header, ...rows].join('\n');
   const blob = new Blob([csv], {type:'text/csv'});
@@ -1272,6 +1506,8 @@ function showToast(msg) {
 }
 
 // ===== INIT =====
+initChefBar();
+initProdutoDropdown();
 renderCampos();
 atualizar();
 </script>

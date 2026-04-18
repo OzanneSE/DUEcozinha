@@ -190,6 +190,34 @@ main {
   color: var(--ok);
 }
 
+/* STORAGE CHIPS */
+.storage-chips {
+  display: flex;
+  gap: 8px;
+}
+.storage-chip {
+  flex: 1;
+  background: var(--surface2);
+  border: 2px solid var(--border);
+  border-radius: 10px;
+  padding: 10px 8px;
+  text-align: center;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--muted);
+}
+.storage-chip.active { border-color: var(--ok); color: var(--ok); background: #0d2218; }
+.storage-chip.active.cong { border-color: #5ba8d9; color: #5ba8d9; background: #0d1e2e; }
+.storage-chip.disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+.storage-chip-icon { font-size: 18px; display: block; margin-bottom: 2px; }
+.storage-chip-label { font-size: 11px; display: block; }
+
 /* RENDIMENTO */
 .rend-bar-bg { height: 6px; background: var(--border); border-radius: 3px; flex: 1; overflow: hidden; }
 .rend-bar-fill { height: 100%; background: var(--ok); border-radius: 3px; transition: width 0.3s; }
@@ -392,13 +420,8 @@ main {
 </div>
 
 <!-- CHEF BAR -->
-<div class="chef-bar">
+<div class="chef-bar" id="chef-bar">
   <span class="chef-label">Chef:</span>
-  <button type="button" class="chef-btn" onclick="setChef('RAF',this)">RAF</button>
-  <button type="button" class="chef-btn" onclick="setChef('FRA',this)">FRA</button>
-  <button type="button" class="chef-btn" onclick="setChef('BEA',this)">BEA</button>
-  <button type="button" class="chef-btn" onclick="setChef('FRZ',this)">FRZ</button>
-  <button type="button" class="chef-btn" onclick="setChef('COZ-B',this)">COZ-B</button>
 </div>
 
 <!-- MAIN -->
@@ -441,46 +464,13 @@ main {
         <label>Produto</label>
         <select id="sel-produto" onchange="onProduto()">
           <option value="">— selecione —</option>
-          <optgroup label="⭐ Técnicas Exclusivas DUE">
-            <option value="Bisque de Crustáceos|3|producao">Bisque de Crustáceos</option>
-            <option value="Demi-glace DUE|5|producao">Demi-glace DUE</option>
-            <option value="Gema Curada 48h|5|porcao">Gema Curada 48h</option>
-            <option value="Pappardelle Artesanal|2|porcao">Pappardelle Artesanal</option>
-            <option value="Xerém de Caju Cremoso|3|producao">Xerém de Caju Cremoso</option>
-            <option value="Picles de Maxixe|14|producao">Picles de Maxixe</option>
-          </optgroup>
-          <optgroup label="🥩 Proteínas">
-            <option value="Polvo Fresco|2|entrada">Polvo Fresco</option>
-            <option value="Polvo Porcionado|2|porcao">Polvo Porcionado</option>
-            <option value="Polvo Cozido|3|porcao">Polvo Cozido</option>
-            <option value="Filé Alto|2|porcao">Filé Alto</option>
-            <option value="Flat Iron|2|porcao">Flat Iron</option>
-            <option value="Carré de Cordeiro|2|porcao">Carré de Cordeiro</option>
-            <option value="Camarão|2|porcao">Camarão</option>
-          </optgroup>
-          <optgroup label="🐟 Frutos do Mar">
-            <option value="Peixe Fresco|2|entrada">Peixe Fresco</option>
-            <option value="Crustáceos Frescos|1|entrada">Crustáceos Frescos</option>
-          </optgroup>
-          <optgroup label="🍝 Massas e Molhos">
-            <option value="Pappardelle Fresca|2|porcao">Pappardelle Fresca</option>
-            <option value="Molho de Tomate|4|producao">Molho de Tomate</option>
-            <option value="Ragù de Cordeiro|3|producao">Ragù de Cordeiro</option>
-            <option value="Manteiga Noisette|3|producao">Manteiga Noisette</option>
-          </optgroup>
-          <optgroup label="🥗 Entradas">
-            <option value="Burrata Preparada|1|porcao">Burrata Preparada</option>
-            <option value="Carpaccio Fatiado|1|porcao">Carpaccio Fatiado</option>
-          </optgroup>
-          <optgroup label="🍮 Sobremesas">
-            <option value="Mousse Preparado|3|producao">Mousse Preparado</option>
-            <option value="Sorvete Artesanal|90|producao">Sorvete Artesanal</option>
-            <option value="Crumble Preparado|2|porcao">Crumble Preparado</option>
-          </optgroup>
-          <optgroup label="❄️ Congelados">
-            <option value="Item Congelado|90|producao">Item Congelado (genérico)</option>
-          </optgroup>
         </select>
+      </div>
+
+      <!-- STORAGE SELECTOR -->
+      <div id="storage-wrap" style="display:none">
+        <div class="section-label" style="margin-bottom:6px">Armazenamento</div>
+        <div class="storage-chips" id="storage-chips"></div>
       </div>
 
       <!-- CAMPOS DINÂMICOS -->
@@ -536,7 +526,7 @@ main {
             </div>
           </div>
           <div class="label-validade">
-            <span class="label-val-label">VALIDADE</span>
+            <span class="label-val-label" id="prev-val-label">VALIDADE</span>
             <span class="label-val-date" id="prev-val">—</span>
           </div>
           <div class="label-footer">
@@ -589,12 +579,103 @@ main {
 <div class="toast" id="toast"></div>
 
 <script>
+// ===== CONFIG =====
+const CONFIG = {
+  marca: 'DUE',
+  equipe: [
+    { code: 'RAFA', nome: 'Rafael', turno: 'A' },
+    { code: 'FRAN', nome: 'Franciele', turno: 'A' },
+    { code: 'BEAT', nome: 'Beatriz', turno: 'B' },
+    { code: 'MANO', nome: 'Edmar', turno: 'B' },
+    { code: 'OZAN', nome: 'François', turno: 'B' },
+    { code: 'CHEF', nome: 'Genérico', turno: null },
+  ],
+  produtos: [
+    // Técnicas Exclusivas DUE
+    { nome: 'Bisque de Crustáceos', cat: 'tecnicas', tipo: 'producao', refrig: 3, congel: 90 },
+    { nome: 'Demi-glace DUE', cat: 'tecnicas', tipo: 'producao', refrig: 5, congel: 90 },
+    { nome: 'Gema Curada 48h', cat: 'tecnicas', tipo: 'porcao', refrig: 5, semCongel: true },
+    { nome: 'Pappardelle Artesanal', cat: 'tecnicas', tipo: 'porcao', refrig: 1, congel: 30 },
+    { nome: 'Xerém Cremoso DUE', cat: 'tecnicas', tipo: 'producao', refrig: 3, congel: 60 },
+    { nome: 'Picles de Maxixe', cat: 'tecnicas', tipo: 'producao', refrig: 14, semCongel: true },
+
+    // Fundos & Caldos
+    { nome: 'Fumet de Peixe', cat: 'fundos', tipo: 'producao', refrig: 2, congel: 60 },
+    { nome: 'Caldo de Legumes', cat: 'fundos', tipo: 'producao', refrig: 3, congel: 90 },
+    { nome: 'Caldo de Camarão', cat: 'fundos', tipo: 'producao', refrig: 2, congel: 60 },
+
+    // Molhos & Bases
+    { nome: 'Molho de Tomate DUE', cat: 'molhos', tipo: 'producao', refrig: 4, congel: 90 },
+    { nome: 'Ragù de Costela', cat: 'molhos', tipo: 'producao', refrig: 3, congel: 90 },
+    { nome: 'Fonduta de Parmesão', cat: 'molhos', tipo: 'producao', refrig: 3, congel: 30 },
+    { nome: 'Aioli / Lactonese', cat: 'molhos', tipo: 'producao', refrig: 5, semCongel: true },
+    { nome: 'Pesto Sergipano', cat: 'molhos', tipo: 'producao', refrig: 1, congel: 30 },
+    { nome: 'Leite de Tigre', cat: 'molhos', tipo: 'producao', refrig: 1, semCongel: true },
+    { nome: 'Azeite Verde DUE', cat: 'molhos', tipo: 'producao', refrig: 7, semCongel: true },
+    { nome: 'Azeite Vermelho DUE', cat: 'molhos', tipo: 'producao', refrig: 14, semCongel: true },
+    { nome: 'Teriaki de Hibisco', cat: 'molhos', tipo: 'producao', refrig: 7, congel: 60 },
+    { nome: 'Tomates Confitados', cat: 'molhos', tipo: 'producao', refrig: 5, semCongel: true },
+    { nome: 'Confit de Laranja', cat: 'molhos', tipo: 'producao', refrig: 14, congel: 90 },
+    { nome: 'Massa do Taco', cat: 'molhos', tipo: 'producao', refrig: 2, congel: 30 },
+    { nome: 'Massa Tempurá', cat: 'molhos', tipo: 'producao', refrig: 0, semCongel: true },
+    { nome: 'Pão de Batata DUE', cat: 'molhos', tipo: 'producao', refrig: 2, congel: 30 },
+
+    // Proteínas Porcionadas
+    { nome: 'Polvo Cozido', cat: 'proteinas', tipo: 'porcao', refrig: 3, congel: 60 },
+    { nome: 'Polvo Porcionado', cat: 'proteinas', tipo: 'porcao', refrig: 2, congel: 60 },
+    { nome: 'Costela Desfiada', cat: 'proteinas', tipo: 'porcao', refrig: 3, congel: 90 },
+    { nome: 'Carne de Sol DUE', cat: 'proteinas', tipo: 'porcao', refrig: 3, congel: 60 },
+    { nome: 'Confit de Pato', cat: 'proteinas', tipo: 'porcao', refrig: 5, congel: 60 },
+    { nome: 'Charque Dessalgado', cat: 'proteinas', tipo: 'porcao', refrig: 1, semCongel: true },
+    { nome: 'Filé Mignon', cat: 'proteinas', tipo: 'porcao', refrig: 2, congel: 90 },
+    { nome: 'Flat Iron', cat: 'proteinas', tipo: 'porcao', refrig: 2, congel: 90 },
+    { nome: 'Carré de Cordeiro', cat: 'proteinas', tipo: 'porcao', refrig: 2, congel: 90 },
+    { nome: 'Camarão', cat: 'proteinas', tipo: 'porcao', refrig: 1, congel: 60 },
+    { nome: 'Robalo', cat: 'proteinas', tipo: 'porcao', refrig: 1, congel: 60 },
+    { nome: 'Peito de Frango', cat: 'proteinas', tipo: 'porcao', refrig: 2, congel: 90 },
+
+    // Sobremesas
+    { nome: 'Pannacota de Baunilha', cat: 'sobremesas', tipo: 'producao', refrig: 3, semCongel: true },
+    { nome: 'Ganache Chocolate 70%', cat: 'sobremesas', tipo: 'producao', refrig: 5, congel: 60 },
+    { nome: 'Cheesecake Basco', cat: 'sobremesas', tipo: 'producao', refrig: 4, congel: 30 },
+
+    // Purês & Guarnições
+    { nome: 'Purê de Mandioquinha', cat: 'pures', tipo: 'producao', refrig: 2, congel: 30 },
+    { nome: 'Mousseline Banana', cat: 'pures', tipo: 'producao', refrig: 2, congel: 30 },
+    { nome: 'Arroz Feijão Verde', cat: 'pures', tipo: 'producao', refrig: 2, congel: 30 },
+
+    // Crocantes
+    { nome: 'Chips Batata Doce', cat: 'crocantes', tipo: 'porcao', refrig: 2, semCongel: true },
+    { nome: 'Crocante de Tapioca', cat: 'crocantes', tipo: 'porcao', refrig: 2, semCongel: true },
+    { nome: 'Tuille Açúcar Mascavo', cat: 'crocantes', tipo: 'porcao', refrig: 2, semCongel: true },
+
+    // Entradas (Recebimento)
+    { nome: 'Polvo Fresco', cat: 'entrada', tipo: 'entrada', refrig: 1, congel: 90 },
+    { nome: 'Peixe Fresco', cat: 'entrada', tipo: 'entrada', refrig: 1, congel: 60 },
+    { nome: 'Crustáceos Frescos', cat: 'entrada', tipo: 'entrada', refrig: 1, congel: 60 },
+    { nome: 'Carnes (genérico)', cat: 'entrada', tipo: 'entrada', refrig: 2, congel: 90 },
+    { nome: 'Laticínios', cat: 'entrada', tipo: 'entrada', refrig: 3, semCongel: true },
+    { nome: 'Hortifruti', cat: 'entrada', tipo: 'entrada', refrig: 3, semCongel: true },
+  ],
+  catEmoji: {
+    tecnicas: '⭐', fundos: '🍲', molhos: '🫙', proteinas: '🥩',
+    sobremesas: '🍮', pures: '🥕', crocantes: '🥬', entrada: '📦'
+  },
+  catNomes: {
+    tecnicas: 'Técnicas Exclusivas DUE', fundos: 'Fundos & Caldos', molhos: 'Molhos & Bases',
+    proteinas: 'Proteínas Porcionadas', sobremesas: 'Sobremesas', pures: 'Purês & Guarnições',
+    crocantes: 'Crocantes', entrada: 'Entradas (Recebimento)'
+  }
+};
+
 // ===== ESTADO =====
 const S = {
   chef: null,
-  turno: 'A',
+  turno: null,
   tipo: 'porcao',
   produto: null,
+  produtoObj: null,
+  storage: 'refrig',   // 'refrig' or 'congel'
   validadeDias: null,
   qty: 1,
   btDevice: null,
@@ -603,10 +684,45 @@ const S = {
   log: []
 };
 
+// ===== INIT DYNAMIC ELEMENTS =====
+function initChefBar() {
+  const bar = document.getElementById('chef-bar');
+  CONFIG.equipe.forEach(m => {
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'chef-btn';
+    btn.textContent = m.code;
+    btn.onclick = function() { setChef(m.code, m.turno, this); };
+    bar.appendChild(btn);
+  });
+}
+
+function initProdutoSelect() {
+  const sel = document.getElementById('sel-produto');
+  // Group by cat preserving order of first appearance
+  const catOrder = [];
+  const groups = {};
+  CONFIG.produtos.forEach((p, idx) => {
+    if (!groups[p.cat]) { groups[p.cat] = []; catOrder.push(p.cat); }
+    groups[p.cat].push({ ...p, idx });
+  });
+  catOrder.forEach(cat => {
+    const og = document.createElement('optgroup');
+    og.label = (CONFIG.catEmoji[cat] || '') + ' ' + (CONFIG.catNomes[cat] || cat);
+    groups[cat].forEach(p => {
+      const opt = document.createElement('option');
+      opt.value = String(p.idx);
+      opt.textContent = p.nome;
+      og.appendChild(opt);
+    });
+    sel.appendChild(og);
+  });
+}
+
 // ===== CHEF =====
-function setChef(nome, el) {
-  S.chef = nome;
-  S.turno = (nome === 'RAF' || nome === 'FRA') ? 'A' : 'B';
+function setChef(code, turno, el) {
+  S.chef = code;
+  S.turno = turno || 'A';
   document.querySelectorAll('.chef-btn').forEach(b => b.classList.remove('active'));
   el.classList.add('active');
   atualizar();
@@ -633,11 +749,56 @@ function setTab(id, el) {
 function onProduto() {
   const sel = document.getElementById('sel-produto');
   const val = sel.value;
-  if (!val) { S.produto = null; S.validadeDias = null; atualizar(); return; }
-  const [nome, dias, tipoSugerido] = val.split('|');
-  S.produto = nome;
-  S.validadeDias = parseInt(dias);
+  if (!val) {
+    S.produto = null;
+    S.produtoObj = null;
+    S.validadeDias = null;
+    S.storage = 'refrig';
+    document.getElementById('storage-wrap').style.display = 'none';
+    atualizar();
+    return;
+  }
+  const idx = parseInt(val);
+  const p = CONFIG.produtos[idx];
+  S.produto = p.nome;
+  S.produtoObj = p;
+  S.storage = 'refrig'; // default to refrigerado
+  S.validadeDias = p.refrig;
+  renderStorageChips();
   renderCampos();
+  atualizar();
+}
+
+// ===== STORAGE SELECTOR =====
+function renderStorageChips() {
+  const wrap = document.getElementById('storage-wrap');
+  const chips = document.getElementById('storage-chips');
+  const p = S.produtoObj;
+  if (!p) { wrap.style.display = 'none'; return; }
+
+  wrap.style.display = 'block';
+  const semCongel = !!p.semCongel;
+
+  chips.innerHTML =
+    '<button type="button" class="storage-chip' + (S.storage === 'refrig' ? ' active' : '') + '" onclick="setStorage(\'refrig\')">' +
+      '<span class="storage-chip-icon">❄️</span>' +
+      'Refrigerado (' + p.refrig + 'd)' +
+    '</button>' +
+    '<button type="button" class="storage-chip' + (S.storage === 'congel' ? ' active cong' : '') + (semCongel ? ' disabled' : '') + '"' +
+      (semCongel ? '' : ' onclick="setStorage(\'congel\')"') + '>' +
+      '<span class="storage-chip-icon">🧊</span>' +
+      (semCongel ? 'N/A' : 'Congelado (' + p.congel + 'd)') +
+    '</button>';
+}
+
+function setStorage(mode) {
+  const p = S.produtoObj;
+  if (!p) return;
+  if (mode === 'congel' && p.semCongel) return;
+  S.storage = mode;
+  S.validadeDias = mode === 'congel' ? p.congel : p.refrig;
+  renderStorageChips();
+  renderValidade();
   atualizar();
 }
 
@@ -671,19 +832,20 @@ function renderCampos() {
 }
 
 function field(id, label, type, placeholder) {
-  return `<div class="field">
-    <label>${label}</label>
-    <input type="${type}" id="campo-${id}" placeholder="${placeholder}" autocomplete="off" autocorrect="off" spellcheck="false">
-  </div>`;
+  return '<div class="field">' +
+    '<label>' + label + '</label>' +
+    '<input type="' + type + '" id="campo-' + id + '" placeholder="' + placeholder + '" autocomplete="off" autocorrect="off" spellcheck="false">' +
+  '</div>';
 }
 
 function renderValidade() {
   const wrap = document.getElementById('val-wrap');
   const chip = document.getElementById('val-chip');
-  if (S.validadeDias) {
+  if (S.validadeDias != null && S.validadeDias >= 0) {
     const d = new Date();
     d.setDate(d.getDate() + S.validadeDias);
-    chip.textContent = `Validade: ${fmt(d)} (${S.validadeDias}d)`;
+    const storageTag = S.storage === 'congel' ? 'CONG' : 'REFR';
+    chip.textContent = 'Validade: ' + fmt(d) + ' (' + S.validadeDias + 'd · ' + storageTag + ')';
     wrap.style.display = 'block';
   } else {
     wrap.style.display = 'none';
@@ -709,7 +871,7 @@ function atualizar() {
   else if (!S.produto) { txt.textContent = 'SELECIONE O PRODUTO'; icon.textContent = '📋'; }
   else if (S.btStatus !== 'connected') { txt.textContent = 'CONECTE A IMPRESSORA'; icon.textContent = '📡'; }
   else {
-    txt.textContent = `IMPRIMIR ${S.qty > 1 ? S.qty + ' ETIQUETAS' : '1 ETIQUETA'}`;
+    txt.textContent = 'IMPRIMIR ' + (S.qty > 1 ? S.qty + ' ETIQUETAS' : '1 ETIQUETA');
     icon.textContent = '🖨';
   }
 
@@ -753,9 +915,18 @@ function renderPreview() {
   // prep
   document.getElementById('prev-prep').textContent = fmt(agora) + ' ' + agora.toTimeString().slice(0,5);
 
-  // validade
+  // validade label with storage indicator
+  const storageTag = S.storage === 'congel' ? 'CONG' : 'REFR';
+  const valLabelEl = document.getElementById('prev-val-label');
+  if (S.produto) {
+    valLabelEl.textContent = 'VALIDADE · ' + storageTag;
+  } else {
+    valLabelEl.textContent = 'VALIDADE';
+  }
+
+  // validade date
   const valEl = document.getElementById('prev-val');
-  if (S.validadeDias) {
+  if (S.validadeDias != null && S.validadeDias >= 0 && S.produto) {
     const d = new Date();
     d.setDate(d.getDate() + S.validadeDias);
     valEl.textContent = fmt(d);
@@ -765,7 +936,7 @@ function renderPreview() {
 
   // chef / turno / hora
   document.getElementById('prev-chef').textContent = 'CHEF ' + (S.chef || '—');
-  document.getElementById('prev-turno').textContent = 'T' + S.turno;
+  document.getElementById('prev-turno').textContent = 'T' + (S.turno || '—');
   document.getElementById('prev-hora').textContent = agora.toTimeString().slice(0,5);
 }
 
@@ -935,7 +1106,7 @@ function quebrarLinha(texto, maxChars) {
 }
 
 function buildTSPL(dados) {
-  const { produto, tipo, validadeDias, qty, chef } = dados;
+  const { produto, tipo, validadeDias, qty, chef, storage } = dados;
   const peso       = semAcento(dados.peso || '');
   const pesoBruto  = semAcento(dados.pesoBruto || '');
   const pesoLiq    = semAcento(dados.pesoLiquido || '');
@@ -948,13 +1119,14 @@ function buildTSPL(dados) {
   const hora     = agora.toTimeString().slice(0, 5);
 
   let dataVal = 'S/VALIDADE';
-  if (validadeDias) {
+  if (validadeDias != null && validadeDias >= 0) {
     const d = new Date();
     d.setDate(d.getDate() + validadeDias);
     dataVal = fmt(d);
   }
 
   const tipoLabel = { porcao: 'PORCAO', producao: 'PRODUCAO', entrada: 'ENTRADA' }[tipo] || tipo;
+  const storageTag = storage === 'congel' ? 'CONG' : 'REFR';
 
   let pesoLine = peso || '-';
   let rendLine = '';
@@ -1019,10 +1191,11 @@ function buildTSPL(dados) {
   c += 'BAR 20,350,' + (W - 40) + ',1' + R;
 
   // ── BLOCO 3: VALIDADE (351–536) ───────────────────────────
-  // "VALIDADE" font1 + data font4 xmul2 ymul2 (char 24w×48h)
+  // "VALIDADE · REFR/CONG" font1 + data font4 xmul2 ymul2 (char 24w×48h)
+  const valLabel = 'VALIDADE . ' + storageTag;
   const alturaB3 = 14 + 8 + 52; // label + gap + data
   const yVL = 351 + Math.floor((186 - alturaB3) / 2);
-  c += 'TEXT ' + centrX('VALIDADE', 8) + ',' + yVL + ',"1",0,1,1,"VALIDADE"' + R;
+  c += 'TEXT ' + centrX(valLabel, 8) + ',' + yVL + ',"1",0,1,1,"' + valLabel + '"' + R;
   c += 'TEXT ' + centrX(dataVal, 24) + ',' + (yVL + 22) + ',"4",0,2,2,"' + dataVal + '"' + R;
   c += 'BAR 20,536,' + (W - 40) + ',1' + R;
 
@@ -1050,6 +1223,7 @@ async function imprimir() {
     produto: S.produto,
     tipo: S.tipo,
     validadeDias: S.validadeDias,
+    storage: S.storage,
     qty: S.qty,
     chef: S.chef,
     turno: S.turno,
@@ -1076,7 +1250,8 @@ async function imprimir() {
     showToast('✓ ' + S.qty + ' etiqueta' + (S.qty > 1 ? 's' : '') + ' impressa' + (S.qty > 1 ? 's' : '') + '!', 'ok');
 
     // Log
-    S.log.unshift({ produto: S.produto, tipo: S.tipo, qty: S.qty, chef: S.chef, hora: new Date().toTimeString().slice(0,5) });
+    const storageTag = S.storage === 'congel' ? 'CONG' : 'REFR';
+    S.log.unshift({ produto: S.produto, tipo: S.tipo, qty: S.qty, chef: S.chef, storage: storageTag, hora: new Date().toTimeString().slice(0,5) });
     renderLog();
 
     setTimeout(() => {
@@ -1100,13 +1275,13 @@ function renderLog() {
   const el = document.getElementById('log-lista');
   if (!S.log.length) { el.innerHTML = '<div style="text-align:center;color:var(--muted);padding:40px;font-size:13px">Nenhuma impressão ainda</div>'; return; }
   el.innerHTML = S.log.map(l =>
-    '<div class="log-item"><div class="log-item-nome">' + l.produto + ' × ' + l.qty + '</div><div class="log-item-meta">' + l.tipo + ' · ' + l.chef + ' · ' + l.hora + '</div></div>'
+    '<div class="log-item"><div class="log-item-nome">' + l.produto + ' × ' + l.qty + '</div><div class="log-item-meta">' + l.tipo + ' · ' + l.storage + ' · ' + l.chef + ' · ' + l.hora + '</div></div>'
   ).join('');
 }
 
 function exportCSV() {
   if (!S.log.length) { showToast('Nenhum dado para exportar', 'warn'); return; }
-  const rows = ['produto,tipo,qty,chef,hora', ...S.log.map(l => [l.produto, l.tipo, l.qty, l.chef, l.hora].join(','))];
+  const rows = ['produto,tipo,storage,qty,chef,hora', ...S.log.map(l => [l.produto, l.tipo, l.storage, l.qty, l.chef, l.hora].join(','))];
   const blob = new Blob([rows.join('\n')], { type: 'text/csv' });
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
@@ -1125,10 +1300,11 @@ function showToast(msg, tipo) {
 }
 
 // ===== INIT =====
+initChefBar();
+initProdutoSelect();
 renderCampos();
 atualizar();
 setInterval(renderPreview, 30000); // atualiza hora no preview
 </script>
 </body>
 </html>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       
