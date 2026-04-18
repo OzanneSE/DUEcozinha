@@ -147,6 +147,9 @@ main {
   cursor: pointer;
   transition: all 0.15s;
   -webkit-tap-highlight-color: transparent;
+  font-family: inherit;
+  color: inherit;
+  width: 100%;
   min-height: 80px;
   display: flex;
   flex-direction: column;
@@ -306,12 +309,16 @@ main {
   bottom: 0;
   left: 0;
   right: 0;
-  padding: 12px 16px;
-  background: linear-gradient(transparent, var(--bg) 30%);
+  padding: 12px 16px 16px;
+  background: linear-gradient(transparent, var(--bg) 40%);
   z-index: 100;
   display: flex;
   flex-direction: column;
   gap: 8px;
+  pointer-events: none; /* gradiente não bloqueia cliques */
+}
+.fab-area > * {
+  pointer-events: auto; /* mas os botões dentro funcionam */
 }
 
 .btn-print {
@@ -443,6 +450,9 @@ main {
   color: var(--muted);
   transition: all 0.15s;
   -webkit-tap-highlight-color: transparent;
+  background: transparent;
+  border: none;
+  font-family: inherit;
 }
 .tab.active { background: var(--surface); color: var(--text); }
 
@@ -523,8 +533,8 @@ main {
 
   <!-- TABS -->
   <div class="tabs">
-    <div class="tab active" onclick="setTab('imprimir', this)">🖨 Imprimir</div>
-    <div class="tab" onclick="setTab('log', this)">📋 Log</div>
+    <button type="button" class="tab active" onclick="setTab('imprimir', this)">🖨 Imprimir</button>
+    <button type="button" class="tab" onclick="setTab('log', this)">📋 Log</button>
   </div>
 
   <!-- TAB: IMPRIMIR -->
@@ -534,21 +544,21 @@ main {
     <div>
       <div class="section-label">Tipo de etiqueta</div>
       <div class="tipo-grid">
-        <div class="tipo-card active" onclick="setTipo('porcao',this)">
+        <button type="button" class="tipo-card active" onclick="setTipo('porcao',this)">
           <div class="tipo-icon">🔪</div>
           <div class="tipo-name">Porção</div>
           <div class="tipo-desc">Mise en place</div>
-        </div>
-        <div class="tipo-card" onclick="setTipo('producao',this)">
+        </button>
+        <button type="button" class="tipo-card" onclick="setTipo('producao',this)">
           <div class="tipo-icon">🫙</div>
           <div class="tipo-name">Produção</div>
           <div class="tipo-desc">Potes / Vácuo</div>
-        </div>
-        <div class="tipo-card" onclick="setTipo('entrada',this)">
+        </button>
+        <button type="button" class="tipo-card" onclick="setTipo('entrada',this)">
           <div class="tipo-icon">📦</div>
           <div class="tipo-name">Entrada</div>
           <div class="tipo-desc">Recebimento</div>
-        </div>
+        </button>
       </div>
     </div>
 
@@ -1262,14 +1272,4 @@ const tipoIcon = {porcao:'🔪', producao:'🫙', entrada:'📦'};
 function renderLog() {
   const lista = document.getElementById('log-lista');
   if (S.log.length === 0) {
-    lista.innerHTML = '<div style="text-align:center;color:var(--muted);padding:40px;font-size:13px">Nenhuma impressão ainda</div>';
-    return;
-  }
-  lista.innerHTML = S.log.map(e => `
-    <div class="log-item">
-      <div class="log-icon">${tipoIcon[e.tipo]}</div>
-      <div class="log-info">
-        <div class="log-prod">${e.produto}</div>
-        <div class="log-meta">${e.hora} · ${e.peso} · Val: ${e.validade} · Chef: ${e.chef} · ${e.qty}×</div>
-      </div>
-      <span class
+    lista.innerHTML = '<div style="text-align:center;color:var(--muted);padding:40px;font-size:13px">Nenhuma impressão
