@@ -1,0 +1,674 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ozanne — Sistema Operacional de Cozinha</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { font-family: 'DM Sans', sans-serif; color: #111009; background: #F8F6F0; min-height: 100vh; }
+
+/* ── LAYOUT ── */
+.wrap { max-width: 1040px; margin: 0 auto; padding: 0 32px; }
+
+/* ── HERO ── */
+.hero {
+  background: #111009;
+  padding: 72px 0 64px;
+  position: relative;
+  overflow: hidden;
+}
+
+/* marca d'água discreta — apenas sigla geométrica, sem nome comercial */
+.hero::before {
+  content: '';
+  position: absolute;
+  width: 340px; height: 340px;
+  border: 1px solid rgba(232,200,112,0.06);
+  border-radius: 50%;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+.hero::after {
+  content: '';
+  position: absolute;
+  width: 220px; height: 220px;
+  border: 1px solid rgba(232,200,112,0.04);
+  border-radius: 50%;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+
+.hero-inner { text-align: center; position: relative; z-index: 1; }
+
+/* Sigla O — identidade visual sem marca nominativa */
+.wordmark-wrap {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  animation: fadeUp .7s ease both;
+}
+
+.wordmark-o {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(80px, 14vw, 120px);
+  font-weight: 700;
+  color: #E8C870;
+  letter-spacing: 28px;
+  line-height: 1;
+  display: block;
+}
+
+.wordmark-sub {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 8px;
+  color: rgba(232,200,112,0.5);
+  text-transform: uppercase;
+  margin-top: 6px;
+}
+
+.hl {
+  width: 36px; height: 1px;
+  background: #E8C870;
+  margin: 22px auto 20px;
+  animation: fadeUp .7s .08s ease both;
+}
+
+.hero-city {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 5px;
+  color: rgba(232,200,112,.5);
+  margin-bottom: 10px;
+  animation: fadeUp .7s .1s ease both;
+}
+
+.hero-tagline {
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-size: clamp(14px, 2vw, 17px);
+  color: rgba(232,200,112,.75);
+  animation: fadeUp .7s .14s ease both;
+  letter-spacing: .5px;
+}
+
+/* ── STRIP — status ── */
+.status-strip {
+  background: #E8C870;
+  padding: 10px 0;
+}
+
+.status-inner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.status-pill {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 10px;
+  font-family: 'DM Mono', monospace;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: #4A3A00;
+}
+
+.dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: #4A3A00;
+  animation: pulse 2s ease infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: .35; }
+}
+
+.status-sep { color: rgba(74,58,0,.3); font-size: 14px; }
+
+/* ── SECTION LABEL ── */
+.section-label {
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: 4px;
+  color: #9A9080;
+  text-align: center;
+  margin: 52px 0 28px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.section-label::before, .section-label::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: #E0DDD4;
+}
+
+/* ── GRID ── */
+.grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 10px; }
+.grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 10px; }
+.grid-1 { display: grid; grid-template-columns: 1fr; gap: 10px; margin-bottom: 10px; }
+
+/* ── CARD ── */
+.card {
+  display: flex;
+  flex-direction: column;
+  text-decoration: none;
+  border: 1px solid #E0DDD4;
+  border-radius: 3px;
+  padding: 26px 22px;
+  background: #FFFFFF;
+  transition: all .22s ease;
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.card::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 2px;
+  background: #E8C870;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform .3s ease;
+}
+
+.card:hover { border-color: #C8C4B0; transform: translateY(-3px); background: #FFFEF8; box-shadow: 0 8px 28px rgba(0,0,0,0.07); }
+.card:hover::after { transform: scaleX(1); }
+.card:active { transform: translateY(0); }
+
+/* card — destaque */
+.card-feature {
+  border-color: #D8C070;
+  background: linear-gradient(135deg, #FFFEF0 0%, #FFF8DC 100%);
+}
+.card-feature::after { background: #C8A030; }
+.card-feature:hover { border-color: #C8A030; background: #FFFBEA; }
+
+/* card — accent verde HACCP */
+.card-accent-green { border-left: 3px solid #2d6a1f; }
+
+.card-num {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  color: #B0A898;
+  letter-spacing: 2px;
+  margin-bottom: 16px;
+  text-transform: uppercase;
+}
+
+.card-icon {
+  font-size: 22px;
+  margin-bottom: 12px;
+  display: block;
+  line-height: 1;
+}
+
+.card-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 21px;
+  font-weight: 700;
+  color: #111009;
+  line-height: 1.25;
+  margin-bottom: 9px;
+  flex: 1;
+}
+
+.card-feature .card-title { color: #5A3E00; }
+
+.card-desc {
+  font-size: 12px;
+  color: #7A7668;
+  line-height: 1.65;
+  margin-bottom: 16px;
+}
+
+.card-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-bottom: 18px;
+}
+
+.tag {
+  font-size: 9px;
+  font-family: 'DM Mono', monospace;
+  color: #7A5C10;
+  background: #FAF3DF;
+  border: 1px solid #E0C860;
+  padding: 3px 7px;
+  border-radius: 2px;
+  text-transform: uppercase;
+  letter-spacing: .5px;
+}
+
+.card-cta {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 10px;
+  font-weight: 600;
+  color: #9A9080;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  margin-top: auto;
+  transition: all .2s;
+}
+
+.card:hover .card-cta { color: #7A5C10; gap: 10px; }
+
+
+
+/* ── FOOTER ── */
+footer {
+  border-top: 1px solid #E0DDD4;
+  padding: 28px 32px;
+  background: #F8F6F0;
+  margin-top: 56px;
+}
+
+.footer-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.footer-brand {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 18px;
+  font-weight: 700;
+  color: #7A5C10;
+  letter-spacing: 4px;
+}
+
+.footer-meta {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.f-item {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: #B0A898;
+}
+
+.f-sep { color: #D8D5CA; }
+
+/* ── ANIMATIONS ── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.c1 { animation: fadeUp .4s .28s ease both; }
+.c2 { animation: fadeUp .4s .32s ease both; }
+.c3 { animation: fadeUp .4s .36s ease both; }
+.c4 { animation: fadeUp .4s .40s ease both; }
+.c5 { animation: fadeUp .4s .44s ease both; }
+.c6 { animation: fadeUp .4s .48s ease both; }
+.c7 { animation: fadeUp .4s .52s ease both; }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 760px) {
+  .grid-3, .grid-2 { grid-template-columns: 1fr; }
+  .tecnicas { flex-direction: column; gap: 20px; }
+  .tecnicas-grid { grid-template-columns: repeat(2, 1fr); }
+  .hero { padding: 56px 0 52px; }
+  .wordmark-o { letter-spacing: 16px; }
+  .wrap { padding: 0 18px; }
+  .footer-inner { justify-content: center; text-align: center; }
+}
+
+@media (max-width: 480px) {
+  .tecnicas-grid { grid-template-columns: 1fr; }
+  .status-inner { gap: 12px; }
+}
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="wrap hero-inner">
+    <div class="wordmark-wrap">
+      <span class="wordmark-o">OZANNE</span>
+      <span class="wordmark-sub">Sistema Operacional · Cozinha Autoral</span>
+    </div>
+    <div class="hl"></div>
+    <div class="hero-city">Jardim Europa &middot; Aracaju &middot; Sergipe</div>
+    <div class="hero-tagline">Ingredientes que têm endereço. Técnica que tem propósito.</div>
+  </div>
+</div>
+
+<!-- STATUS STRIP -->
+<div class="status-strip">
+  <div class="wrap status-inner">
+    <div class="status-pill"><span class="dot"></span> Operando desde Abril 2026</div>
+    <span class="status-sep">/</span>
+    <div class="status-pill">Qua–Sáb 11h30–23h</div>
+    <span class="status-sep">/</span>
+    <div class="status-pill">Seg–Ter 11h30–16h</div>
+    <span class="status-sep">/</span>
+    <div class="status-pill">60 lugares · Pet Friendly</div>
+    <span class="status-sep">/</span>
+    <div class="status-pill">Sistema v6.0</div>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <!-- SEÇÃO COZINHA -->
+  <div class="section-label">Sistema Operacional &middot; Cozinha</div>
+
+  <!-- ROW 1 — 3 cards -->
+  <div class="grid-3">
+    <a class="card card-feature c1" href="grimorio.html">
+      <div class="card-num" style="display:flex;align-items:center;justify-content:space-between;">
+        <span>01 &middot; Produção</span>
+        <span style="font-family:'DM Mono',monospace;font-size:8px;letter-spacing:1px;background:#111009;color:#E8C870;padding:2px 7px;border-radius:2px;text-transform:uppercase;">v5.0</span>
+      </div>
+      <span class="card-icon">&#9965;</span>
+      <div class="card-title">Grimório de Bases</div>
+      <div class="card-desc">44 fichas técnicas de produção com ingredientes, quantidades e processo passo a passo. Bases-assinatura DUE, fundos, proteínas, cremes e emulsões. Busca e filtros por flag.</div>
+      <div class="card-tags">
+        <span class="tag">44 bases</span>
+        <span class="tag">8 categorias</span>
+        <span class="tag">D-1 · Assinatura · Nova</span>
+        <span class="tag">Busca</span>
+      </div>
+      <div class="card-cta">Abrir <span>&rarr;</span></div>
+    </a>
+
+    <a class="card c2" href="CARDAPIO_DUE.html">
+      <div class="card-num">02 &middot; Cardápio</div>
+      <span class="card-icon">&#9635;</span>
+      <div class="card-title">Cardápio Completo</div>
+      <div class="card-desc">19 pratos com descrições sensoriais, bebidas e drinks. Cardápio de mesa e menu executivo do almoço.</div>
+      <div class="card-tags">
+        <span class="tag">19 pratos</span>
+        <span class="tag">Menu exec.</span>
+        <span class="tag">Bebidas</span>
+        <span class="tag">Drinks</span>
+      </div>
+      <div class="card-cta">Abrir <span>&rarr;</span></div>
+    </a>
+
+    <a class="card c3" href="DUE_Manual_Cozinheiro_v4.html">
+      <div class="card-num">03 &middot; Operação</div>
+      <span class="card-icon">&#9673;</span>
+      <div class="card-title">Manual do Cozinheiro</div>
+      <div class="card-desc">Pontos de proteína, mise en place, calendário D-1, sequenciamento de forno e checklist interativo de produção semanal.</div>
+      <div class="card-tags">
+        <span class="tag">Chapa &amp; Forno</span>
+        <span class="tag">Checklist</span>
+        <span class="tag">v4.0</span>
+      </div>
+      <div class="card-cta">Abrir <span>&rarr;</span></div>
+    </a>
+  </div>
+
+  <!-- ROW 2 — 1 card largo -->
+  <div class="grid-1">
+    <a class="card c4" href="DUE_Manual_Auxiliar_Cozinha_v4.html">
+      <div class="card-num">04 &middot; Operação</div>
+      <span class="card-icon">&#9671;</span>
+      <div class="card-title">Manual do Auxiliar de Cozinha</div>
+      <div class="card-desc">Aux Frios (Garde Manger + Sobremesas) e Aux Quente (Frituras + Massas). Temperaturas, pontos de cozimento, montagem por estação e checklists interativos de mise en place.</div>
+      <div class="card-tags">
+        <span class="tag">Garde Manger</span>
+        <span class="tag">Aux Quente</span>
+        <span class="tag">Pontos de cozimento</span>
+        <span class="tag">Checklist mise en place</span>
+        <span class="tag">v4.0</span>
+      </div>
+      <div class="card-cta">Abrir <span>&rarr;</span></div>
+    </a>
+  </div>
+
+  <!-- ROW 3 — Auditoria + Porcionamento -->
+  <div class="grid-2">
+    <a class="card card-accent-green c5" href="Auditoria_Estoque.html">
+      <div class="card-num">01b &middot; Estoque</div>
+      <span class="card-icon">&#128203;</span>
+      <div class="card-title">Auditoria de Estoque</div>
+      <div class="card-desc">Contagem completa por área: estoque seco, hortifrúti, proteínas, freezers e geladeiras. Geração automática de lista de pedidos por urgência.</div>
+      <div class="card-tags">
+        <span class="tag">7 áreas</span>
+        <span class="tag">Contagem por seção</span>
+        <span class="tag">Lista de pedidos</span>
+        <span class="tag">HACCP</span>
+      </div>
+      <div class="card-cta">Abrir <span>&rarr;</span></div>
+    </a>
+
+    <a class="card c5" href="DUE_Porcionamento_v2.html">
+      <div class="card-num">01c &middot; Produção</div>
+      <span class="card-icon">&#9878;</span>
+      <div class="card-title">Calculadora de Porcionamento</div>
+      <div class="card-desc">Calculadora dinâmica por pax/serviço. Informe o PAX de cada serviço da semana — o sistema calcula porções por prato e total de insumos por categoria automaticamente.</div>
+      <div class="card-tags">
+        <span class="tag">Executivo · Completo · DDM</span>
+        <span class="tag">Mix de pratos</span>
+        <span class="tag">Insumos totais</span>
+        <span class="tag">Buffer de segurança</span>
+      </div>
+      <div class="card-cta">Abrir <span>&rarr;</span></div>
+    </a>
+  </div>
+
+  <!-- ROW 4 — Limpeza + Vendas -->
+  <div class="grid-2">
+    <a class="card c6" href="DUE_Manual_Auxiliar_Limpeza_v1.html">
+      <div class="card-num">06 &middot; Operação</div>
+      <span class="card-icon">&#9670;</span>
+      <div class="card-title">Manual do Auxiliar de Limpeza</div>
+      <div class="card-desc">RDC 216, mapa de áreas com frequências, protocolo de sanitários, técnicas por superfície, uso de EPI e checklists interativos de limpeza e higienização.</div>
+      <div class="card-tags">
+        <span class="tag">RDC 216</span>
+        <span class="tag">Sanitários</span>
+        <span class="tag">v1.0</span>
+      </div>
+      <div class="card-cta">Abrir <span>&rarr;</span></div>
+    </a>
+
+    <a class="card c7" href="DUE_Manual_Vendas_Garcom_v2.html">
+      <div class="card-num">07 &middot; Salão</div>
+      <span class="card-icon">&#9734;</span>
+      <div class="card-title">Manual de Vendas &amp; Garçom</div>
+      <div class="card-desc">Cardápio comentado com alergênicos, glossário técnico, scripts de apresentação e protocolo de serviço. Referência completa para o salão.</div>
+      <div class="card-tags">
+        <span class="tag">Alergênicos</span>
+        <span class="tag">Glossário</span>
+        <span class="tag">Scripts de serviço</span>
+      </div>
+      <div class="card-cta">Abrir <span>&rarr;</span></div>
+    </a>
+  </div>
+
+  <!-- ROW 5 — Checklist + Regras da Casa -->
+  <div class="grid-2" style="margin-bottom:56px;">
+    <a class="card card-feature c7" href="DUE_Checklist_Cozinha.html">
+      <div class="card-num">09 &middot; Operação</div>
+      <span class="card-icon">&#9989;</span>
+      <div class="card-title">Checklist de Abertura &amp; Fechamento</div>
+      <div class="card-desc">Três turnos completos: abertura manhã, passagem 14h e fechamento noite. HACCP, mise en place e Seis Técnicas da Casa. Progresso salvo por dia.</div>
+      <div class="card-tags">
+        <span class="tag">63 itens</span>
+        <span class="tag">3 turnos</span>
+        <span class="tag">HACCP</span>
+        <span class="tag">Mobile</span>
+      </div>
+      <div class="card-cta">Abrir <span>&rarr;</span></div>
+    </a>
+
+    <a class="card c7" href="DUE_Regras_Casa.html">
+      <div class="card-num">10 &middot; Cultura</div>
+      <span class="card-icon">&#9679;</span>
+      <div class="card-title">Regras da Casa</div>
+      <div class="card-desc">Os princípios inegociáveis da operação. O que nunca se negocia na cozinha, no salão e no relacionamento com a equipe. Cultura operacional em uma página.</div>
+      <div class="card-tags">
+        <span class="tag">Princípios</span>
+        <span class="tag">Equipe</span>
+        <span class="tag">Cultura</span>
+      </div>
+      <div class="card-cta">Abrir <span>&rarr;</span></div>
+    </a>
+  </div>
+
+  <!-- FERRAMENTAS GESTÃO FINANCEIRA -->
+  <div class="section-label">Gestão Financeira</div>
+
+  <div class="grid-2" style="margin-bottom:56px;">
+
+    <!-- 05 — CMV Dashboard -->
+    <a class="card card-feature c1" href="cmv.html">
+      <div class="card-num" style="display:flex;align-items:center;justify-content:space-between;">
+        <span>05 &middot; Financeiro</span>
+        <span style="font-family:'DM Mono',monospace;font-size:8px;letter-spacing:1px;background:#111009;color:#E8C870;padding:2px 7px;border-radius:2px;text-transform:uppercase;">v1.0</span>
+      </div>
+      <span class="card-icon">&#9670;</span>
+      <div class="card-title">Fichas de Pratos &amp; CMV</div>
+      <div class="card-desc">11 pratos do cardápio com custo por porção, preço de venda e CMV% calculado em tempo real. Dashboard por prato e por categoria. Exportação CSV e XLSX (3 abas). Dados salvos no navegador.</div>
+      <div class="card-tags">
+        <span class="tag">11 pratos</span>
+        <span class="tag">CMV em tempo real</span>
+        <span class="tag">Export CSV + XLSX</span>
+        <span class="tag">Dashboard</span>
+      </div>
+      <div class="card-cta">Abrir <span>&rarr;</span></div>
+    </a>
+
+    <!-- Placeholder — Precificação Progressiva -->
+    <div class="card c2" style="opacity:.45;cursor:default;">
+      <div class="card-num">05b &middot; Financeiro</div>
+      <span class="card-icon">&#9671;</span>
+      <div class="card-title" style="color:#9A9080;">Precificação Progressiva</div>
+      <div class="card-desc">Calculadora de markup e CMV progressivo em três fases — lançamento, operação e maturidade. Com ponto de equilíbrio por prato.</div>
+      <div class="card-tags">
+        <span class="tag" style="color:#9A9080;border-color:#D8D5CA;background:#F5F3EE;">Em desenvolvimento</span>
+      </div>
+      <div class="card-cta" style="color:#C0B8A8;">Em breve <span>&rarr;</span></div>
+    </div>
+
+  </div>
+
+  <!-- FERRAMENTAS -->
+  <div class="section-label">Ferramentas &middot; Etiquetas</div>
+
+  <!-- Atalho rápido ao Editor -->
+  <div style="display:flex; justify-content:flex-end; margin-bottom:10px;">
+    <a href="DUE_Label_Editor.html" style="
+      display:inline-flex; align-items:center; gap:8px;
+      font-family:'DM Mono',monospace; font-size:9px; text-transform:uppercase;
+      letter-spacing:2px; color:#7A5C10; text-decoration:none;
+      background:#FAF3DF; border:1px solid #E0C860; border-radius:2px;
+      padding:7px 14px; transition:all .2s;
+    "
+    onmouseover="this.style.background='#F5E8B0';this.style.borderColor='#C8A030'"
+    onmouseout="this.style.background='#FAF3DF';this.style.borderColor='#E0C860'"
+    >
+      &#9998;&nbsp; Atalho — Editor de Etiquetas <span style="margin-left:4px;">&#8599;</span>
+    </a>
+  </div>
+
+  <div class="grid-3" style="margin-bottom:56px;">
+
+    <!-- 08a — Label App v2 (principal) -->
+    <a class="card card-feature c1" href="DUE_Label_App_v2.html">
+      <div class="card-num" style="display:flex;align-items:center;justify-content:space-between;">
+        <span>08a &middot; Etiquetas</span>
+        <span style="
+          font-family:'DM Mono',monospace; font-size:8px; letter-spacing:1px;
+          background:#111009; color:#E8C870; padding:2px 7px; border-radius:2px;
+          text-transform:uppercase;
+        ">v2.0</span>
+      </div>
+      <span class="card-icon">&#127991;</span>
+      <div class="card-title">Sistema de Etiquetas</div>
+      <div class="card-desc">Etiquetas 50&times;30mm para impressora comum. Cozinha, bar, estoque seco, limpeza e insumos — todas as seções do restaurante. Validade automática, log da sessão e exportação CSV.</div>
+      <div class="card-tags">
+        <span class="tag" style="background:#111009;color:#E8C870;border-color:#333;">50&times;30mm</span>
+        <span class="tag">Todos os setores</span>
+        <span class="tag">HACCP</span>
+        <span class="tag">Impressora comum</span>
+      </div>
+      <div class="card-cta">Abrir sistema <span>&rarr;</span></div>
+    </a>
+
+    <!-- 08b — Editor (atalho com destaque) -->
+    <a class="card c2" href="DUE_Label_Editor.html" style="border-left:3px solid #E8C870;">
+      <div class="card-num">08b &middot; Etiquetas</div>
+      <span class="card-icon">&#9998;</span>
+      <div class="card-title">Editor de Etiquetas</div>
+      <div class="card-desc">Criação e edição manual de etiquetas personalizadas. Ajuste livre de campos, layout e informações antes da impressão.</div>
+      <div class="card-tags">
+        <span class="tag">Edição manual</span>
+        <span class="tag">Personalizado</span>
+        <span class="tag">Livre</span>
+      </div>
+      <div class="card-cta">Abrir editor <span>&rarr;</span></div>
+    </a>
+
+    <!-- 08c — Legacy (deprecado, visual rebaixado) -->
+    <a class="card c3" href="DUE_Label_Mobile.html" style="opacity:.55; pointer-events:auto;">
+      <div class="card-num" style="display:flex;align-items:center;justify-content:space-between;">
+        <span>08c &middot; Etiquetas</span>
+        <span style="
+          font-family:'DM Mono',monospace; font-size:8px; letter-spacing:1px;
+          background:#E0DDD4; color:#9A9080; padding:2px 7px; border-radius:2px;
+          text-transform:uppercase;
+        ">Legado</span>
+      </div>
+      <span class="card-icon">&#128266;</span>
+      <div class="card-title" style="color:#9A9080;">Etiquetas Legacy</div>
+      <div class="card-desc">Versão anterior. Substituída pelo Sistema v2. Manter apenas como referência de emergência.</div>
+      <div class="card-tags">
+        <span class="tag" style="color:#9A9080;border-color:#D8D5CA;background:#F5F3EE;">Deprecado</span>
+      </div>
+      <div class="card-cta" style="color:#C0B8A8;">Versão anterior <span>&rarr;</span></div>
+    </a>
+
+  </div>
+
+
+
+
+</div><!-- /wrap -->
+
+<footer>
+  <div class="footer-inner">
+    <div class="footer-brand">OZANNE</div>
+    <div class="footer-meta">
+      <span class="f-item">Sistema Operacional v7.0</span>
+      <span class="f-sep">&middot;</span>
+      <span class="f-item">Maio 2026</span>
+      <span class="f-sep">&middot;</span>
+      <span class="f-item">Ozanne Consultoria</span>
+      <span class="f-sep">&middot;</span>
+      <span class="f-item">Jardim Europa &middot; Aracaju &middot; SE</span>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

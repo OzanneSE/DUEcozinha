@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DUE · Fichas de Pratos &amp; CMV</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+<script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<script src="https://unpkg.com/recharts@2.12.7/umd/Recharts.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'DM Sans',system-ui,sans-serif;background:#f5f3ee;color:#1a1612;}
+#root{min-height:100vh;}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+const { useState, useMemo, useEffect } = React;
+const { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip,
+        ResponsiveContainer, ReferenceLine, Cell } = Recharts;
+
+/* ── DADOS ── */
+const PRATOS_INICIAL = [
+  { id:"D01", nome:"Tartar do Sertão",       cat:"Entrada",   bases:"B32·B16·B03·B36",
+    desc:"Carne de sol artesanal · Mistura Tartar DUE · Gema curada shoyu · Crocante de tapioca · Cebola roxa",         custo:0, preco:0, target:30 },
+  { id:"D02", nome:"Croqueta de Polvo DUE",  cat:"Entrada",   bases:"B34·B27",
+    desc:"Polvo DUE (leite + choque térmico) · Recheio cremoso de polvo · Massa tempurá Amstel gelada",                  custo:0, preco:0, target:28 },
+  { id:"D03", nome:"Toast de Costela DUE",   cat:"Entrada",   bases:"B35·B22",
+    desc:"Costela desfiada DUE · Pomodoro DUE · Pain de mie tostado",                                                    custo:0, preco:0, target:30 },
+  { id:"D04", nome:"Pappardelle de Costela", cat:"Massa",     bases:"B01·B35·B22·B12",
+    desc:"Pappardelle artesanal (gema+cúrcuma) · Costela desfiada DUE · Pomodoro DUE · Demi-glace · Parmesão",          custo:0, preco:0, target:32 },
+  { id:"D05", nome:"Rigatone DUE",           cat:"Massa",     bases:"B35·B22·B23",
+    desc:"Rigatone seco · Costela desfiada DUE · Pomodoro DUE · Fonduta de parmesão",                                   custo:0, preco:0, target:30 },
+  { id:"D06", nome:"Filé do Sertão",         cat:"Principal", bases:"B36·B12·B42·B38",
+    desc:"Filé bovino · Demi-glace DUE · Risoto Baião de Dois · Charque dessalgado · Queijo coalho maçaricado · Crispies de couve", custo:0, preco:0, target:33 },
+  { id:"D07", nome:"Confit de Pato DUE",     cat:"Principal", bases:"B37·B40·B30",
+    desc:"Coxa de pato confitada 90°C · Purê abóbora de leite & cenoura · Confit tangerina DUE",                        custo:0, preco:0, target:35 },
+  { id:"D08", nome:"Arroz de Polvo DUE",     cat:"Principal", bases:"B34·B33·B43·B25",
+    desc:"Polvo DUE · Base arbóreo · Creme de abacate (B43) · Azeite verde DUE",                                        custo:0, preco:0, target:33 },
+  { id:"D09", nome:"Torta Basca",            cat:"Sobremesa", bases:"B08",
+    desc:"Cream cheese · Parmesão · Limão siciliano · Calda frutas vermelhas · Farofa de avelã",                        custo:0, preco:0, target:28 },
+  { id:"D10", nome:"Namelaka 70°",           cat:"Sobremesa", bases:"B09·B05·B30",
+    desc:"Namelaka chocolate 70% · Confit laranja Bahia julienne · Tuile de cacau DUE",                                 custo:0, preco:0, target:28 },
+  { id:"D11", nome:"Passion",                cat:"Sobremesa", bases:"B10",
+    desc:"Cestinha harumaki · Ganache chocolate branco · Pralinê castanha de caju · Calda maracujá/pitanga/hibisco · Cointreau", custo:0, preco:0, target:28 },
+];
+
+const CATS    = ["Entrada","Massa","Principal","Sobremesa"];
+const CAT_BG  = { Entrada:"#1e4d2b", Massa:"#1a3a4d", Principal:"#4d1e1a", Sobremesa:"#3a1e4d" };
+const CAT_COL = { Entrada:"#4caf7d", Massa:"#5aacce", Principal:"#e07070", Sobremesa:"#b07edc" };
+const SK      = "due-pratos-github-v1";
+
+const cmvPct   = (c,p) => p > 0 ? (c/p)*100 : null;
+const cmvCor   = (v,t) => !v ? "#bbb" : v<=t ? "#1a6b3c" : v<=t*1.15 ? "#b8860b" : "#c0392b";
+const fmtBRL   = v     => "R$\u00a0"+(v||0).toFixed(2).replace(".",",");
+const fmtPct   = v     => (v===null||v===0) ? "—" : v.toFixed(1)+"%";
+const parseNum = s     => parseFloat(String(s||"").replace(",",".")) || 0;
+
+/* ── Campo Editável ── */
+function Campo({ value, onSave, prefix="", suffix="", integer=false }) {
+  const [ed,  setEd]  = useState(false);
+  const [loc, setLoc] = useState("");
+  const txt = value > 0 ? (integer ? Math.round(value).toString() : value.toFixed(2).replace(".",",")) : null;
+  const commit = () => { onSave(loc); setEd(false); };
+  if (ed) return (
+    <input autoFocus value={loc} onChange={e=>setLoc(e.target.value)}
+      onBlur={commit} onKeyDown={e=>{ if(e.key==="Enter") commit(); if(e.key==="Escape") setEd(false); }}
+      style={{width:integer?"50px":"78px",fontFamily:"monospace",fontSize:".72rem",
+        padding:"3px 6px",border:"1px solid #C8A030",borderRadius:"3px",
+        outline:"none",background:"#fffde8",color:"#111009"}} />
+  );
+  return (
+    <span onClick={()=>{ setLoc(txt||""); setEd(true); }} title="Clique para editar"
+      style={{cursor:"pointer",fontFamily:"monospace",fontSize:".72rem",
+        color:txt?"#1a1612":"#C8A030",
+        borderBottom:"1px dashed "+(txt?"#ccc":"#C8A030"),padding:"1px 2px"}}>
+      {txt ? `${prefix}${txt}${suffix}` : "editar"}
+    </span>
+  );
+}
+
+/* ── Métrica Card ── */
+function MetCard({ label, val, sub, cor }) {
+  return (
+    <div style={{background:"#fff",borderRadius:"8px",padding:"14px 16px",
+      boxShadow:"0 1px 6px rgba(0,0,0,.06)",borderLeft:"3px solid "+cor}}>
+      <div style={{fontFamily:"monospace",fontSize:".46rem",letterSpacing:"2px",color:"#aaa",marginBottom:"5px"}}>{label}</div>
+      <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"1.2rem",fontWeight:300,color:cor,marginBottom:"3px"}}>{val}</div>
+      <div style={{fontFamily:"monospace",fontSize:".5rem",color:"#bbb"}}>{sub}</div>
+    </div>
+  );
+}
+
+/* ── APP ── */
+function App() {
+  const [pratos, setPratos] = useState(PRATOS_INICIAL);
+  const [tab,    setTab]    = useState("fichas");
+  const [cat,    setCat]    = useState("Todas");
+  const [sv,     setSv]     = useState(false);
+
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem(SK);
+      if (saved) setPratos(JSON.parse(saved));
+    } catch(e) {}
+  }, []);
+
+  const salvar = (nd) => {
+    setPratos(nd); setSv(true);
+    try { localStorage.setItem(SK, JSON.stringify(nd)); } catch(e) {}
+    setTimeout(() => setSv(false), 700);
+  };
+
+  const atualizar = (id, campo, raw) =>
+    salvar(pratos.map(d => d.id===id ? {...d, [campo]: parseNum(raw)} : d));
+
+  const st = useMemo(() => {
+    const comPreco = pratos.filter(d => d.preco > 0);
+    const tRec  = comPreco.reduce((s,d) => s+d.preco, 0);
+    const tCust = comPreco.reduce((s,d) => s+d.custo, 0);
+    const cmvG  = tRec > 0 ? (tCust/tRec)*100 : null;
+    const porCat = CATS.map(c => {
+      const cd = comPreco.filter(d=>d.cat===c);
+      const r  = cd.reduce((s,d)=>s+d.preco,0);
+      const cs = cd.reduce((s,d)=>s+d.custo,0);
+      return { cat:c, n:cd.length, r, cs, cmv: r>0?(cs/r)*100:null };
+    });
+    const porPrato = pratos
+      .map(d => ({ id:d.id,
+        name: d.nome.length>20 ? d.nome.slice(0,18)+"…" : d.nome,
+        cat:d.cat, cmv:cmvPct(d.custo,d.preco)||0, target:d.target, ok:d.preco>0 }))
+      .filter(d=>d.ok).sort((a,b)=>a.cmv-b.cmv);
+    const acima = pratos.filter(d => {
+      const c = cmvPct(d.custo,d.preco); return c!==null && c>d.target;
+    }).length;
+    return { comPreco, tRec, tCust, cmvG, porCat, porPrato, acima };
+  }, [pratos]);
+
+  /* Export CSV */
+  const exportCSV = () => {
+    const h = "Código;Prato;Categoria;Bases;Custo Porção (R$);Preço Venda (R$);CMV (%);Target CMV (%);Lucro Bruto (R$);Status";
+    const rows = pratos.map(d => {
+      const c = cmvPct(d.custo, d.preco);
+      return `${d.id};"${d.nome}";${d.cat};"${d.bases}";${d.custo.toFixed(2)};${d.preco.toFixed(2)};${c?c.toFixed(1):""};${d.target};${d.preco>0?(d.preco-d.custo).toFixed(2):""};"${c?(c<=d.target?"OK":"REVISAR"):"PREENCHER"}"`;
+    });
+    const blob = new Blob(["\ufeff"+[h,...rows].join("\n")], {type:"text/csv;charset=utf-8;"});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a"); a.href=url; a.download="DUE_Fichas_CMV.csv"; a.click();
+    URL.revokeObjectURL(url);
+  };
+
+  /* Export XLSX */
+  const exportXLSX = () => {
+    const wb = XLSX.utils.book_new();
+    const a1 = pratos.map(d => {
+      const c = cmvPct(d.custo, d.preco);
+      return { "Código":d.id, "Prato":d.nome, "Categoria":d.cat, "Bases":d.bases,
+        "Componentes":d.desc, "Custo Porção (R$)":d.custo, "Preço Venda (R$)":d.preco,
+        "CMV (%)":c?+c.toFixed(1):null, "Target CMV (%)":d.target,
+        "Lucro Bruto (R$)":d.preco>0?+(d.preco-d.custo).toFixed(2):null,
+        "Status":c?(c<=d.target?"OK ✓":"REVISAR ⚠"):"PREENCHER" };
+    });
+    const ws1 = XLSX.utils.json_to_sheet(a1);
+    ws1["!cols"]=[{wch:5},{wch:25},{wch:11},{wch:22},{wch:55},{wch:15},{wch:15},{wch:10},{wch:13},{wch:15},{wch:12}];
+    XLSX.utils.book_append_sheet(wb, ws1, "Fichas de Pratos");
+    const a2 = st.porCat.map(b => ({
+      "Categoria":b.cat, "Pratos c/ preço":b.n,
+      "Custo Médio (R$)":b.n?+(b.cs/b.n).toFixed(2):null,
+      "Preço Médio (R$)":b.n?+(b.r/b.n).toFixed(2):null,
+      "CMV Médio (%)":b.cmv?+b.cmv.toFixed(1):null,
+      "Lucro Bruto Médio (R$)":b.n?+((b.r-b.cs)/b.n).toFixed(2):null }));
+    const ws2 = XLSX.utils.json_to_sheet(a2);
+    ws2["!cols"]=[{wch:12},{wch:15},{wch:15},{wch:15},{wch:13},{wch:20}];
+    XLSX.utils.book_append_sheet(wb, ws2, "CMV por Categoria");
+    const a3 = [
+      {Indicador:"Total de Pratos",                 Valor:pratos.length},
+      {Indicador:"Pratos com Preço Definido",        Valor:st.comPreco.length},
+      {Indicador:"CMV Geral (%)",                    Valor:st.cmvG?+st.cmvG.toFixed(1):null},
+      {Indicador:"Custo Total Cardápio (R$)",        Valor:+st.tCust.toFixed(2)},
+      {Indicador:"Receita Potencial Cardápio (R$)",  Valor:+st.tRec.toFixed(2)},
+      {Indicador:"Lucro Bruto Potencial (R$)",       Valor:+(st.tRec-st.tCust).toFixed(2)},
+      {Indicador:"Pratos Acima do Target CMV",       Valor:st.acima},
+    ];
+    const ws3 = XLSX.utils.json_to_sheet(a3);
+    ws3["!cols"]=[{wch:35},{wch:16}];
+    XLSX.utils.book_append_sheet(wb, ws3, "Resumo Geral");
+    XLSX.writeFile(wb, "DUE_CMV_"+new Date().toISOString().split("T")[0]+".xlsx");
+  };
+
+  const filtrados = cat==="Todas" ? pratos : pratos.filter(d=>d.cat===cat);
+
+  return (
+    <div style={{fontFamily:"'DM Sans',system-ui,sans-serif",background:"#f5f3ee",minHeight:"100vh",color:"#1a1612"}}>
+
+      {/* NAV BACK */}
+      <div style={{background:"#0e0d08",padding:"8px 24px",borderBottom:"1px solid rgba(122,92,16,.15)"}}>
+        <a href="index.html" style={{fontFamily:"monospace",fontSize:".52rem",color:"#7A5C10",textDecoration:"none",letterSpacing:"1px"}}>
+          ← DUE · FERRAMENTAS
+        </a>
+      </div>
+
+      {/* HEADER */}
+      <div style={{background:"#111009",padding:"14px 24px",display:"flex",alignItems:"center",
+        justifyContent:"space-between",borderBottom:"3px solid #7A5C10",
+        position:"sticky",top:0,zIndex:100,gap:12,flexWrap:"wrap"}}>
+        <div>
+          <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"1.4rem",fontWeight:300,
+            color:"#E8C870",letterSpacing:"3px"}}>
+            DUE · Fichas de Pratos <span style={{color:"#b5623d",fontStyle:"italic"}}>&amp; CMV</span>
+          </div>
+          <div style={{fontFamily:"monospace",fontSize:".47rem",color:"#666",letterSpacing:"1.5px",marginTop:"2px"}}>
+            {sv ? "◌ SALVANDO..." : "✓ SALVO NO NAVEGADOR"} · {st.comPreco.length}/{pratos.length} PRATOS PREENCHIDOS
+          </div>
+        </div>
+        <div style={{display:"flex",gap:"8px",alignItems:"center",flexWrap:"wrap"}}>
+          {st.cmvG !== null && (
+            <div style={{fontFamily:"monospace",fontSize:".62rem",padding:"4px 10px",borderRadius:"4px",
+              background:"rgba(255,255,255,.06)",color:cmvCor(st.cmvG,32)}}>
+              CMV GERAL {fmtPct(st.cmvG)}
+            </div>
+          )}
+          <button onClick={exportCSV}
+            style={{fontFamily:"monospace",fontSize:".58rem",padding:"6px 14px",cursor:"pointer",
+              background:"transparent",border:"1px solid #7A5C10",color:"#E8C870",borderRadius:"4px"}}>
+            ↓ CSV
+          </button>
+          <button onClick={exportXLSX}
+            style={{fontFamily:"monospace",fontSize:".58rem",padding:"6px 14px",cursor:"pointer",
+              background:"#7A5C10",border:"none",color:"#fff",borderRadius:"4px"}}>
+            ↓ XLSX
+          </button>
+        </div>
+      </div>
+
+      {/* TABS */}
+      <div style={{background:"#1a1814",display:"flex",padding:"0 24px"}}>
+        {[["fichas","▦ FICHAS DE PRATOS"],["dash","◈ DASHBOARD CMV"]].map(([t,l])=>(
+          <button key={t} onClick={()=>setTab(t)}
+            style={{fontFamily:"monospace",fontSize:".58rem",letterSpacing:"1.5px",padding:"11px 20px",
+              background:"transparent",border:"none",cursor:"pointer",
+              color:tab===t?"#E8C870":"#666",
+              borderBottom:tab===t?"2px solid #C8A030":"2px solid transparent"}}>
+            {l}
+          </button>
+        ))}
+      </div>
+
+      {tab==="fichas" && <AbaFichas pratos={filtrados} atualizar={atualizar} cat={cat} setCat={setCat} />}
+      {tab==="dash"   && <AbaDash   st={st} pratos={pratos} />}
+    </div>
+  );
+}
+
+/* ══ ABA FICHAS ══ */
+function AbaFichas({ pratos, atualizar, cat, setCat }) {
+  return (
+    <div style={{padding:"20px 24px 48px"}}>
+      <div style={{display:"flex",gap:"8px",marginBottom:"16px",flexWrap:"wrap",alignItems:"center"}}>
+        {["Todas",...CATS].map(c=>(
+          <button key={c} onClick={()=>setCat(c)}
+            style={{fontFamily:"monospace",fontSize:".56rem",padding:"4px 12px",borderRadius:"20px",
+              cursor:"pointer",background:cat===c?"#111009":"transparent",
+              color:cat===c?"#E8C870":"#888",border:cat===c?"1px solid #7A5C10":"1px solid #ddd"}}>
+            {c}
+          </button>
+        ))}
+        <span style={{marginLeft:"auto",fontFamily:"monospace",fontSize:".5rem",color:"#aaa"}}>
+          💡 Clique nos valores para editar
+        </span>
+      </div>
+      <div style={{overflowX:"auto",borderRadius:"10px",boxShadow:"0 2px 12px rgba(0,0,0,.07)"}}>
+        <table style={{width:"100%",borderCollapse:"collapse",background:"#fff"}}>
+          <thead><tr style={{background:"#111009"}}>
+            {["CÓD","CAT","PRATO · BASES · COMPONENTES","CUSTO PORÇÃO","PREÇO VENDA","CMV%","TARGET","LUCRO BRUTO"].map(h=>(
+              <th key={h} style={{fontFamily:"monospace",fontSize:".46rem",letterSpacing:"1.5px",
+                padding:"10px 12px",textAlign:"left",fontWeight:"normal",color:"#666",whiteSpace:"nowrap"}}>{h}</th>
+            ))}
+          </tr></thead>
+          <tbody>
+            {pratos.map((d,i)=>{
+              const cmv = cmvPct(d.custo,d.preco);
+              const cor = cmvCor(cmv,d.target);
+              return (
+                <tr key={d.id} style={{borderBottom:"1px solid #f0ede8",background:i%2===0?"#fff":"#faf9f6"}}>
+                  <td style={{padding:"12px",fontFamily:"monospace",fontSize:".53rem",color:"#bbb"}}>{d.id}</td>
+                  <td style={{padding:"12px"}}>
+                    <span style={{fontFamily:"monospace",fontSize:".47rem",padding:"2px 7px",borderRadius:"3px",
+                      background:CAT_BG[d.cat],color:CAT_COL[d.cat],whiteSpace:"nowrap"}}>
+                      {d.cat}
+                    </span>
+                  </td>
+                  <td style={{padding:"12px",maxWidth:"280px"}}>
+                    <div style={{fontWeight:600,fontSize:".84rem",color:"#111009",marginBottom:"2px"}}>{d.nome}</div>
+                    <div style={{fontFamily:"monospace",fontSize:".47rem",color:"#C8A030",letterSpacing:".5px",marginBottom:"3px"}}>{d.bases}</div>
+                    <div style={{fontSize:".62rem",color:"#999",lineHeight:1.5}}>{d.desc}</div>
+                  </td>
+                  <td style={{padding:"12px",whiteSpace:"nowrap"}}>
+                    <Campo value={d.custo} onSave={v=>atualizar(d.id,"custo",v)} prefix="R$ " />
+                  </td>
+                  <td style={{padding:"12px",whiteSpace:"nowrap"}}>
+                    <Campo value={d.preco} onSave={v=>atualizar(d.id,"preco",v)} prefix="R$ " />
+                  </td>
+                  <td style={{padding:"12px",whiteSpace:"nowrap"}}>
+                    <div style={{fontFamily:"monospace",fontSize:".82rem",fontWeight:700,color:cor}}>
+                      {fmtPct(cmv)}
+                    </div>
+                    {cmv!==null&&(
+                      <div style={{marginTop:"4px",height:"3px",borderRadius:"2px",background:"#eee",width:"52px"}}>
+                        <div style={{height:"3px",borderRadius:"2px",background:cor,width:Math.min(100,cmv/50*100)+"%"}} />
+                      </div>
+                    )}
+                  </td>
+                  <td style={{padding:"12px",whiteSpace:"nowrap"}}>
+                    <Campo value={d.target} onSave={v=>atualizar(d.id,"target",v)} suffix="%" integer />
+                  </td>
+                  <td style={{padding:"12px",fontFamily:"monospace",fontSize:".7rem",whiteSpace:"nowrap",
+                    color:d.preco>0?"#1a6b3c":"#ccc"}}>
+                    {d.preco>0 ? fmtBRL(d.preco-d.custo) : "—"}
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+}
+
+/* ══ ABA DASHBOARD ══ */
+function AbaDash({ st, pratos }) {
+  const { tRec, tCust, cmvG, porCat, porPrato, acima, comPreco } = st;
+
+  const TTP = ({ active, payload, label }) => {
+    if (!active||!payload?.length) return null;
+    const v = payload[0].value;
+    const p = pratos.find(x => x.nome.slice(0,10)===label?.slice(0,10));
+    return (
+      <div style={{background:"#111009",border:"1px solid #7A5C10",borderRadius:"6px",padding:"8px 12px"}}>
+        <div style={{fontFamily:"monospace",fontSize:".58rem",color:"#E8C870",marginBottom:"3px"}}>{label}</div>
+        <div style={{fontFamily:"monospace",fontSize:".72rem",color:"#fff"}}>
+          CMV: <strong style={{color:cmvCor(v,p?.target||30)}}>{v.toFixed(1)}%</strong>
+        </div>
+      </div>
+    );
+  };
+
+  const TTC = ({ active, payload, label }) => {
+    if (!active||!payload?.length) return null;
+    const b = porCat.find(x=>x.cat===label);
+    return (
+      <div style={{background:"#111009",border:"1px solid #7A5C10",borderRadius:"6px",padding:"8px 12px"}}>
+        <div style={{fontFamily:"monospace",fontSize:".58rem",color:"#E8C870",marginBottom:"3px"}}>{label}</div>
+        <div style={{fontFamily:"monospace",fontSize:".72rem",color:"#fff"}}>{payload[0].value.toFixed(1)}%</div>
+        <div style={{fontFamily:"monospace",fontSize:".52rem",color:"#888",marginTop:"2px"}}>
+          {b?.n} prato{b?.n!==1?"s":""}
+        </div>
+      </div>
+    );
+  };
+
+  const Vazio = () => (
+    <div style={{height:265,display:"flex",flexDirection:"column",alignItems:"center",
+      justifyContent:"center",color:"#ddd",fontFamily:"monospace",fontSize:".6rem",gap:"8px"}}>
+      <div style={{fontSize:"1.5rem"}}>◌</div>
+      <div>Preencha custos e preços para visualizar</div>
+    </div>
+  );
+
+  return (
+    <div style={{padding:"20px 24px 48px"}}>
+      {/* Métricas */}
+      <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(155px,1fr))",gap:"12px",marginBottom:"22px"}}>
+        <MetCard label="CMV GERAL"         val={fmtPct(cmvG)}       sub={comPreco.length+" pratos preenchidos"} cor={cmvCor(cmvG,32)} />
+        <MetCard label="RECEITA POTENCIAL" val={fmtBRL(tRec)}        sub="cardápio completo"                     cor="#1a3a4d" />
+        <MetCard label="CUSTO TOTAL"       val={fmtBRL(tCust)}       sub="por rodada do cardápio"                cor="#4d1e1a" />
+        <MetCard label="LUCRO BRUTO"       val={fmtBRL(tRec-tCust)} sub="margem bruta estimada"                  cor="#1a4d2b" />
+        <MetCard label="ACIMA DO TARGET"   val={acima+" prato"+(acima!==1?"s":"")} sub="CMV fora do target"     cor={acima>0?"#c0392b":"#1a6b3c"} />
+      </div>
+
+      {/* Gráficos */}
+      <div style={{display:"grid",gridTemplateColumns:"3fr 2fr",gap:"18px",marginBottom:"20px"}}>
+        <div style={{background:"#fff",borderRadius:"8px",padding:"16px 20px",boxShadow:"0 1px 6px rgba(0,0,0,.06)"}}>
+          <div style={{fontFamily:"monospace",fontSize:".48rem",letterSpacing:"2px",color:"#aaa",marginBottom:"14px"}}>
+            CMV % POR PRATO — menor → maior
+          </div>
+          {porPrato.length > 0 ? (
+            <ResponsiveContainer width="100%" height={265}>
+              <BarChart data={porPrato} layout="vertical" margin={{left:0,right:44,top:4,bottom:4}}>
+                <CartesianGrid strokeDasharray="2 4" horizontal={false} stroke="#f0ede8" />
+                <XAxis type="number" domain={[0,55]} tickFormatter={v=>v+"%"}
+                  tick={{fontSize:9,fontFamily:"monospace",fill:"#bbb"}} />
+                <YAxis type="category" dataKey="name" width={128}
+                  tick={{fontSize:9.5,fontFamily:"monospace",fill:"#555"}} />
+                <Tooltip content={<TTP />} />
+                <ReferenceLine x={30} stroke="#C8A030" strokeDasharray="3 3" strokeWidth={1.5}
+                  label={{value:"30%",position:"right",fontSize:9,fontFamily:"monospace",fill:"#C8A030"}} />
+                <Bar dataKey="cmv" radius={[0,3,3,0]}>
+                  {porPrato.map(d=><Cell key={d.id} fill={cmvCor(d.cmv,d.target)} />)}
+                </Bar>
+              </BarChart>
+            </ResponsiveContainer>
+          ) : <Vazio />}
+        </div>
+
+        <div style={{background:"#fff",borderRadius:"8px",padding:"16px 20px",boxShadow:"0 1px 6px rgba(0,0,0,.06)"}}>
+          <div style={{fontFamily:"monospace",fontSize:".48rem",letterSpacing:"2px",color:"#aaa",marginBottom:"14px"}}>
+            CMV % POR CATEGORIA
+          </div>
+          {porCat.some(b=>b.cmv!==null) ? (
+            <ResponsiveContainer width="100%" height={265}>
+              <BarChart data={porCat.filter(b=>b.cmv!==null)} margin={{left:0,right:10,top:10,bottom:4}}>
+                <CartesianGrid strokeDasharray="2 4" vertical={false} stroke="#f0ede8" />
+                <XAxis dataKey="cat" tick={{fontSize:10,fontFamily:"monospace",fill:"#666"}} />
+                <YAxis tickFormatter={v=>v+"%"} domain={[0,55]}
+                  tick={{fontSize:9,fontFamily:"monospace",fill:"#bbb"}} />
+                <Tooltip content={<TTC />} />
+                <ReferenceLine y={30} stroke="#C8A030" strokeDasharray="3 3" strokeWidth={1.5} />
+                <Bar dataKey="cmv" radius={[4,4,0,0]}>
+                  {porCat.filter(b=>b.cmv!==null).map(b=><Cell key={b.cat} fill={CAT_COL[b.cat]} />)}
+                </Bar>
+              </BarChart>
+            </ResponsiveContainer>
+          ) : <Vazio />}
+        </div>
+      </div>
+
+      {/* Tabela resumo */}
+      <div style={{background:"#fff",borderRadius:"8px",padding:"16px 20px",boxShadow:"0 1px 6px rgba(0,0,0,.06)"}}>
+        <div style={{fontFamily:"monospace",fontSize:".48rem",letterSpacing:"2px",color:"#aaa",marginBottom:"12px"}}>
+          RESUMO POR CATEGORIA
+        </div>
+        <table style={{width:"100%",borderCollapse:"collapse"}}>
+          <thead><tr style={{borderBottom:"1px solid #f0ede8"}}>
+            {["Categoria","Pratos","Custo médio","Preço médio","CMV %","Lucro bruto médio"].map(h=>(
+              <th key={h} style={{fontFamily:"monospace",fontSize:".46rem",letterSpacing:"1px",
+                padding:"8px 12px",textAlign:"left",fontWeight:"normal",color:"#bbb"}}>{h}</th>
+            ))}
+          </tr></thead>
+          <tbody>
+            {porCat.map(b=>(
+              <tr key={b.cat} style={{borderBottom:"1px solid #faf8f4"}}>
+                <td style={{padding:"10px 12px"}}>
+                  <span style={{fontFamily:"monospace",fontSize:".47rem",padding:"2px 8px",
+                    borderRadius:"3px",background:CAT_BG[b.cat],color:CAT_COL[b.cat]}}>
+                    {b.cat}
+                  </span>
+                </td>
+                <td style={{padding:"10px 12px",fontFamily:"monospace",fontSize:".68rem",color:"#777"}}>{b.n}</td>
+                <td style={{padding:"10px 12px",fontFamily:"monospace",fontSize:".68rem"}}>{b.n?fmtBRL(b.cs/b.n):"—"}</td>
+                <td style={{padding:"10px 12px",fontFamily:"monospace",fontSize:".68rem"}}>{b.n?fmtBRL(b.r/b.n):"—"}</td>
+                <td style={{padding:"10px 12px",fontFamily:"monospace",fontSize:".75rem",fontWeight:700,color:cmvCor(b.cmv,30)}}>
+                  {fmtPct(b.cmv)}
+                </td>
+                <td style={{padding:"10px 12px",fontFamily:"monospace",fontSize:".68rem",color:"#1a6b3c"}}>
+                  {b.n?fmtBRL((b.r-b.cs)/b.n):"—"}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+</script>
+</body>
+</html>

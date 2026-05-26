@@ -1,0 +1,1233 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Grimório de Bases — DUE Restaurante v5.0</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ob:#111009;--ob2:#1a1814;--cr:#F8F6F0;--cr2:#EDE9DF;
+  --go:#C8A030;--gd:#7A5C10;--gp:#E8C870;
+  --tc:#8C4A2F;--tc2:#b5623d;--mu:#888070;--tx:#1a1612;
+  --ln:rgba(122,92,16,.15);--ln2:rgba(122,92,16,.08);
+  --gn:#1a4d2e;--gnl:rgba(26,77,46,.1);
+  --sw:240px;--fd:'Cormorant Garamond',serif;--fm:'IBM Plex Mono',monospace;--fb:'DM Sans',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:var(--fb);background:var(--cr);color:var(--tx);display:flex;flex-direction:column;min-height:100vh;}
+.g-hd{background:var(--ob);padding:20px 28px 16px;display:flex;align-items:flex-end;justify-content:space-between;gap:12px;flex-wrap:wrap;border-bottom:3px solid var(--gd);position:sticky;top:0;z-index:100;}
+.g-hd h1{font-family:var(--fd);font-size:1.8rem;font-weight:300;color:var(--gp);letter-spacing:4px;}
+.g-hd h1 em{color:var(--tc2);font-style:italic;}
+.g-hd-m{font-family:var(--fm);font-size:.58rem;color:var(--mu);letter-spacing:1.5px;text-align:right;line-height:2;}
+.g-hd-m strong{color:var(--gd);}
+.g-bd{display:flex;flex:1;}
+.sb{width:var(--sw);background:var(--ob2);border-right:1px solid rgba(122,92,16,.2);padding:20px 0;position:sticky;top:61px;height:calc(100vh - 61px);overflow-y:auto;flex-shrink:0;}
+.sb::-webkit-scrollbar{width:3px;}.sb::-webkit-scrollbar-track{background:transparent;}.sb::-webkit-scrollbar-thumb{background:var(--gd);border-radius:2px;}
+.sb-s{padding:0 14px 14px;}
+.sb-s input{width:100%;background:rgba(255,255,255,.05);border:1px solid rgba(122,92,16,.25);border-radius:6px;padding:8px 12px;font-family:var(--fm);font-size:.65rem;color:var(--cr);letter-spacing:.5px;outline:none;transition:.15s;}
+.sb-s input::placeholder{color:var(--mu);}
+.sb-s input:focus{border-color:var(--gd);background:rgba(200,160,48,.05);}
+.sb-ct{font-family:var(--fm);font-size:.52rem;letter-spacing:2.5px;text-transform:uppercase;color:var(--gd);padding:8px 14px 4px;display:flex;align-items:center;gap:8px;}
+.sb-ct::after{content:'';flex:1;height:1px;background:rgba(122,92,16,.2);}
+.sb-i{display:flex;align-items:center;gap:8px;padding:5px 14px;cursor:pointer;font-size:.72rem;color:var(--mu);transition:.12s;border-left:2px solid transparent;}
+.sb-i:hover{color:var(--cr);background:rgba(255,255,255,.03);}
+.sb-i.active{color:var(--gp);border-left-color:var(--go);background:rgba(200,160,48,.06);}
+.sb-i .sbb{font-family:var(--fm);font-size:.5rem;padding:2px 5px;border-radius:3px;background:rgba(122,92,16,.2);color:var(--gd);margin-left:auto;}
+.sb-c{font-family:var(--fm);font-size:.52rem;padding:10px 14px 4px;color:var(--mu);letter-spacing:1px;}
+.g-mn{flex:1;padding:28px 32px 60px;min-width:0;}
+.fb{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:24px;padding-bottom:16px;border-bottom:1px solid var(--ln);}
+.ch{font-family:var(--fm);font-size:.6rem;letter-spacing:.5px;padding:5px 12px;border-radius:20px;cursor:pointer;border:1px solid var(--ln);color:var(--mu);background:transparent;transition:.15s;white-space:nowrap;}
+.ch:hover{border-color:var(--gd);color:var(--gd);}
+.ch.active{background:var(--ob);color:var(--gp);border-color:var(--ob);}
+.ch.sig.active{background:#6b2d1a;border-color:#6b2d1a;color:#f5c8a0;}
+.ch.d1.active{background:#1a3a4d;border-color:#1a3a4d;color:#90c8e0;}
+.ch.nv.active{background:var(--gn);border-color:var(--gn);color:#a8e6c0;}
+.ea{font-family:var(--fm);font-size:.58rem;letter-spacing:1px;padding:5px 12px;border:1px solid var(--ln);border-radius:5px;cursor:pointer;color:var(--mu);background:transparent;transition:.15s;margin-left:auto;}
+.ea:hover{border-color:var(--gd);color:var(--gd);}
+.st{font-family:var(--fd);font-size:1.6rem;font-weight:300;color:var(--ob);letter-spacing:2px;margin-bottom:16px;display:flex;align-items:center;gap:14px;}
+.st::after{content:'';flex:1;height:1px;background:var(--ln);}
+.sn{font-family:var(--fm);font-size:.55rem;color:var(--mu);letter-spacing:2px;}
+.fi{background:#fff;border:1px solid var(--ln);border-radius:10px;overflow:hidden;margin-bottom:14px;box-shadow:0 2px 8px rgba(0,0,0,.05);transition:.2s;}
+.fi.hidden{display:none;}
+.fih{padding:14px 20px;display:flex;align-items:center;gap:14px;cursor:pointer;user-select:none;}
+.fih:hover{background:var(--cr2);}
+.fc{font-family:var(--fm);font-size:.55rem;color:var(--mu);letter-spacing:2px;width:36px;flex-shrink:0;}
+.fn{font-family:var(--fd);font-size:1.15rem;font-weight:400;color:var(--ob);flex:1;}
+.fn em{color:var(--tc);font-style:italic;}
+.fbs{display:flex;gap:5px;flex-wrap:wrap;align-items:center;}
+.bd{font-family:var(--fm);font-size:.52rem;letter-spacing:.3px;padding:3px 8px;border-radius:4px;white-space:nowrap;}
+.b-sig{background:rgba(107,45,26,.12);color:#6b2d1a;border:1px solid rgba(107,45,26,.2);}
+.b-d1{background:rgba(26,58,77,.1);color:#1a3a4d;border:1px solid rgba(26,58,77,.2);}
+.b-nv{background:var(--gnl);color:var(--gn);border:1px solid rgba(26,77,46,.2);}
+.b-wp{background:rgba(180,120,20,.1);color:#7a5c10;border:1px solid rgba(180,120,20,.2);}
+.b-cp{background:rgba(100,100,100,.08);color:#555;border:1px solid rgba(0,0,0,.1);}
+.ftg{font-size:.7rem;color:var(--mu);flex-shrink:0;transition:.2s;}
+.fi.open .ftg{transform:rotate(180deg);}
+.fib{display:none;border-top:1px solid var(--ln2);}
+.fi.open .fib{display:block;}
+.fbi{display:grid;grid-template-columns:280px 1fr;}
+.ci{border-right:1px solid var(--ln2);padding:0;}
+.cl{font-family:var(--fm);font-size:.52rem;letter-spacing:2.5px;text-transform:uppercase;color:var(--mu);padding:10px 18px 8px;border-bottom:1px solid var(--ln2);background:var(--cr2);}
+.ig{padding:10px 18px 4px;}
+.igt{font-family:var(--fm);font-size:.52rem;letter-spacing:2px;text-transform:uppercase;color:var(--tc);margin-bottom:7px;display:flex;align-items:center;gap:7px;}
+.igt::after{content:'';flex:1;height:1px;background:rgba(140,74,47,.15);}
+.ir{display:flex;justify-content:space-between;align-items:baseline;padding:3px 0;border-bottom:1px solid rgba(0,0,0,.03);font-size:.75rem;}
+.ir:last-child{border-bottom:none;}
+.iq{font-family:var(--fm);font-size:.68rem;color:var(--gd);white-space:nowrap;margin-left:8px;}
+.in{font-size:.65rem;color:var(--mu);padding:4px 18px 10px;font-style:italic;line-height:1.5;}
+.cm{padding:0;}
+.mb{padding:12px 20px 14px;border-bottom:1px solid var(--ln2);}
+.mb:last-child{border-bottom:none;}
+.mt{font-family:var(--fm);font-size:.52rem;letter-spacing:2.5px;text-transform:uppercase;color:var(--mu);margin-bottom:8px;display:flex;align-items:center;gap:8px;}
+.mt::after{content:'';flex:1;height:1px;background:var(--ln2);}
+.sp{display:flex;gap:9px;margin-bottom:6px;align-items:flex-start;}
+.sp:last-child{margin-bottom:0;}
+.sn2{font-family:var(--fm);font-size:.58rem;color:var(--tc);font-weight:600;width:16px;flex-shrink:0;margin-top:2px;}
+.st2{font-size:.76rem;line-height:1.6;color:var(--tx);}
+.st2 strong{color:var(--ob);font-weight:600;}
+.st2 em{color:var(--tc);font-style:normal;font-weight:500;}
+.fft{background:var(--cr2);border-top:1px solid var(--ln2);padding:12px 20px;display:flex;gap:24px;flex-wrap:wrap;}
+.ffb{flex:1;min-width:160px;}
+.ffl{font-family:var(--fm);font-size:.5rem;letter-spacing:2px;text-transform:uppercase;color:var(--mu);margin-bottom:5px;}
+.fftx{font-size:.72rem;color:var(--tx);line-height:1.6;}
+.ffa{font-size:.7rem;color:var(--tc);font-weight:600;margin-top:3px;}
+.emp{text-align:center;padding:60px 20px;color:var(--mu);font-family:var(--fd);font-size:1.2rem;font-style:italic;}
+.g-ft{background:var(--ob);padding:12px 28px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;}
+.g-ft .fl{font-family:var(--fm);font-size:.55rem;color:var(--mu);letter-spacing:1px;}
+.g-ft .fr{font-family:var(--fd);font-size:.85rem;font-style:italic;color:var(--gd);}
+@media(max-width:900px){.sb{display:none;}.g-hd{position:relative;}}
+@media(max-width:680px){.fbi{grid-template-columns:1fr;}.ci{border-right:none;border-bottom:1px solid var(--ln2);}}
+</style>
+</head>
+<body>
+<div class="g-hd">
+  <div>
+    <h1>DUE · Grimório <em>de Bases</em></h1>
+    <div style="font-family:var(--fm);font-size:.55rem;color:var(--mu);letter-spacing:2px;margin-top:3px">FICHAS TÉCNICAS DE PRODUÇÃO · v5.0 · MAIO 2026</div>
+  </div>
+  <div class="g-hd-m"><strong>BASES</strong> 44 fichas · 8 categorias<br><strong>CHEF</strong> François R. Vargas Ozanne<br><strong>LOCAL</strong> Aracaju · Sergipe</div>
+</div>
+<div class="g-bd">
+<nav class="sb">
+  <div class="sb-s"><input type="text" id="srch" placeholder="buscar ficha..." oninput="doSearch(this.value)"></div>
+  <div class="sb-ct">01 · Massa</div><div class="sb-i" onclick="jmp('c01')">Pappardelle<span class="sbb">1</span></div>
+  <div class="sb-ct">02 · Crocantes</div><div class="sb-i" onclick="jmp('c02')">Crocantes & Texturas<span class="sbb">6</span></div>
+  <div class="sb-ct">03 · Sobremesas</div><div class="sb-i" onclick="jmp('c03')">Sobremesas<span class="sbb">3</span></div>
+  <div class="sb-ct">04 · Fundos</div><div class="sb-i" onclick="jmp('c04')">Fundos & Caldos<span class="sbb">5</span></div>
+  <div class="sb-ct">05 · Bases</div><div class="sb-i" onclick="jmp('c05')">Bases Transversais<span class="sbb">18</span></div>
+  <div class="sb-ct">06 · Proteínas</div><div class="sb-i" onclick="jmp('c06')">Proteínas<span class="sbb">5</span></div>
+  <div class="sb-ct">07 · Guarnições</div><div class="sb-i" onclick="jmp('c07')">Purês & Guarnições<span class="sbb">4</span></div>
+  <div class="sb-ct">08 · Cremes</div><div class="sb-i" onclick="jmp('c08')">Cremes & Emulsões<span class="sbb">2</span></div>
+  <div class="sb-c" id="cnt">44 fichas</div>
+</nav>
+<main class="g-mn">
+<div class="fb">
+  <button class="ch active" onclick="flt('todas',this)">Todas · 44</button>
+  <button class="ch sig" onclick="flt('sig',this)">⦿ Assinatura DUE</button>
+  <button class="ch d1" onclick="flt('d1',this)">⚑ D-1 Obrigatório</button>
+  <button class="ch nv" onclick="flt('nv',this)">★ Novas Maio 2026</button>
+  <button class="ea" onclick="togAll()">Expandir Todas</button>
+</div>
+
+<!-- ══ 01 MASSA ══ -->
+<div id="c01"><div class="st"><span class="sn">01</span>Massa Fresca</div>
+<div class="fi" data-t="sig d1" data-n="pappardelle artesanal massa fresca gema clara cúrcuma azeite">
+<div class="fih" onclick="tog(this)"><span class="fc">B01</span><span class="fn">Pappardelle <em>Artesanal</em> DUE</span><div class="fbs"><span class="bd b-sig">⦿ Assinatura</span><span class="bd b-d1">⚑ D-1</span></div><span class="ftg">▾</span></div>
+<div class="fib"><div class="fbi">
+<div class="ci"><div class="cl">Ingredientes — 1 batch</div>
+<div class="ig"><div class="igt">Massa</div>
+<div class="ir"><span>Farinha fina</span><span class="iq">1,2 kg</span></div>
+<div class="ir"><span>Gemas</span><span class="iq">400 g</span></div>
+<div class="ir"><span>Claras</span><span class="iq">200 g</span></div>
+<div class="ir"><span>Cúrcuma</span><span class="iq">2 g</span></div>
+<div class="ir"><span>Azeite de oliva</span><span class="iq">15 ml</span></div>
+<div class="ir"><span>Sal</span><span class="iq">2 g</span></div>
+</div></div>
+<div class="cm">
+<div class="mb"><div class="mt">D-1 · Produção</div>
+<div class="sp"><span class="sn2">01</span><span class="st2">Misturar farinha, cúrcuma e sal. Abrir vulcão.</span></div>
+<div class="sp"><span class="sn2">02</span><span class="st2">Incorporar gemas, claras e azeite. Sovar até massa lisa e elástica.</span></div>
+<div class="sp"><span class="sn2">03</span><span class="st2">Empacotar em filme. <em>Repouso mínimo 1h.</em> Overnight ideal.</span></div>
+<div class="sp"><span class="sn2">04</span><span class="st2">Laminar progressivamente. Cortar em pappardelle largo.</span></div>
+</div>
+<div class="mb"><div class="mt">Serviço</div>
+<div class="sp"><span class="sn2">01</span><span class="st2">Água abundante, sal generoso. <strong>2-3 min</strong> al dente à la minute.</span></div>
+<div class="sp"><span class="sn2">02</span><span class="st2">Retirar com pinça direto para o molho.</span></div>
+</div>
+</div></div>
+<div class="fft"><div class="ffb"><div class="ffl">Uso</div><div class="fftx">Pappardelle de Costela</div></div>
+<div class="ffb"><div class="ffl">Validade</div><div class="fftx">Crua: 3 dias · Pré-cozida: 1 dia em azeite</div></div></div>
+</div></div>
+</div>
+
+<!-- ══ 02 CROCANTES ══ -->
+<div id="c02"><div class="st"><span class="sn">02</span>Crocantes & Texturas</div>
+
+<div class="fi" data-t="" data-n="chips batata doce mandoline fritura">
+<div class="fih" onclick="tog(this)"><span class="fc">B02</span><span class="fn">Chips de <em>Batata Doce</em></span><div class="fbs"></div><span class="ftg">▾</span></div>
+<div class="fib"><div class="fbi">
+<div class="ci"><div class="cl">Ingredientes</div>
+<div class="ig"><div class="igt">Base</div>
+<div class="ir"><span>Batata doce</span><span class="iq">a demanda</span></div>
+<div class="ir"><span>Óleo para fritura</span><span class="iq">suficiente</span></div>
+<div class="ir"><span>Sal</span><span class="iq">q.b.</span></div>
+</div></div>
+<div class="cm"><div class="mb"><div class="mt">Processo — Igual</div>
+<div class="sp"><span class="sn2">01</span><span class="st2">Mandoline fino. Secar bem.</span></div>
+<div class="sp"><span class="sn2">02</span><span class="st2">Fritar a <em>180°C</em> até crocante.</span></div>
+<div class="sp"><span class="sn2">03</span><span class="st2">Temperar com sal imediatamente.</span></div>
+</div></div></div>
+<div class="fft"><div class="ffb"><div class="ffl">Validade</div><div class="fftx">1 dia · perde crocância com umidade</div></div></div>
+</div></div>
+
+<div class="fi" data-t="sig" data-n="crocante tapioca silpat curry roxo fritura">
+<div class="fih" onclick="tog(this)"><span class="fc">B03</span><span class="fn">Crocante de <em>Tapioca</em> DUE</span><div class="fbs"><span class="bd b-sig">⦿ Assinatura</span></div><span class="ftg">▾</span></div>
+<div class="fib"><div class="fbi">
+<div class="ci"><div class="cl">Ingredientes — por 100g tapioca</div>
+<div class="ig"><div class="igt">Creme</div>
+<div class="ir"><span>Tapioca granulada</span><span class="iq">100 g</span></div>
+<div class="ir"><span>Água</span><span class="iq">400 ml</span></div>
+<div class="ir"><span>Sal</span><span class="iq">1 g</span></div>
+</div>
+<div class="ig"><div class="igt">Finalização</div>
+<div class="ir"><span>Curry Roxo DUE</span><span class="iq">a gosto</span></div>
+<div class="ir"><span>Óleo (fritura)</span><span class="iq">180°C</span></div>
+</div></div>
+<div class="cm">
+<div class="mb"><div class="mt">Produção D-1</div>
+<div class="sp"><span class="sn2">01</span><span class="st2">Cozinhar tapioca + água + sal até <strong>creme homogêneo.</strong></span></div>
+<div class="sp"><span class="sn2">02</span><span class="st2">Espalhar em camada uniforme no <em>silpat.</em> Forno 100°C · 1h.</span></div>
+<div class="sp"><span class="sn2">03</span><span class="st2">Quebrar em pedaços irregulares. Local seco.</span></div>
+</div>
+<div class="mb"><div class="mt">Serviço</div>
+<div class="sp"><span class="sn2">01</span><span class="st2">Fritar a <em>180°C.</em> Retirar quando crocante.</span></div>
+<div class="sp"><span class="sn2">02</span><span class="st2">Polvilhar <strong>Curry Roxo DUE</strong> imediatamente.</span></div>
+</div>
+</div></div>
+<div class="fft"><div class="ffb"><div class="ffl">Uso</div><div class="fftx">Tartar do Sertão</div></div>
+<div class="ffb"><div class="ffl">Validade</div><div class="fftx">Desidratado: 5 dias</div><div class="ffa">⚠️ Fritar à la minute — nunca pré-fritar</div></div></div>
+</div></div>
+
+<div class="fi" data-t="" data-n="suspiro compra insumo">
+<div class="fih" onclick="tog(this)"><span class="fc">B04</span><span class="fn"><em>Suspiro</em></span><div class="fbs"><span class="bd b-cp">Insumo de Compra</span></div><span class="ftg">▾</span></div>
+<div class="fib"><div class="fbi">
+<div class="ci"><div class="cl">Fornecimento</div>
+<div class="ig"><div class="ir"><span>Suspiro artesanal</span><span class="iq">compra</span></div></div>
+<div class="in">Não produzimos internamente.</div></div>
+<div class="cm"><div class="mb"><div class="mt">Armazenamento</div>
+<div class="sp"><span class="sn2">01</span><span class="st2">Pote hermético seco. Longe de umidade.</span></div>
+</div></div></div></div></div>
+
+<div class="fi" data-t="d1" data-n="tuile cacau 70 silpat chocolate sobremesa namelaka">
+<div class="fih" onclick="tog(this)"><span class="fc">B05</span><span class="fn">Tuile de <em>Cacau 70%</em></span><div class="fbs"><span class="bd b-d1">⚑ D-1</span></div><span class="ftg">▾</span></div>
+<div class="fib"><div class="fbi">
+<div class="ci"><div class="cl">Ingredientes — proporção base</div>
+<div class="ig"><div class="igt">Massa</div>
+<div class="ir"><span>Clara</span><span class="iq">50 g</span></div>
+<div class="ir"><span>Manteiga sem sal (derretida)</span><span class="iq">50 g</span></div>
+<div class="ir"><span>Farinha de trigo</span><span class="iq">50 g</span></div>
+<div class="ir"><span>Açúcar de confeiteiro</span><span class="iq">50 g</span></div>
+<div class="ir"><span>Cacau em pó 70%</span><span class="iq">10 g</span></div>
+</div></div>
+<div class="cm"><div class="mb"><div class="mt">Produção · Silpat · 120°C · 6 min</div>
+<div class="sp"><span class="sn2">01</span><span class="st2">Misturar até pasta. <em>Descansar 30 min refrigerado.</em></span></div>
+<div class="sp"><span class="sn2">02</span><span class="st2">Espalhar fino no Silpat. <strong>120°C · 6 min.</strong></span></div>
+<div class="sp"><span class="sn2">03</span><span class="st2">Retirar quente e modelar. Endurece em segundos.</span></div>
+</div></div></div>
+<div class="fft"><div class="ffb"><div class="ffl">Uso</div><div class="fftx">Namelaka 70°</div></div>
+<div class="ffb"><div class="ffl">Validade</div><div class="fftx">5 dias hermético seco</div><div class="ffa">⚠️ Umidade elimina crocância</div></div></div>
+</div></div>
+
+<div class="fi" data-t="nv d1" data-n="tuile verde azeite glucose silicone risoto moqueca">
+<div class="fih" onclick="tog(this)"><span class="fc">B06</span><span class="fn">Tuile <em>Verde</em></span><div class="fbs"><span class="bd b-nv">★ Nova</span><span class="bd b-d1">⚑ D-1</span></div><span class="ftg">▾</span></div>
+<div class="fib"><div class="fbi">
+<div class="ci"><div class="cl">Ingredientes — proporção base</div>
+<div class="ig"><div class="igt">Massa</div>
+<div class="ir"><span>Azeite verde DUE</span><span class="iq">50 g</span></div>
+<div class="ir"><span>Glucose de milho</span><span class="iq">50 g</span></div>
+<div class="ir"><span>Farinha de trigo</span><span class="iq">50 g</span></div>
+<div class="ir"><span>Clara</span><span class="iq">50 g</span></div>
+</div></div>
+<div class="cm"><div class="mb"><div class="mt">Molde de Silicone · 160°C · 8 min</div>
+<div class="sp"><span class="sn2">01</span><span class="st2">Misturar todos os ingredientes até homogêneo.</span></div>
+<div class="sp"><span class="sn2">02</span><span class="st2">Espalhar no <strong>molde de silicone.</strong> Forno <em>160°C · 8 min.</em></span></div>
+<div class="sp"><span class="sn2">03</span><span class="st2">Retirar quente. Conservar em pote seco.</span></div>
+</div></div></div>
+<div class="fft"><div class="ffb"><div class="ffl">Uso</div><div class="fftx">Risoto de Moqueca</div></div></div>
+</div></div>
+
+<div class="fi" data-t="nv sig" data-n="curry roxo hibisco beterraba cebola roxa sumac glutamato blend">
+<div class="fih" onclick="tog(this)"><span class="fc">B07</span><span class="fn">Curry <em>Roxo</em> DUE</span><div class="fbs"><span class="bd b-sig">⦿ Assinatura</span><span class="bd b-nv">★ Nova</span></div><span class="ftg">▾</span></div>
+<div class="fib"><div class="fbi">
+<div class="ci"><div class="cl">Ingredientes — blend</div>
+<div class="ig"><div class="igt">Composição</div>
+<div class="ir"><span>Pó de hibisco</span><span class="iq">proporcional</span></div>
+<div class="ir"><span>Pó de beterraba</span><span class="iq">proporcional</span></div>
+<div class="ir"><span>Pó de cebola roxa</span><span class="iq">proporcional</span></div>
+<div class="ir"><span>Sumac</span><span class="iq">proporcional</span></div>
+<div class="ir"><span>Glutamato monossódico</span><span class="iq">proporcional</span></div>
+</div>
+<div class="in">Proporções a calibrar em produção. Produção própria DUE.</div></div>
+<div class="cm"><div class="mb"><div class="mt">Blend</div>
+<div class="sp"><span class="sn2">01</span><span class="st2">Misturar todos os pós até cor roxa uniforme e intensa.</span></div>
+<div class="sp"><span class="sn2">02</span><span class="st2">Pote hermético seco. Longe de umidade.</span></div>
+</div></div></div>
+<div class="fft"><div class="ffb"><div class="ffl">Uso</div><div class="fftx">Finalização do Crocante de Tapioca</div></div>
+<div class="ffb"><div class="ffl">Validade</div><div class="fftx">30 dias em pote fechado</div></div></div>
+</div></div>
+</div>
+
+<!-- ══ 03 SOBREMESAS ══ -->
+<div id="c03"><div class="st"><span class="sn">03</span>Sobremesas</div>
+
+<div class="fi" data-t="sig d1" data-n="torta basca cream cheese parmesão limão siciliano avelã frutas vermelhas">
+<div class="fih" onclick="tog(this)"><span class="fc">B08</span><span class="fn">Torta <em>Basca</em></span><div class="fbs"><span class="bd b-sig">⦿ Assinatura</span><span class="bd b-d1">⚑ D-1</span></div><span class="ftg">▾</span></div>
+<div class="fib"><div class="fbi">
+<div class="ci"><div class="cl">Ingredientes — 1 forma · 8-10 porções</div>
+<div class="ig"><div class="igt">Base</div>
+<div class="ir"><span>Cream cheese</span><span class="iq">400 g</span></div>
+<div class="ir"><span>Parmesão ralado fino</span><span class="iq">60 g</span></div>
+<div class="ir"><span>Ovos inteiros</span><span class="iq">4 un</span></div>
+<div class="ir"><span>Açúcar cristal</span><span class="iq">120 g</span></div>
+<div class="ir"><span>Creme de leite Leco</span><span class="iq">200 ml</span></div>
+<div class="ir"><span>Farinha de trigo</span><span class="iq">2 col. sopa</span></div>
+<div class="ir"><span>Limão siciliano (raspas)</span><span class="iq">1 un</span></div>
+<div class="ir"><span>Suco de limão siciliano</span><span class="iq">30 ml</span></div>
+</div>
+<div class="ig"><div class="igt">Calda Frutas Vermelhas</div>
+<div class="ir"><span>Mix frutas vermelhas</span><span class="iq">200 g</span></div>
+<div class="ir"><span>Açúcar cristal</span><span class="iq">60 g</span></div>
+<div class="ir"><span>Suco de limão</span><span class="iq">15 ml</span></div>
+</div>
+<div class="ig"><div class="igt">Farofa de Avelã</div>
+<div class="ir"><span>Avelã torrada</span><span class="iq">80 g</span></div>
+<div class="ir"><span>Açúcar de confeiteiro</span><span class="iq">40 g</span></div>
+<div class="ir"><span>Manteiga sem sal</span><span class="iq">20 g</span></div>
+<div class="ir"><span>Flor de sal</span><span class="iq">pitada</span></div>
+</div>
+<div class="in">Forma redonda 20cm · papel-manteiga nas laterais · não untar o fundo.</div></div>
+<div class="cm">
+<div class="mb"><div class="mt">Base da Torta — D-1</div>
+<div class="sp"><span class="sn2">01</span><span class="st2">Bater cream cheese + açúcar. <strong>Não incorporar ar.</strong></span></div>
+<div class="sp"><span class="sn2">02</span><span class="st2">Ovos um a um, velocidade baixa.</span></div>
+<div class="sp"><span class="sn2">03</span><span class="st2">Parmesão + creme de leite + farinha + raspas + suco de limão.</span></div>
+<div class="sp"><span class="sn2">04</span><span class="st2">Verter na forma. <em>Forno 220°C · 25-28 min.</em> Dourada escura no topo, trêmula no centro.</span></div>
+<div class="sp"><span class="sn2">05</span><span class="st2">1h à temperatura ambiente → <strong>geladeira mínimo 4h.</strong> Servir sempre fria.</span></div>
+</div>
+<div class="mb"><div class="mt">Calda · Batch Semanal</div>
+<div class="sp"><span class="sn2">01</span><span class="st2">Frutas + açúcar · fogo médio · 12-15 min até engrossar. Limão fora do fogo.</span></div>
+</div>
+<div class="mb"><div class="mt">Farofa de Avelã · Batch Semanal</div>
+<div class="sp"><span class="sn2">01</span><span class="st2">Triturar avelã — textura grosseira. Manteiga + açúcar até caramelizar → avelã + flor de sal → placa → quebrar.</span></div>
+</div>
+</div></div>
+<div class="fft"><div class="ffb"><div class="ffl">Montagem</div><div class="fftx">Fatia · calda · farofa na lateral · raspas frescas</div></div>
+<div class="ffb"><div class="ffl">Validade</div><div class="fftx">Torta: 3 dias · Calda: 5 dias · Farofa: 2 semanas</div><div class="ffa">⚠️ Nunca cortar quente</div></div></div>
+</div></div>
+
+<div class="fi" data-t="sig d1 nv" data-n="namelaka chocolate 70 laranja bahia tuile gelatina manteiga">
+<div class="fih" onclick="tog(this)"><span class="fc">B09</span><span class="fn">Namelaka <em>70°</em></span><div class="fbs"><span class="bd b-sig">⦿ Assinatura</span><span class="bd b-d1">⚑ D-1</span><span class="bd b-nv">★ Nova</span></div><span class="ftg">▾</span></div>
+<div class="fib"><div class="fbi">
+<div class="ci"><div class="cl">Ingredientes — 6 porções</div>
+<div class="ig"><div class="igt">Namelaka</div>
+<div class="ir"><span>Chocolate 70% derretido</span><span class="iq">240 g</span></div>
+<div class="ir"><span>Creme de leite Leco</span><span class="iq">300 ml</span></div>
+<div class="ir"><span>Gelatina em pó sem sabor</span><span class="iq">6 g</span></div>
+<div class="ir"><span>Água fria (hidratar gelatina)</span><span class="iq">30 ml</span></div>
+<div class="ir"><span>Manteiga sem sal</span><span class="iq">40 g</span></div>
+<div class="ir"><span>Flor de sal</span><span class="iq">1 pitada</span></div>
+</div>
+<div class="ig"><div class="igt">Confit Laranja Bahia</div>
+<div class="ir"><span>Laranja Bahia cascas (julienne)</span><span class="iq">3 un</span></div>
+<div class="ir"><span>Suco das laranjas</span><span class="iq">~150 ml</span></div>
+<div class="ir"><span>Açúcar cristal</span><span class="iq">75 g</span></div>
+</div>
+<div class="ig"><div class="igt">Tuile de Cacau (→ B05)</div>
+<div class="ir"><span>Ver ficha B05</span><span class="iq">1 un/porção</span></div>
+</div>
+<div class="in">Ultra-cremoso em japonês. Técnica Valrhona com gelatina. Textura entre mousse e ganache.</div>
+</div>
+<div class="cm">
+<div class="mb"><div class="mt">Namelaka — D-1 Obrigatório</div>
+<div class="sp"><span class="sn2">01</span><span class="st2">Hidratar gelatina em 30ml água fria · 5 min.</span></div>
+<div class="sp"><span class="sn2">02</span><span class="st2">Aquecer creme até <em>45°C exatos</em> (termômetro obrigatório). Incorporar gelatina.</span></div>
+<div class="sp"><span class="sn2">03</span><span class="st2">Verter sobre chocolate derretido do centro para fora.</span></div>
+<div class="sp"><span class="sn2">04</span><span class="st2">Manteiga. <strong>Mixer de imersão 60 segundos</strong> até brilhante.</span></div>
+<div class="sp"><span class="sn2">05</span><span class="st2">Flor de sal. Filme em contato. <em>Geladeira mínimo 6h.</em></span></div>
+</div>
+<div class="mb"><div class="mt">Confit Julienne — Batch Semanal</div>
+<div class="sp"><span class="sn2">01</span><span class="st2">Cascas sem parte branca, julienne fino. <strong>Branquear 3x</strong> — água fria → fervura → escorrer.</span></div>
+<div class="sp"><span class="sn2">02</span><span class="st2">Cascas + suco + açúcar em fogo baixo → reduzir até napar. Reservar separado.</span></div>
+</div>
+</div></div>
+<div class="fft">
+<div class="ffb"><div class="ffl">Montagem</div><div class="fftx">Namelaka · espiral julienne · fio calda · tuile · raspas frescas</div></div>
+<div class="ffb"><div class="ffl">Ponto Crítico</div><div class="fftx">Creme a <strong>45°C exatos.</strong></div><div class="ffa">⚠️ Quente demais quebra a gelatina</div></div>
+<div class="ffb"><div class="ffl">Validade</div><div class="fftx">Namelaka: 3 dias · Confit: 7 dias · Tuile: 5 dias seco</div></div>
+</div></div></div>
+
+<div class="fi" data-t="sig nv" data-n="passion harumaki chocolate branco maracujá pitanga hibisco castanha cointreau">
+<div class="fih" onclick="tog(this)"><span class="fc">B10</span><span class="fn"><em>Passion</em></span><div class="fbs"><span class="bd b-sig">⦿ Assinatura</span><span class="bd b-nv">★ Nova</span></div><span class="ftg">▾</span></div>
+<div class="fib"><div class="fbi">
+<div class="ci"><div class="cl">Ingredientes — 1 porção</div>
+<div class="ig"><div class="igt">Cestinha Harumaki</div>
+<div class="ir"><span>Massa Harumaki</span><span class="iq">1 folha</span></div>
+<div class="ir"><span>Manteiga (pincelar)</span><span class="iq">5 g</span></div>
+</div>
+<div class="ig"><div class="igt">Ganache Chocolate Branco</div>
+<div class="ir"><span>Chocolate branco</span><span class="iq">50 g</span></div>
+<div class="ir"><span>Creme de leite Leco</span><span class="iq">25 ml</span></div>
+</div>
+<div class="ig"><div class="igt">Pralinê Castanha de Caju</div>
+<div class="ir"><span>Castanha de caju</span><span class="iq">60 g</span></div>
+<div class="ir"><span>Açúcar cristal</span><span class="iq">40 g</span></div>
+<div class="ir"><span>Manteiga</span><span class="iq">10 g</span></div>
+<div class="ir"><span>Flor de sal</span><span class="iq">pitada</span></div>
+</div>
+<div class="ig"><div class="igt">Calda Maracujá · Pitanga · Hibisco</div>
+<div class="ir"><span>Maracujá (polpa + sementes)</span><span class="iq">2 un</span></div>
+<div class="ir"><span>Pitanga</span><span class="iq">80 g</span></div>
+<div class="ir"><span>Hibisco seco</span><span class="iq">3 g</span></div>
+<div class="ir"><span>Açúcar cristal</span><span class="iq">40 g</span></div>
+<div class="ir"><span>Cointreau</span><span class="iq">15 ml</span></div>
+</div>
+<div class="in">Sementes do maracujá: coadas, secas 60°C, usadas como crocante. Zero desperdício.</div>
+</div>
+<div class="cm">
+<div class="mb"><div class="mt">Cestinha — Início do Turno</div>
+<div class="sp"><span class="sn2">01</span><span class="st2">Pincelar folha dos dois lados com manteiga.</span></div>
+<div class="sp"><span class="sn2">02</span><span class="st2">Moldar sobre ramequin invertido. <em>175°C · 8-10 min</em> até dourada e crocante.</span></div>
+</div>
+<div class="mb"><div class="mt">Ganache Branco</div>
+<div class="sp"><span class="sn2">01</span><span class="st2">Ferver creme. Versar sobre chocolate picado. 1 min → misturar centro para fora. Resfriar até <em>20-22°C</em> para bico.</span></div>
+</div>
+<div class="mb"><div class="mt">Pralinê — Batch Semanal</div>
+<div class="sp"><span class="sn2">01</span><span class="st2">Tostar castanhas. Caramelo seco até âmbar → fora do fogo: manteiga + flor de sal → envolver castanhas → placa → <strong>processar em farofa grossa.</strong></span></div>
+</div>
+<div class="mb"><div class="mt">Calda — Batch</div>
+<div class="sp"><span class="sn2">01</span><span class="st2">Reservar sementes. Polpa + pitanga + açúcar · 10 min. Hibisco · infusão 5 min fora do fogo. Coar.</span></div>
+<div class="sp"><span class="sn2">02</span><span class="st2">Reduzir 3 min. Fora do fogo: Cointreau. Squeeze. Sementes: forno 60°C · 20 min → crocante.</span></div>
+</div>
+</div></div>
+<div class="fft">
+<div class="ffb"><div class="ffl">Montagem</div><div class="fftx">Cestinha → pralinê → ganache em bico → calda → sementes → flor (buganvilha ou hibisco)</div></div>
+<div class="ffb"><div class="ffl">Validade</div><div class="fftx">Cestinha: 1 dia · Ganache: 3 dias · Calda: 4 dias · Pralinê: 2 semanas</div><div class="ffa">⚠️ Montar à la minute</div></div>
+</div></div></div>
+</div>
+
+<!-- ══ 04 FUNDOS ══ -->
+<div id="c04"><div class="st"><span class="sn">04</span>Fundos & Caldos</div>
+
+<div class="fi" data-t="sig d1" data-n="bisque crustáceos camarão cascas extrato tomate creme leco">
+<div class="fih" onclick="tog(this)"><span class="fc">B11</span><span class="fn">Bisque de <em>Crustáceos</em> DUE</span><div class="fbs"><span class="bd b-sig">⦿ Assinatura</span><span class="bd b-d1">⚑ D-1</span></div><span class="ftg">▾</span></div>
+<div class="fib"><div class="fbi">
+<div class="ci"><div class="cl">Ingredientes — por litro</div>
+<div class="ig"><div class="igt">Base</div>
+<div class="ir"><span>Cascas de crustáceos (tostadas)</span><span class="iq">abundante</span></div>
+<div class="ir"><span>Cebola · Alho · Cenoura</span><span class="iq">mirepoix</span></div>
+<div class="ir"><span>Vinho branco</span><span class="iq">splash</span></div>
+<div class="ir"><span>Água</span><span class="iq">cobrir</span></div>
+<div class="ir"><span>Creme de leite Leco</span><span class="iq">redução</span></div>
+<div class="ir"><span>Extrato de tomate</span><span class="iq">30 g/lt</span></div>
+</div></div>
+<div class="cm"><div class="mb"><div class="mt">Processo</div>
+<div class="sp"><span class="sn2">01</span><span class="st2">Tostar cascas + mirepoix. Deglaçar com vinho branco.</span></div>
+<div class="sp"><span class="sn2">02</span><span class="st2">Cobrir com água. Ferver. <strong>Bater tudo → coar.</strong></span></div>
+<div class="sp"><span class="sn2">03</span><span class="st2">Creme Leco + extrato de tomate (30g/lt). Reduzir até ponto.</span></div>
+</div></div></div>
+<div class="fft"><div class="ffb"><div class="ffl">Validade</div><div class="fftx">3 dias refrigerado · congela bem</div></div></div>
+</div></div>
+
+<div class="fi" data-t="sig d1" data-n="demi-glace frango mocotó costela carcaça pelancas ossos zero desperdício">
+<div class="fih" onclick="tog(this)"><span class="fc">B12</span><span class="fn">Demi-glace <em>DUE</em></span><div class="fbs"><span class="bd b-sig">⦿ Assinatura</span><span class="bd b-d1">⚑ D-1</span></div><span class="ftg">▾</span></div>
+<div class="fib"><div class="fbi">
+<div class="ci"><div class="cl">Ingredientes</div>
+<div class="ig"><div class="igt">Base — Zero Desperdício</div>
+<div class="ir"><span>Carcaça de frango (tostada)</span><span class="iq">principal</span></div>
+<div class="ir"><span>Mocotó</span><span class="iq">colágeno</span></div>
+<div class="ir"><span>Ossos + pelancas da costela desfiada</span><span class="iq">aparas B35</span></div>
+<div class="ir"><span>Mirepoix + aromáticos</span><span class="iq">q.b.</span></div>
+</div>
+<div class="in">Ossos, pelancas e gorduras da costela entram aqui. Zero desperdício total.</div>
+</div>
+<div class="cm"><div class="mb"><div class="mt">Longa Extração</div>
+<div class="sp"><span class="sn2">01</span><span class="st2">Tostar carcaça, mocotó e aparas. Mirepoix. Cobrir com água.</span></div>
+<div class="sp"><span class="sn2">02</span><span class="st2">Cozinhar lentamente até extrair colágeno — fundo deve napar.</span></div>
+<div class="sp"><span class="sn2">03</span><span class="st2">Coar. Reduzir até demi-glace. Porcionar e congelar.</span></div>
+</div></div></div>
+<div class="fft"><div class="ffb"><div class="ffl">Uso</div><div class="fftx">Costela Desfiada · Filé do Sertão · base molhos</div></div>
+<div class="ffb"><div class="ffl">Validade</div><div class="fftx">5 dias refrigerado · 3 meses congelado</div></div></div>
+</div></div>
+
+<div class="fi" data-t="d1" data-n="fumet peixe espinhas salsão cebolinha vinho branco gelatinoso banana da terra">
+<div class="fih" onclick="tog(this)"><span class="fc">B13</span><span class="fn">Fumet de <em>Peixe</em> DUE</span><div class="fbs"><span class="bd b-d1">⚑ D-1</span></div><span class="ftg">▾</span></div>
+<div class="fib"><div class="fbi">
+<div class="ci"><div class="cl">Ingredientes</div>
+<div class="ig"><div class="igt">Base</div>
+<div class="ir"><span>Espinhas e aparas de peixe</span><span class="iq">principal</span></div>
+<div class="ir"><span>Cebola</span><span class="iq">q.b.</span></div>
+<div class="ir"><span>Talo de cebolinha</span><span class="iq">q.b.</span></div>
+<div class="ir"><span>Salsão</span><span class="iq">q.b.</span></div>
+<div class="ir"><span>Vinho branco</span><span class="iq">q.b.</span></div>
+</div></div>
+<div class="cm"><div class="mb"><div class="mt">Processo — máx. 25 min</div>
+<div class="sp"><span class="sn2">01</span><span class="st2">Suar aromáticos. Espinhas + vinho branco. Cobrir com água fria.</span></div>
+<div class="sp"><span class="sn2">02</span><span class="st2">Cozinhar <em>20-25 min</em> — não mais (amarga). Coar imediatamente.</span></div>
+<div class="sp"><span class="sn2">03</span><span class="st2"><strong>Reduzir até consistência gelatinosa</strong> — entra na Mousseline de Banana da Terra no lugar do creme.</span></div>
+</div></div></div>
+<div class="fft"><div class="ffb"><div class="ffl">Uso</div><div class="fftx">Mousseline de Banana da Terra (substitui creme de leite)</div></div>
+<div class="ffb"><div class="ffl">Validade</div><div class="fftx">2 dias refrigerado · congela bem</div></div></div>
+</div></div>
+
+<div class="fi" data-t="nv" data-n="fundo claro legumes cebola cenoura salsão base neutra">
+<div class="fih" onclick="tog(this)"><span class="fc">B14</span><span class="fn">Fundo Claro de <em>Legumes</em></span><div class="fbs"><span class="bd b-nv">★ Nova</span></div><span class="ftg">▾</span></div>
+<div class="fib"><div class="fbi">
+<div class="ci"><div class="cl">Ingredientes</div>
+<div class="ig"><div class="igt">Base</div>
+<div class="ir"><span>Cebola</span><span class="iq">principal</span></div>
+<div class="ir"><span>Aparas cenoura · salsão</span><span class="iq">q.b.</span></div>
+<div class="ir"><span>Água</span><span class="iq">cobrir</span></div>
+</div>
+<div class="in">Base para o Fundo de Frango e o Xerém Cremoso.</div></div>
+<div class="cm"><div class="mb"><div class="mt">Processo Simples</div>
+<div class="sp"><span class="sn2">01</span><span class="st2">Cobrir legumes com água fria. Fogo baixo até extrair sabor.</span></div>
+<div class="sp"><span class="sn2">02</span><span class="st2">Coar. Reservar.</span></div>
+</div></div></div>
+</div></div>
+
+<div class="fi" data-t="nv d1" data-n="fundo frango carcaça assada colágeno">
+<div class="fih" onclick="tog(this)"><span class="fc">B15</span><span class="fn">Fundo de <em>Frango</em></span><div class="fbs"><span class="bd b-nv">★ Nova</span><span class="bd b-d1">⚑ D-1</span></div><span class="ftg">▾</span></div>
+<div class="fib"><div class="fbi">
+<div class="ci"><div class="cl">Ingredientes — por litro</div>
+<div class="ig"><div class="igt">Base</div>
+<div class="ir"><span>Fundo claro de legumes (B14)</span><span class="iq">1 lt</span></div>
+<div class="ir"><span>Carcaça de frango assada 150°C</span><span class="iq">200 g/lt</span></div>
+</div></div>
+<div class="cm"><div class="mb"><div class="mt">Processo</div>
+<div class="sp"><span class="sn2">01</span><span class="st2">Assar carcaça 150°C até dourar. Adicionar ao fundo de legumes.</span></div>
+<div class="sp"><span class="sn2">02</span><span class="st2">Cozinhar até extrair colágeno — fundo napa levemente. Coar. Porcionar.</span></div>
+</div></div></div>
+<div class="fft"><div class="ffb"><div class="ffl">Validade</div><div class="fftx">3 dias refrigerado · 3 meses congelado</div></div></div>
+</div></div>
+</div>
+
+<!-- ══ 05 BASES TRANSVERSAIS ══ -->
+<div id="c05"><div class="st"><span class="sn">05</span>Bases Transversais</div>
+
+<div class="fi" data-t="sig d1" data-n="gema curada shoyu sal açúcar forma muffin tartar">
+<div class="fih" onclick="tog(this)"><span class="fc">B16</span><span class="fn">Gema <em>Curada</em> DUE</span><div class="fbs"><span class="bd b-sig">⦿ Assinatura</span><span class="bd b-d1">⚑ D-1</span></div><span class="ftg">▾</span></div>
+<div class="fib"><div class="fbi">
+<div class="ci"><div class="cl">Ingredientes — por gema</div>
+<div class="ig"><div class="igt">Cura</div>
+<div class="ir"><span>Sal fino</span><span class="iq">20 g</span></div>
+<div class="ir"><span>Shoyu</span><span class="iq">50 ml</span></div>
+<div class="ir"><span>Açúcar cristal</span><span class="iq">20 g</span></div>
+</div>
+<div class="in">Forma de muffin · máx. 12 gemas/forma · máx. 24 gemas/batch.</div></div>
+<div class="cm"><div class="mb"><div class="mt">D-1 · 12h de Cura</div>
+<div class="sp"><span class="sn2">01</span><span class="st2">20g de sal na cavidade como cama. Gema delicadamente sobre o sal.</span></div>
+<div class="sp"><span class="sn2">02</span><span class="st2">Misturar shoyu + açúcar. Versar sobre a gema. <em>Geladeira 12h.</em></span></div>
+<div class="sp"><span class="sn2">03</span><span class="st2">Remover com cuidado. <strong>Pote com tampa.</strong> Usar em até 2 dias.</span></div>
+</div></div></div>
+<div class="fft"><div class="ffb"><div class="ffl">Uso</div><div class="fftx">Tartar do Sertão — finalização</div></div>
+<div class="ffb"><div class="ffl">Validade</div><div class="fftx">2 dias refrigerado em pote fechado</div></div></div>
+</div></div>
+
+<div class="fi" data-t="d1" data-n="picles maxixe vinagre maçã vinho branco especiarias louro cravo anis">
+<div class="fih" onclick="tog(this)"><span class="fc">B17</span><span class="fn">Picles de <em>Maxixe</em> DUE</span><div class="fbs"><span class="bd b-d1">⚑ D-1</span></div><span class="ftg">▾</span></div>
+<div class="fib"><div class="fbi">
+<div class="ci"><div class="cl">Ingredientes — para 1kg maxixe</div>
+<div class="ig"><div class="igt">Calda</div>
+<div class="ir"><span>Vinagre de maçã</span><span class="iq">100 ml</span></div>
+<div class="ir"><span>Vinho branco</span><span class="iq">300 ml</span></div>
+<div class="ir"><span>Açúcar cristal</span><span class="iq">200 g</span></div>
+</div>
+<div class="ig"><div class="igt">Sachê de Épices</div>
+<div class="ir"><span>Louro</span><span class="iq">5 un</span></div>
+<div class="ir"><span>Pimenta preta em grãos</span><span class="iq">2 g</span></div>
+<div class="ir"><span>Cravos</span><span class="iq">5 un</span></div>
+<div class="ir"><span>Anis estrelado</span><span class="iq">1 un</span></div>
+</div>
+<div class="ig"><div class="igt">Maxixe</div>
+<div class="ir"><span>Maxixe fatiado (mandoline)</span><span class="iq">1 kg</span></div>
+<div class="ir"><span>Sal (pré-cura)</span><span class="iq">3% do peso</span></div>
+</div></div>
+<div class="cm"><div class="mb"><div class="mt">Processo</div>
+<div class="sp"><span class="sn2">01</span><span class="st2">Mandoline fino. Misturar com 3% sal. Descanso 30 min.</span></div>
+<div class="sp"><span class="sn2">02</span><span class="st2">Lavar bem para remover excesso de sal.</span></div>
+<div class="sp"><span class="sn2">03</span><span class="st2">Ferver vinagre + vinho + açúcar + sachê até dissolver. Versar quente sobre o maxixe.</span></div>
+<div class="sp"><span class="sn2">04</span><span class="st2">Retirar sachê após 10 min. Refrigerar.</span></div>
+</div></div></div>
+<div class="fft"><div class="ffb"><div class="ffl">Validade</div><div class="fftx">15 dias refrigerado</div></div></div>
+</div></div>
+
+<div class="fi" data-t="sig" data-n="aioli lactonese leite gelado alho páprica mostarda joão emulsão">
+<div class="fih" onclick="tog(this)"><span class="fc">B18</span><span class="fn">Aioli <em>Lactonese</em> DUE</span><div class="fbs"><span class="bd b-sig">⦿ Assinatura</span></div><span class="ftg">▾</span></div>
+<div class="fib"><div class="fbi">
+<div class="ci"><div class="cl">Ingredientes</div>
+<div class="ig"><div class="igt">Emulsão a Frio</div>
+<div class="ir"><span>Leite integral gelado</span><span class="iq">200 ml</span></div>
+<div class="ir"><span>Alho</span><span class="iq">2 dentes</span></div>
+<div class="ir"><span>Mostarda de João</span><span class="iq">20 g</span></div>
+<div class="ir"><span>Páprica defumada</span><span class="iq">5 g</span></div>
+<div class="ir"><span>Páprica doce</span><span class="iq">5 g</span></div>
+<div class="ir"><span>Óleo de girassol (gelado)</span><span class="iq">600 ml</span></div>
+<div class="ir"><span>Sal e pimenta</span><span class="iq">q.b.</span></div>
+</div></div>
+<div class="cm"><div class="mb"><div class="mt">Emulsão</div>
+<div class="sp"><span class="sn2">01</span><span class="st2">Bater leite + alho + mostarda + pápricas no liquidificador.</span></div>
+<div class="sp"><span class="sn2">02</span><span class="st2">Com o liquidificador ligado, <strong>óleo gelado em fio</strong> até emulsionar. Acertar sal e pimenta.</span></div>
+</div></div></div>
+<div class="fft"><div class="ffb"><div class="ffl">Uso</div><div class="fftx">Mistura Tartar · acompanhamentos</div></div>
+<div class="ffb"><div class="ffl">Validade</div><div class="fftx">5 dias refrigerado</div></div></div>
+</div></div>
+
+<div class="fi" data-t="sig d1" data-n="tomates confitados cereja pele azeite aromatizado alho tomilho alecrim">
+<div class="fih" onclick="tog(this)"><span class="fc">B19</span><span class="fn">Tomates <em>Confitados</em> DUE</span><div class="fbs"><span class="bd b-sig">⦿ Assinatura</span><span class="bd b-d1">⚑ D-1</span></div><span class="ftg">▾</span></div>
+<div class="fib"><div class="fbi">
+<div class="ci"><div class="cl">Ingredientes — para 1kg tomate cereja</div>
+<div class="ig"><div class="igt">Óleo Aromatizado</div>
+<div class="ir"><span>Óleo de girassol (60%)</span><span class="iq">300 ml</span></div>
+<div class="ir"><span>Azeite de oliva (40%)</span><span class="iq">200 ml</span></div>
+<div class="ir"><span>Alho · Pimenta de cheiro · Tomilho · Alecrim</span><span class="iq">q.b.</span></div>
+<div class="ir"><span>Sal e pimenta</span><span class="iq">q.b.</span></div>
+</div></div>
+<div class="cm"><div class="mb"><div class="mt">Novo Processo</div>
+<div class="sp"><span class="sn2">01</span><span class="st2">Tomates inteiros → <em>forno 150°C · 4 min</em> → refrigerar imediatamente.</span></div>
+<div class="sp"><span class="sn2">02</span><span class="st2"><strong>Retirar toda a pele</strong> — sem pele acelera a absorção do óleo.</span></div>
+<div class="sp"><span class="sn2">03</span><span class="st2">Submergir os tomates pelados no óleo aromatizado. <em>Forno 80°C</em> até absorver o sabor.</span></div>
+</div></div></div>
+<div class="fft"><div class="ffb"><div class="ffl">Validade</div><div class="fftx">7 dias submerso no óleo · refrigerado</div></div></div>
+</div></div>
+
+<div class="fi" data-t="sig" data-n="pesto sergipano castanha caju amendoim coentro cebolinha manjericão vegetariano sem parmesão">
+<div class="fih" onclick="tog(this)"><span class="fc">B20</span><span class="fn">Pesto <em>Sergipano</em> DUE</span><div class="fbs"><span class="bd b-sig">⦿ Assinatura</span></div><span class="ftg">▾</span></div>
+<div class="fib"><div class="fbi">
+<div class="ci"><div class="cl">Ingredientes — vegetariano, sem parmesão</div>
+<div class="ig"><div class="igt">Base</div>
+<div class="ir"><span>Castanha de caju</span><span class="iq">60 g</span></div>
+<div class="ir"><span>Amendoim</span><span class="iq">60 g</span></div>
+<div class="ir"><span>Alho</span><span class="iq">2 dentes</span></div>
+<div class="ir"><span>Óleo de pimenta de cheiro gelado</span><span class="iq">500 ml</span></div>
+<div class="ir"><span>Manjericão · Cebolinha · Coentro</span><span class="iq">⅓ maço cada</span></div>
+</div></div>
+<div class="cm"><div class="mb"><div class="mt">Processo a Frio</div>
+<div class="sp"><span class="sn2">01</span><span class="st2">Bater castanha + amendoim + alho + metade do óleo gelado até pasta.</span></div>
+<div class="sp"><span class="sn2">02</span><span class="st2">Adicionar folhas (1:1:1). Bater com óleo gelado em fio — <strong>não pode aquecer.</strong></span></div>
+<div class="sp"><span class="sn2">03</span><span class="st2"><em>Opcional:</em> branquear folhas antes para durabilidade e cor mais vibrante.</span></div>
+</div></div></div>
+<div class="fft"><div class="ffb"><div class="ffl">Validade</div><div class="fftx">3 dias (sem branquear) · 7 dias (com branquear)</div></div></div>
+</div></div>
+
+<div class="fi" data-t="sig" data-n="leite de tigre sergipano laranja limão tucupi azeite verde coentro emulsão peixe">
+<div class="fih" onclick="tog(this)"><span class="fc">B21</span><span class="fn">Leite de <em>Tigre</em> Sergipano DUE</span><div class="fbs"><span class="bd b-sig">⦿ Assinatura</span></div><span class="ftg">▾</span></div>
+<div class="fib"><div class="fbi">
+<div class="ci"><div class="cl">Ingredientes</div>
+<div class="ig"><div class="igt">Emulsão Cítrica</div>
+<div class="ir"><span>Suco de laranja</span><span class="iq">100 ml</span></div>
+<div class="ir"><span>Suco de limão</span><span class="iq">60 ml</span></div>
+<div class="ir"><span>Tucupi</span><span class="iq">30 ml</span></div>
+<div class="ir"><span>Azeite verde DUE (B25)</span><span class="iq">40 ml</span></div>
+<div class="ir"><span>Coentro</span><span class="iq">5 g</span></div>
+<div class="ir"><span>Pimenta picante</span><span class="iq">2 g</span></div>
+</div></div>
+<div class="cm"><div class="mb"><div class="mt">Emulsão</div>
+<div class="sp"><span class="sn2">01</span><span class="st2">Bater laranja + limão + tucupi + coentro + pimenta.</span></div>
+<div class="sp"><span class="sn2">02</span><span class="st2">Mixer ligado — <strong>azeite verde em fio</strong> até emulsionar.</span></div>
+</div></div></div>
+<div class="fft"><div class="ffb"><div class="ffl">Uso</div><div class="fftx">Finalização sobre o peixe</div></div>
+<div class="ffb"><div class="ffl">Validade</div><div class="fftx">4-5 dias refrigerado</div></div></div>
+</div></div>
+
+<div class="fi" data-t="sig d1" data-n="pomodoro molho de tomate forno combinado manjericão cebola branca">
+<div class="fih" onclick="tog(this)"><span class="fc">B22</span><span class="fn">Pomodoro <em>DUE</em></span><div class="fbs"><span class="bd b-sig">⦿ Assinatura</span><span class="bd b-d1">⚑ D-1</span></div><span class="ftg">▾</span></div>
+<div class="fib"><div class="fbi">
+<div class="ci"><div class="cl">Ingredientes — para 10kg tomate</div>
+<div class="ig"><div class="igt">Base</div>
+<div class="ir"><span>Tomate (qualquer tipo)</span><span class="iq">10 kg</span></div>
+<div class="ir"><span>Cebola branca</span><span class="iq">1 kg</span></div>
+<div class="ir"><span>Alho</span><span class="iq">100 g</span></div>
+<div class="ir"><span>Tomilho</span><span class="iq">5 g</span></div>
+<div class="ir"><span>Azeite de oliva</span><span class="iq">q.b.</span></div>
+<div class="ir"><span>Manjericão fresco</span><span class="iq">1 maço</span></div>
+</div></div>
+<div class="cm"><div class="mb"><div class="mt">Forno Combinado 180°C · 40 min</div>
+<div class="sp"><span class="sn2">01</span><span class="st2">Tomate inteiro lavado → <em>forno combinado 180°C · 40 min.</em></span></div>
+<div class="sp"><span class="sn2">02</span><span class="st2"><strong>Separar a água do tomate</strong> (reservar). Bater → coar → polpa.</span></div>
+<div class="sp"><span class="sn2">03</span><span class="st2">Refogar cebola + alho + azeite + tomilho. Polpa. Cozinhar 40 min.</span></div>
+<div class="sp"><span class="sn2">04</span><span class="st2">Fora do fogo: manjericão. Acertar sal.</span></div>
+</div></div></div>
+<div class="fft"><div class="ffb"><div class="ffl">Zero Desperdício</div><div class="fftx">Água do tomate reservada para outros processos</div></div>
+<div class="ffb"><div class="ffl">Validade</div><div class="fftx">5 dias refrigerado · 3 meses congelado</div></div></div>
+</div></div>
+
+<div class="fi" data-t="" data-n="fonduta parmesão béchamel noz-moscada">
+<div class="fih" onclick="tog(this)"><span class="fc">B23</span><span class="fn">Fonduta de <em>Parmesão</em> DUE</span><div class="fbs"></div><span class="ftg">▾</span></div>
+<div class="fib"><div class="fbi">
+<div class="ci"><div class="cl">Ingredientes</div>
+<div class="ig"><div class="igt">Béchamel</div>
+<div class="ir"><span>Farinha de trigo</span><span class="iq">60 g</span></div>
+<div class="ir"><span>Manteiga sem sal</span><span class="iq">60 g</span></div>
+<div class="ir"><span>Leite aromatizado</span><span class="iq">1 lt</span></div>
+</div>
+<div class="ig"><div class="igt">Finalização</div>
+<div class="ir"><span>Parmesão picado</span><span class="iq">350 g</span></div>
+<div class="ir"><span>Pimenta preta · Noz-moscada</span><span class="iq">q.b.</span></div>
+</div></div>
+<div class="cm"><div class="mb"><div class="mt">Processo</div>
+<div class="sp"><span class="sn2">01</span><span class="st2">Roux: manteiga + farinha. Leite aromatizado quente aos poucos. Béchamel liso.</span></div>
+<div class="sp"><span class="sn2">02</span><span class="st2">Incorporar parmesão. Pimenta e noz-moscada. <strong>Emulsionar no mixer.</strong></span></div>
+</div></div></div>
+</div></div>
+
+<div class="fi" data-t="sig" data-n="massa taco sergipana cuscuz fubá páprica cúrcuma frigideira">
+<div class="fih" onclick="tog(this)"><span class="fc">B24</span><span class="fn">Massa <em>Taco</em> Sergipana DUE</span><div class="fbs"><span class="bd b-sig">⦿ Assinatura</span></div><span class="ftg">▾</span></div>
+<div class="fib"><div class="fbi">
+<div class="ci"><div class="cl">Ingredientes</div>
+<div class="ig"><div class="igt">Massa</div>
+<div class="ir"><span>Farinha de trigo</span><span class="iq">300 g</span></div>
+<div class="ir"><span>Fubá de cuscuz (processado)</span><span class="iq">150 g</span></div>
+<div class="ir"><span>Manteiga (ponto de pomada)</span><span class="iq">80 g</span></div>
+<div class="ir"><span>Água</span><span class="iq">~120 ml</span></div>
+<div class="ir"><span>Páprica</span><span class="iq">2 g</span></div>
+<div class="ir"><span>Cúrcuma</span><span class="iq">2 g</span></div>
+<div class="ir"><span>Sal</span><span class="iq">1 g</span></div>
+</div></div>
+<div class="cm">
+<div class="mb"><div class="mt">Produção</div>
+<div class="sp"><span class="sn2">01</span><span class="st2">Misturar secos. Incorporar manteiga em pomada. Água aos poucos até ponto de massa.</span></div>
+<div class="sp"><span class="sn2">02</span><span class="st2"><em>Descanso 20 min</em> geladeira. Abrir no cilindro. Cortar nos formatos.</span></div>
+<div class="sp"><span class="sn2">03</span><span class="st2">Frigideira bem quente — <strong>2 min cada lado.</strong> Reservar.</span></div>
+</div>
+<div class="mb"><div class="mt">Serviço</div>
+<div class="sp"><span class="sn2">01</span><span class="st2"><em>Forno 2 min</em> antes de servir — crocância e manutenção do molde.</span></div>
+</div>
+</div></div></div></div>
+
+<div class="fi" data-t="sig" data-n="azeite verde clorofila salsinha couve coentro cebolinha 62 graus étamine bagaço">
+<div class="fih" onclick="tog(this)"><span class="fc">B25</span><span class="fn">Azeite <em>Verde</em> DUE</span><div class="fbs"><span class="bd b-sig">⦿ Assinatura</span></div><span class="ftg">▾</span></div>
+<div class="fib"><div class="fbi">
+<div class="ci"><div class="cl">Ingredientes</div>
+<div class="ig"><div class="igt">Infusão de Clorofila</div>
+<div class="ir"><span>Óleo de girassol</span><span class="iq">base</span></div>
+<div class="ir"><span>Pimenta de cheiro</span><span class="iq">q.b.</span></div>
+<div class="ir"><span>Alho</span><span class="iq">q.b.</span></div>
+<div class="ir"><span>Salsinha (partes verdes)</span><span class="iq">q.b.</span></div>
+<div class="ir"><span>Couve (partes verdes)</span><span class="iq">q.b.</span></div>
+<div class="ir"><span>Coentro (partes verdes)</span><span class="iq">q.b.</span></div>
+<div class="ir"><span>Cebolinha (partes verdes)</span><span class="iq">q.b.</span></div>
+</div>
+<div class="in">Subproduto: bagaço verde retido no étamine → B32 Mistura do Tartar. Zero desperdício.</div>
+</div>
+<div class="cm">
+<div class="mb"><div class="mt">Verde Escuro (folhas cruas)</div>
+<div class="sp"><span class="sn2">01</span><span class="st2">Bater óleo + folhas + pimenta + alho no liquidificador <strong>6-7 min até 62°C internos.</strong></span></div>
+<div class="sp"><span class="sn2">02</span><span class="st2">Coar no étamine — <em>sem pressionar.</em> Decantar na geladeira. Separar fases. Manter óleo.</span></div>
+</div>
+<div class="mb"><div class="mt">Verde Claro (folhas branqueadas)</div>
+<div class="sp"><span class="sn2">01</span><span class="st2">Branquear folhas: fervente → gelada → escorrer bem. Seguir processo acima.</span></div>
+</div>
+</div></div>
+<div class="fft"><div class="ffb"><div class="ffl">Zero Desperdício</div><div class="fftx">Bagaço do étamine → B32 Mistura do Tartar</div></div>
+<div class="ffb"><div class="ffl">Validade</div><div class="fftx">7 dias refrigerado</div></div></div>
+</div></div>
+
+<div class="fi" data-t="sig" data-n="azeite vermelho colorau urucum páprica defumada doce 90 graus infusão">
+<div class="fih" onclick="tog(this)"><span class="fc">B26</span><span class="fn">Azeite <em>Vermelho</em> DUE</span><div class="fbs"><span class="bd b-sig">⦿ Assinatura</span></div><span class="ftg">▾</span></div>
+<div class="fib"><div class="fbi">
+<div class="ci"><div class="cl">Ingredientes — para 500ml óleo</div>
+<div class="ig"><div class="igt">Infusão</div>
+<div class="ir"><span>Óleo de girassol</span><span class="iq">500 ml</span></div>
+<div class="ir"><span>Colorau / Urucum</span><span class="iq">150 g</span></div>
+<div class="ir"><span>Páprica doce</span><span class="iq">50 g</span></div>
+<div class="ir"><span>Páprica defumada</span><span class="iq">25 g</span></div>
+</div></div>
+<div class="cm"><div class="mb"><div class="mt">Infusão a Quente · 90°C</div>
+<div class="sp"><span class="sn2">01</span><span class="st2">Óleo + colorau + pápricas ao fogo até <em>90°C.</em> Desligar.</span></div>
+<div class="sp"><span class="sn2">02</span><span class="st2">Repouso <strong>mínimo 15 min</strong> para assentar e extrair a cor.</span></div>
+<div class="sp"><span class="sn2">03</span><span class="st2">Coar no étamine. Squeeze. Refrigerar.</span></div>
+</div></div></div>
+<div class="fft"><div class="ffb"><div class="ffl">Validade</div><div class="fftx">30 dias refrigerado</div></div></div>
+</div></div>
+
+<div class="fi" data-t="" data-n="tempurá cerveja amstel amido nori frutos do mar">
+<div class="fih" onclick="tog(this)"><span class="fc">B27</span><span class="fn">Massa <em>Tempurá</em> DUE</span><div class="fbs"></div><span class="ftg">▾</span></div>
+<div class="fib"><div class="fbi">
+<div class="ci"><div class="cl">Ingredientes — por lata Amstel (365ml)</div>
+<div class="ig"><div class="igt">Secos (pré-pesar)</div>
+<div class="ir"><span>Farinha de trigo</span><span class="iq">200 g</span></div>
+<div class="ir"><span>Amido de milho</span><span class="iq">100 g</span></div>
+<div class="ir"><span>Pó de nori</span><span class="iq">5 g</span></div>
+<div class="ir"><span>Sal e pimenta</span><span class="iq">q.b.</span></div>
+</div>
+<div class="ig"><div class="igt">Líquido (no momento do uso)</div>
+<div class="ir"><span>Cerveja Amstel gelada</span><span class="iq">365 ml</span></div>
+</div></div>
+<div class="cm"><div class="mb"><div class="mt">Processo</div>
+<div class="sp"><span class="sn2">01</span><span class="st2">Pré-pesar e misturar todos os secos. Misturar a cerveja <strong>apenas na hora do uso.</strong></span></div>
+<div class="sp"><span class="sn2">02</span><span class="st2">Adicionar cerveja gelada — misturar levemente. <em>Gruminhos são normais.</em> Não bater demais.</span></div>
+<div class="sp"><span class="sn2">03</span><span class="st2">Passar frutos do mar. Fritar imediatamente a 180°C.</span></div>
+</div></div></div>
+<div class="fft"><div class="ffb"><div class="ffl">Uso</div><div class="fftx">Frutos do mar · Croqueta de Polvo</div></div></div>
+</div></div>
+
+<div class="fi" data-t="wip" data-n="pão de batata fermento biológico azeite vermelho em desenvolvimento">
+<div class="fih" onclick="tog(this)"><span class="fc">B28</span><span class="fn">Pão de <em>Batata</em> DUE</span><div class="fbs"><span class="bd b-wp">⚙ Em Desenvolvimento</span></div><span class="ftg">▾</span></div>
+<div class="fib"><div class="fbi">
+<div class="ci"><div class="cl">Ingredientes — proporções provisórias</div>
+<div class="ig"><div class="igt">Base</div>
+<div class="ir"><span>Batata cozida e amassada</span><span class="iq">100 g</span></div>
+<div class="ir"><span>Farinha de trigo</span><span class="iq">200 g</span></div>
+<div class="ir"><span>Água</span><span class="iq">~180 ml</span></div>
+<div class="ir"><span>Azeite vermelho DUE (B26)</span><span class="iq">q.b.</span></div>
+<div class="ir"><span>Fermento biológico seco</span><span class="iq">6 g</span></div>
+</div>
+<div class="in">⚠️ Receita em definição — proporções e processo a confirmar.</div>
+</div>
+<div class="cm"><div class="mb"><div class="mt">Processo Provisório</div>
+<div class="sp"><span class="sn2">01</span><span class="st2">Misturar farinha + batata + fermento + água. Incorporar azeite vermelho.</span></div>
+<div class="sp"><span class="sn2">02</span><span class="st2">Sovar. Descanso até dobrar de volume. Modelar. Assar.</span></div>
+</div></div></div>
+</div></div>
+
+<div class="fi" data-t="sig" data-n="teriaki hibisco chá laranja bahia canela anis shoyu açúcar amido">
+<div class="fih" onclick="tog(this)"><span class="fc">B29</span><span class="fn">Teriaki de <em>Hibisco</em> DUE</span><div class="fbs"><span class="bd b-sig">⦿ Assinatura</span></div><span class="ftg">▾</span></div>
+<div class="fib"><div class="fbi">
+<div class="ci"><div class="cl">Ingredientes</div>
+<div class="ig"><div class="igt">Chá Concentrado</div>
+<div class="ir"><span>Hibisco seco</span><span class="iq">300 g</span></div>
+<div class="ir"><span>Água</span><span class="iq">600 ml</span></div>
+<div class="ir"><span>Casca laranja Bahia</span><span class="iq">1 un</span></div>
+<div class="ir"><span>Pau de canela</span><span class="iq">1 un</span></div>
+<div class="ir"><span>Anis estrelado</span><span class="iq">1 un</span></div>
+</div>
+<div class="ig"><div class="igt">Montagem do Teriaki</div>
+<div class="ir"><span>Chá concentrado coado</span><span class="iq">resultado</span></div>
+<div class="ir"><span>Shoyu</span><span class="iq">100 ml</span></div>
+<div class="ir"><span>Açúcar cristal</span><span class="iq">100 g</span></div>
+<div class="ir"><span>Amido de milho</span><span class="iq">30 g (ajustar)</span></div>
+</div></div>
+<div class="cm">
+<div class="mb"><div class="mt">Chá Concentrado</div>
+<div class="sp"><span class="sn2">01</span><span class="st2">Ferver hibisco + água + casca laranja + canela + anis. Reduzir pela metade. Coar.</span></div>
+</div>
+<div class="mb"><div class="mt">Teriaki</div>
+<div class="sp"><span class="sn2">01</span><span class="st2">Chá + shoyu + açúcar + amido. Ferver até ponto de teriaki. Ajustar amido.</span></div>
+<div class="sp"><span class="sn2">02</span><span class="st2">Resultado: <em>roxo · cítrico · levemente adocicado · pouco salgado.</em></span></div>
+</div>
+</div></div>
+<div class="fft"><div class="ffb"><div class="ffl">Validade</div><div class="fftx">7 dias refrigerado · squeeze</div></div></div>
+</div></div>
+
+<div class="fi" data-t="d1" data-n="confit laranja tangerina casca calda branquear">
+<div class="fih" onclick="tog(this)"><span class="fc">B30</span><span class="fn">Confit <em>Laranja Bahia</em> & Tangerina DUE</span><div class="fbs"><span class="bd b-d1">⚑ D-1</span></div><span class="ftg">▾</span></div>
+<div class="fib"><div class="fbi">
+<div class="ci"><div class="cl">Ingredientes</div>
+<div class="ig"><div class="igt">Confit</div>
+<div class="ir"><span>Laranjas Bahia / Tangerinas</span><span class="iq">a demanda</span></div>
+<div class="ir"><span>Açúcar cristal · Água</span><span class="iq">proporcional</span></div>
+</div></div>
+<div class="cm"><div class="mb"><div class="mt">Processo — mantém original</div>
+<div class="sp"><span class="sn2">01</span><span class="st2">Retirar cascas. Cortar no formato. <strong>Branquear 2-3x</strong> para remover amargo.</span></div>
+<div class="sp"><span class="sn2">02</span><span class="st2">Cozinhar na calda até translúcido e napar. Refrigerar em pote com calda.</span></div>
+</div></div></div>
+<div class="fft"><div class="ffb"><div class="ffl">Validade</div><div class="fftx">14 dias refrigerado na calda</div></div></div>
+</div></div>
+
+<div class="fi" data-t="sig nv" data-n="azeite de pimenta de cheiro girassol infusão maceração 5 dias 60 graus">
+<div class="fih" onclick="tog(this)"><span class="fc">B31</span><span class="fn">Azeite de <em>Pimenta de Cheiro</em></span><div class="fbs"><span class="bd b-sig">⦿ Assinatura</span><span class="bd b-nv">★ Nova</span></div><span class="ftg">▾</span></div>
+<div class="fib"><div class="fbi">
+<div class="ci"><div class="cl">Ingredientes — para 1 litro</div>
+<div class="ig"><div class="igt">Infusão</div>
+<div class="ir"><span>Óleo de girassol</span><span class="iq">1 lt</span></div>
+<div class="ir"><span>Pimenta de cheiro (cortada)</span><span class="iq">500 g</span></div>
+</div></div>
+<div class="cm"><div class="mb"><div class="mt">Infusão a Quente + Maceração a Frio</div>
+<div class="sp"><span class="sn2">01</span><span class="st2">Cortar as pimentas. Misturar com o óleo. <em>Forno 60°C.</em></span></div>
+<div class="sp"><span class="sn2">02</span><span class="st2"><strong>Maceração 5 dias</strong> com a pimenta dentro para aprofundamento dos sabores.</span></div>
+<div class="sp"><span class="sn2">03</span><span class="st2">Filtrar. Óleo pronto. Squeeze. Refrigerar.</span></div>
+</div></div></div>
+<div class="fft"><div class="ffb"><div class="ffl">Uso</div><div class="fftx">Pesto Sergipano · Creme de Abacate · Leite de Tigre · Massa Taco</div></div>
+<div class="ffb"><div class="ffl">Validade</div><div class="fftx">60 dias refrigerado</div></div></div>
+</div></div>
+
+<div class="fi" data-t="sig nv" data-n="mistura tartar sertão bagaço verde azeite mostarda aioli tabasco alcaparras carne de sol">
+<div class="fih" onclick="tog(this)"><span class="fc">B32</span><span class="fn">Mistura do <em>Tartar do Sertão</em></span><div class="fbs"><span class="bd b-sig">⦿ Assinatura</span><span class="bd b-nv">★ Nova</span></div><span class="ftg">▾</span></div>
+<div class="fib"><div class="fbi">
+<div class="ci"><div class="cl">Ingredientes — rende ~500g</div>
+<div class="ig"><div class="igt">Blend</div>
+<div class="ir"><span>Bagaço verde (subproduto B25)</span><span class="iq">~100 g</span></div>
+<div class="ir"><span>Mostarda de João</span><span class="iq">100 g</span></div>
+<div class="ir"><span>Aioli de Páprica DUE (B18)</span><span class="iq">40 g</span></div>
+<div class="ir"><span>Pimenta Tabasco</span><span class="iq">1 ml</span></div>
+<div class="ir"><span>Pó de alcaparras</span><span class="iq">1 g</span></div>
+<div class="ir"><span>Azeite verde DUE (B25)</span><span class="iq">100 ml</span></div>
+</div>
+<div class="ig"><div class="igt">Montagem do Tartar (por porção)</div>
+<div class="ir"><span>Mistura Tartar</span><span class="iq">30-40 g</span></div>
+<div class="ir"><span>Carne de sol dessalgada</span><span class="iq">porção</span></div>
+<div class="ir"><span>Cebola roxa brunoise</span><span class="iq">q.b.</span></div>
+<div class="ir"><span>Gema curada (B16)</span><span class="iq">1 un</span></div>
+<div class="ir"><span>Crocante de tapioca (B03)</span><span class="iq">q.b.</span></div>
+</div>
+<div class="in">Bagaço do étamine do Azeite Verde entra aqui. Zero desperdício total. Salsinha e manjericão nos aromas do bagaço.</div>
+</div>
+<div class="cm">
+<div class="mb"><div class="mt">Blend da Mistura</div>
+<div class="sp"><span class="sn2">01</span><span class="st2">Processar todos os ingredientes até mistura homogênea.</span></div>
+<div class="sp"><span class="sn2">02</span><span class="st2">Emulsionar com o azeite verde. Refrigerar em pote fechado.</span></div>
+</div>
+<div class="mb"><div class="mt">Montagem</div>
+<div class="sp"><span class="sn2">01</span><span class="st2">30-40g da mistura + carne de sol dessalgada + cebola roxa → bater e emulsionar juntos.</span></div>
+<div class="sp"><span class="sn2">02</span><span class="st2">Finalizar: <strong>gema curada (B16)</strong> + <strong>crocante de tapioca (B03)</strong>.</span></div>
+</div>
+</div></div>
+<div class="fft"><div class="ffb"><div class="ffl">Rendimento</div><div class="fftx">~500g · 12-16 porções</div></div>
+<div class="ffb"><div class="ffl">Validade</div><div class="fftx">3 dias refrigerado</div></div></div>
+</div></div>
+
+<div class="fi" data-t="sig nv" data-n="base arbóreo risoto vinho branco fundo legumes cebola branca">
+<div class="fih" onclick="tog(this)"><span class="fc">B33</span><span class="fn">Base <em>Arbóreo</em> DUE</span><div class="fbs"><span class="bd b-sig">⦿ Assinatura</span><span class="bd b-nv">★ Nova</span></div><span class="ftg">▾</span></div>
+<div class="fib"><div class="fbi">
+<div class="ci"><div class="cl">Ingredientes — base universal</div>
+<div class="ig"><div class="igt">Risoto Base</div>
+<div class="ir"><span>Arroz arbóreo</span><span class="iq">base</span></div>
+<div class="ir"><span>Cebola branca brunoise</span><span class="iq">q.b.</span></div>
+<div class="ir"><span>Azeite de oliva</span><span class="iq">q.b.</span></div>
+<div class="ir"><span>Vinho branco</span><span class="iq">q.b.</span></div>
+<div class="ir"><span>Fundo de legumes (B14)</span><span class="iq">até o ponto</span></div>
+</div></div>
+<div class="cm">
+<div class="mb"><div class="mt">Processo Base</div>
+<div class="sp"><span class="sn2">01</span><span class="st2">Suar cebola no azeite sem colorir. Tostar o arbóreo 1-2 min.</span></div>
+<div class="sp"><span class="sn2">02</span><span class="st2">Deglaçar com vinho. Absorver completamente.</span></div>
+<div class="sp"><span class="sn2">03</span><span class="st2">Fundo quente em concha — mexer sempre. <strong>Ponto al dente.</strong> Porcionar.</span></div>
+</div>
+<div class="mb"><div class="mt">Finalizações por Prato</div>
+<div class="sp"><span class="sn2">▸</span><span class="st2"><strong>Baião de Dois:</strong> + feijão verde + bacon + charque → mantecatura parmesão + manteiga</span></div>
+<div class="sp"><span class="sn2">▸</span><span class="st2"><strong>Arroz de Polvo:</strong> sem manteiga/parmesão → creme de abacate + azeite verde DUE</span></div>
+</div>
+</div></div></div></div>
+</div>
+
+<!-- ══ 06 PROTEÍNAS ══ -->
+<div id="c06"><div class="st"><span class="sn">06</span>Proteínas</div>
+
+<div class="fi" data-t="sig d1" data-n="polvo cozimento leite choque térmico cabeça tentáculo pele crocante">
+<div class="fih" onclick="tog(this)"><span class="fc">B34</span><span class="fn">Polvo <em>DUE</em></span><div class="fbs"><span class="bd b-sig">⦿ Assinatura</span><span class="bd b-d1">⚑ D-1</span></div><span class="ftg">▾</span></div>
+<div class="fib"><div class="fbi">
+<div class="ci"><div class="cl">Ingredientes — por litro de água</div>
+<div class="ig"><div class="igt">Cozimento com Leite</div>
+<div class="ir"><span>Polvo (descongelado)</span><span class="iq">a demanda</span></div>
+<div class="ir"><span>Sal (massagem prévia)</span><span class="iq">1-2% do peso</span></div>
+<div class="ir"><span>Leite integral (amaciante)</span><span class="iq">80 ml/lt água</span></div>
+</div>
+<div class="in">Ex: panela 10lt → 800ml leite. Zero desperdício: caldo + cabeças → base da Croqueta.</div>
+</div>
+<div class="cm">
+<div class="mb"><div class="mt">Preparação</div>
+<div class="sp"><span class="sn2">01</span><span class="st2">Descongelar. Desmembrar cabeça. Retirar a boca.</span></div>
+<div class="sp"><span class="sn2">02</span><span class="st2">Massagear com sal 1-2% do peso · 5 min. <strong>Lavar bem.</strong></span></div>
+</div>
+<div class="mb"><div class="mt">Cozimento</div>
+<div class="sp"><span class="sn2">01</span><span class="st2">Água fervente + 80ml leite por litro.</span></div>
+<div class="sp"><span class="sn2">02</span><span class="st2"><strong>Choque térmico 3x:</strong> mergulhar e retirar rapidamente.</span></div>
+<div class="sp"><span class="sn2">03</span><span class="st2">Cozinhar <em>30-35 min.</em> Saída imediata para água gelada — preserva a pele.</span></div>
+</div>
+<div class="mb"><div class="mt">Aproveitamento Total</div>
+<div class="sp"><span class="sn2">▸</span><span class="st2"><strong>Caldo + cabeças:</strong> base da Croqueta de Polvo</span></div>
+<div class="sp"><span class="sn2">▸</span><span class="st2"><strong>Tentáculos menores:</strong> Tartar de Polvo · Arroz de Polvo</span></div>
+<div class="sp"><span class="sn2">▸</span><span class="st2"><strong>Interior dos grossos picado:</strong> Croqueta de Polvo</span></div>
+</div>
+</div></div></div></div>
+
+<div class="fi" data-t="sig d1" data-n="costela desfiada maillard brasagem demi-glace pomodoro rigatone toast">
+<div class="fih" onclick="tog(this)"><span class="fc">B35</span><span class="fn">Costela <em>Desfiada</em> DUE</span><div class="fbs"><span class="bd b-sig">⦿ Assinatura</span><span class="bd b-d1">⚑ D-1</span></div><span class="ftg">▾</span></div>
+<div class="fib"><div class="fbi">
+<div class="ci"><div class="cl">Ingredientes — para 10kg costela</div>
+<div class="ig"><div class="igt">Braisagem</div>
+<div class="ir"><span>Costela bovina</span><span class="iq">10 kg</span></div>
+<div class="ir"><span>Demi-glace DUE (B12)</span><span class="iq">1 lt</span></div>
+<div class="ir"><span>Caldo de legumes (B14)</span><span class="iq">2 lt</span></div>
+</div>
+<div class="ig"><div class="igt">Finalização da Carne</div>
+<div class="ir"><span>Demi-glace DUE</span><span class="iq">q.b.</span></div>
+<div class="ir"><span>Pomodoro DUE (B22)</span><span class="iq">q.b.</span></div>
+</div>
+<div class="in">Ossos + pelancas + gorduras após desfiada → próximo batch de Demi-glace. Zero desperdício.</div>
+</div>
+<div class="cm"><div class="mb"><div class="mt">Maillard + Braisagem D-1</div>
+<div class="sp"><span class="sn2">01</span><span class="st2"><em>Forno 190°C · 15 min</em> — Maillard e caramelização externa.</span></div>
+<div class="sp"><span class="sn2">02</span><span class="st2">Panela funda: demi-glace + caldo de legumes. <strong>Papel-manteiga + tampa.</strong></span></div>
+<div class="sp"><span class="sn2">03</span><span class="st2"><em>Forno 150°C · 2h</em> ou até desmanchar — braisagem com bafo.</span></div>
+<div class="sp"><span class="sn2">04</span><span class="st2">Desfiar. Separar ossos/pelancas/gorduras → demi-glace. Carne: finalizar com demi-glace + pomodoro.</span></div>
+</div></div></div>
+<div class="fft"><div class="ffb"><div class="ffl">Uso</div><div class="fftx">Rigatone de Costela · Toast de Costela</div></div></div>
+</div></div>
+
+<div class="fi" data-t="sig d1" data-n="carne de sol artesanal sal leite em pó cura seca 12h">
+<div class="fih" onclick="tog(this)"><span class="fc">B36</span><span class="fn">Carne de Sol <em>Artesanal</em> DUE</span><div class="fbs"><span class="bd b-sig">⦿ Assinatura</span><span class="bd b-d1">⚑ D-1</span></div><span class="ftg">▾</span></div>
+<div class="fib"><div class="fbi">
+<div class="ci"><div class="cl">Ingredientes — para 1kg carne</div>
+<div class="ig"><div class="igt">Cura Seca</div>
+<div class="ir"><span>Sal</span><span class="iq">20 g (2%)</span></div>
+<div class="ir"><span>Leite em pó</span><span class="iq">30 g (3%)</span></div>
+</div></div>
+<div class="cm"><div class="mb"><div class="mt">D-1 · 12h de Cura</div>
+<div class="sp"><span class="sn2">01</span><span class="st2">Misturar sal + leite em pó. Aplicar sobre a carne, cobrindo toda a superfície.</span></div>
+<div class="sp"><span class="sn2">02</span><span class="st2"><em>Overnight 12h</em> — sal desidrata e saboriza · leite em pó amacia.</span></div>
+<div class="sp"><span class="sn2">03</span><span class="st2">Retirar excesso. <strong>Lavar.</strong> Congelar em porções.</span></div>
+</div></div></div>
+<div class="fft"><div class="ffb"><div class="ffl">Uso</div><div class="fftx">Tartar do Sertão · Filé do Sertão · Risoto Baião de Dois</div></div>
+<div class="ffb"><div class="ffl">Validade</div><div class="fftx">Congelada: 30 dias · Dessalgada: 2 dias</div></div></div>
+</div></div>
+
+<div class="fi" data-t="sig d1" data-n="confit de pato gordura aromatizada anis canela cravo forno 90 graus">
+<div class="fih" onclick="tog(this)"><span class="fc">B37</span><span class="fn">Confit de <em>Pato</em> DUE</span><div class="fbs"><span class="bd b-sig">⦿ Assinatura</span><span class="bd b-d1">⚑ D-1</span></div><span class="ftg">▾</span></div>
+<div class="fib"><div class="fbi">
+<div class="ci"><div class="cl">Ingredientes — por litro de gordura</div>
+<div class="ig"><div class="igt">Pré-cura</div>
+<div class="ir"><span>Coxas de pato</span><span class="iq">a demanda</span></div>
+<div class="ir"><span>Sal grosso</span><span class="iq">cama generosa</span></div>
+<div class="ir"><span>Alecrim</span><span class="iq">q.b.</span></div>
+</div>
+<div class="ig"><div class="igt">Gordura Aromatizada (por lt)</div>
+<div class="ir"><span>Gordura de pato + frango</span><span class="iq">1 lt</span></div>
+<div class="ir"><span>Anis estrelado</span><span class="iq">2 estrelas</span></div>
+<div class="ir"><span>Pau de canela</span><span class="iq">1 un</span></div>
+<div class="ir"><span>Cravos</span><span class="iq">3 un</span></div>
+<div class="ir"><span>Louro · Tomilho</span><span class="iq">q.b.</span></div>
+<div class="ir"><span>Alho</span><span class="iq">2 dentes</span></div>
+</div></div>
+<div class="cm">
+<div class="mb"><div class="mt">Confit — 90°C · 2h30</div>
+<div class="sp"><span class="sn2">01</span><span class="st2">Pré-cura em sal grosso + alecrim. Lavar bem.</span></div>
+<div class="sp"><span class="sn2">02</span><span class="st2">Submergir na gordura aromatizada. <strong>Tampar.</strong> <em>Forno 90°C · 2h30.</em></span></div>
+<div class="sp"><span class="sn2">03</span><span class="st2">Coar gordura. Porcionar em saquinhos com gordura. Refrigerar.</span></div>
+</div>
+<div class="mb"><div class="mt">Finalização no Serviço</div>
+<div class="sp"><span class="sn2">01</span><span class="st2"><em>Forno 180°C · vapor 20%</em> até dourar.</span></div>
+<div class="sp"><span class="sn2">02</span><span class="st2"><strong>Limpar:</strong> retirar osso superior da coxa + osso interno da sobrecoxa.</span></div>
+</div>
+</div></div>
+<div class="fft"><div class="ffb"><div class="ffl">Conserva</div><div class="fftx">Porção submersa na gordura: 14 dias refrigerada</div></div></div>
+</div></div>
+
+<div class="fi" data-t="" data-n="charque dessalga salgado troca água risoto baião tartar">
+<div class="fih" onclick="tog(this)"><span class="fc">B38</span><span class="fn">Charque · <em>Dessalga</em></span><div class="fbs"></div><span class="ftg">▾</span></div>
+<div class="fib"><div class="fbi">
+<div class="ci"><div class="cl">Ingredientes</div>
+<div class="ig"><div class="ir"><span>Charque salgado</span><span class="iq">a demanda</span></div>
+<div class="ir"><span>Água fria</span><span class="iq">cobrir</span></div>
+</div>
+<div class="in">Processo mantém original.</div></div>
+<div class="cm"><div class="mb"><div class="mt">Processo</div>
+<div class="sp"><span class="sn2">01</span><span class="st2">Submerso em água fria. Trocar a cada 4-6h. Duração conforme teor de sal.</span></div>
+<div class="sp"><span class="sn2">02</span><span class="st2">Provar e avaliar salinidade. Porcionar e refrigerar.</span></div>
+</div></div></div>
+<div class="fft"><div class="ffb"><div class="ffl">Uso</div><div class="fftx">Risoto Baião de Dois · Tartar do Sertão</div></div></div>
+</div></div>
+</div>
+
+<!-- ══ 07 PURÊS & GUARNIÇÕES ══ -->
+<div id="c07"><div class="st"><span class="sn">07</span>Purês & Guarnições</div>
+
+<div class="fi" data-t="sig d1" data-n="xerém cremoso milho verde parmesão azeite trufado vermelho hand mixer">
+<div class="fih" onclick="tog(this)"><span class="fc">B39</span><span class="fn">Xerém <em>Cremoso</em> DUE</span><div class="fbs"><span class="bd b-sig">⦿ Assinatura</span><span class="bd b-d1">⚑ D-1</span></div><span class="ftg">▾</span></div>
+<div class="fib"><div class="fbi">
+<div class="ci"><div class="cl">Ingredientes — para 1kg milho verde</div>
+<div class="ig"><div class="igt">Base Aromática</div>
+<div class="ir"><span>Cebola branca julienne</span><span class="iq">500 g</span></div>
+<div class="ir"><span>Manteiga</span><span class="iq">30 g</span></div>
+<div class="ir"><span>Alho</span><span class="iq">2 dentes</span></div>
+<div class="ir"><span>Tomilho</span><span class="iq">1 ramo</span></div>
+</div>
+<div class="ig"><div class="igt">Corpo</div>
+<div class="ir"><span>Milho verde em lata</span><span class="iq">1 kg</span></div>
+<div class="ir"><span>Caldo de legumes (B14)</span><span class="iq">500-900 ml</span></div>
+<div class="ir"><span>Xerém seco (hidratar overnight)</span><span class="iq">300 g</span></div>
+</div>
+<div class="ig"><div class="igt">Finalização — por 1lt</div>
+<div class="ir"><span>Creme de leite Leco</span><span class="iq">300 g</span></div>
+<div class="ir"><span>Parmesão</span><span class="iq">150 g</span></div>
+<div class="ir"><span>Azeite trufado</span><span class="iq">10 ml</span></div>
+<div class="ir"><span>Azeite vermelho DUE (B26)</span><span class="iq">25 ml</span></div>
+</div>
+<div class="in">Xerém dobra de volume na hidratação. Textura final plástica — mantém formato no prato.</div>
+</div>
+<div class="cm">
+<div class="mb"><div class="mt">D-1 · Creme de Milho</div>
+<div class="sp"><span class="sn2">01</span><span class="st2">Refogar cebola na manteiga. Milho + alho + tomilho. Caldo. Cozinhar até desfazer.</span></div>
+<div class="sp"><span class="sn2">02</span><span class="st2">Retirar ramo de tomilho. <strong>Processar tudo no liquidificador</strong> até creme liso.</span></div>
+</div>
+<div class="mb"><div class="mt">Incorporar Xerém</div>
+<div class="sp"><span class="sn2">01</span><span class="st2">Xerém hidratado overnight misturado ao creme. Mais caldo. Cozinhar até macio.</span></div>
+</div>
+<div class="mb"><div class="mt">Finalização</div>
+<div class="sp"><span class="sn2">01</span><span class="st2">Para 1lt: creme + parmesão + azeite trufado + azeite vermelho. <strong>Emulsionar no hand mixer.</strong> Slurry se necessário.</span></div>
+</div>
+</div></div></div></div>
+
+<div class="fi" data-t="sig d1 nv" data-n="purê abóbora de leite cenoura forno combinado confit tangerina">
+<div class="fih" onclick="tog(this)"><span class="fc">B40</span><span class="fn">Purê de <em>Abóbora de Leite</em> & Cenoura</span><div class="fbs"><span class="bd b-sig">⦿ Assinatura</span><span class="bd b-d1">⚑ D-1</span><span class="bd b-nv">★ Nova</span></div><span class="ftg">▾</span></div>
+<div class="fib"><div class="fbi">
+<div class="ci"><div class="cl">Ingredientes — FC 1,3 · R$6,90/kg</div>
+<div class="ig"><div class="igt">Base</div>
+<div class="ir"><span>Abóbora de leite (polpa assada)</span><span class="iq">1 kg</span></div>
+<div class="ir"><span>Cenoura descascada</span><span class="iq">500 g</span></div>
+<div class="ir"><span>Creme de leite</span><span class="iq">500 ml</span></div>
+<div class="ir"><span>Azeite de oliva (pincelar)</span><span class="iq">q.b.</span></div>
+</div>
+<div class="ig"><div class="igt">Finalização</div>
+<div class="ir"><span>Confit de tangerina DUE (B30)</span><span class="iq">q.b.</span></div>
+<div class="ir"><span>Sal</span><span class="iq">q.b.</span></div>
+</div></div>
+<div class="cm"><div class="mb"><div class="mt">D-1 · Forno Combinado 160°C · 40 min</div>
+<div class="sp"><span class="sn2">01</span><span class="st2">Abóbora e cenoura pinceladas com azeite → <em>forno combinado 160°C · vapor 20% · 40 min.</em></span></div>
+<div class="sp"><span class="sn2">02</span><span class="st2">Retirar polpa da abóbora (FC 1,3 — descarta casca e sementes).</span></div>
+<div class="sp"><span class="sn2">03</span><span class="st2">Liquidificador: polpa + cenoura + creme. <strong>Bater até cremoso e liso.</strong></span></div>
+<div class="sp"><span class="sn2">04</span><span class="st2">Finalizar com confit de tangerina para acidez cítrica. Acertar sal.</span></div>
+</div></div></div></div></div>
+
+<div class="fi" data-t="sig d1" data-n="mousseline banana da terra fumet gelatinoso sem lactose cúrcuma azeite vermelho">
+<div class="fih" onclick="tog(this)"><span class="fc">B41</span><span class="fn">Mousseline de <em>Banana da Terra</em> DUE</span><div class="fbs"><span class="bd b-sig">⦿ Assinatura</span><span class="bd b-d1">⚑ D-1</span></div><span class="ftg">▾</span></div>
+<div class="fib"><div class="fbi">
+<div class="ci"><div class="cl">Ingredientes — sem lactose</div>
+<div class="ig"><div class="igt">Base</div>
+<div class="ir"><span>Banana da terra madura</span><span class="iq">mix</span></div>
+<div class="ir"><span>Banana da terra não tão madura</span><span class="iq">mix</span></div>
+<div class="ir"><span>Fumet gelatinoso (B13)</span><span class="iq">substitui creme</span></div>
+<div class="ir"><span>Azeite vermelho DUE (B26)</span><span class="iq">finalização</span></div>
+<div class="ir"><span>Sal</span><span class="iq">q.b.</span></div>
+<div class="ir"><span>Cúrcuma (ajuste de cor)</span><span class="iq">opcional</span></div>
+</div>
+<div class="in">Zero creme de leite · zero manteiga. Maduras dão cor/sabor · menos maduras dão volume/textura.</div>
+</div>
+<div class="cm">
+<div class="mb"><div class="mt">D-1 · Forno 160°C</div>
+<div class="sp"><span class="sn2">01</span><span class="st2">Banana da terra com casca → <em>forno 160°C</em> até macia. Retirar polpa.</span></div>
+<div class="sp"><span class="sn2">02</span><span class="st2">Bater com fumet gelatinoso até purê liso e emulsionado. Acertar sal e cúrcuma.</span></div>
+</div>
+<div class="mb"><div class="mt">Serviço</div>
+<div class="sp"><span class="sn2">01</span><span class="st2">Azeite vermelho → <strong>mixer de imersão</strong> → textura leve e lisa.</span></div>
+</div>
+</div></div></div></div>
+
+<div class="fi" data-t="sig nv" data-n="risoto baião de dois feijão verde bacon charque parmesão coalho couve crispies">
+<div class="fih" onclick="tog(this)"><span class="fc">B42</span><span class="fn">Risoto de <em>Baião de Dois</em></span><div class="fbs"><span class="bd b-sig">⦿ Assinatura</span><span class="bd b-nv">★ Nova</span></div><span class="ftg">▾</span></div>
+<div class="fib"><div class="fbi">
+<div class="ci"><div class="cl">Ingredientes — por porção</div>
+<div class="ig"><div class="igt">Risoto</div>
+<div class="ir"><span>Base arbóreo (B33)</span><span class="iq">1 porção</span></div>
+<div class="ir"><span>Feijão verde cozido</span><span class="iq">q.b.</span></div>
+<div class="ir"><span>Bacon</span><span class="iq">q.b.</span></div>
+<div class="ir"><span>Charque dessalgado (B38)</span><span class="iq">pouco</span></div>
+<div class="ir"><span>Parmesão ralado · Manteiga gelada</span><span class="iq">mantecatura</span></div>
+</div>
+<div class="ig"><div class="igt">Finalização no Prato</div>
+<div class="ir"><span>Queijo coalho maçaricado</span><span class="iq">1 fatia</span></div>
+<div class="ir"><span>Crispies de couve</span><span class="iq">q.b.</span></div>
+</div></div>
+<div class="cm"><div class="mb"><div class="mt">Finalização</div>
+<div class="sp"><span class="sn2">01</span><span class="st2">Reaquecer base arbóreo. Adicionar feijão verde + bacon + charque.</span></div>
+<div class="sp"><span class="sn2">02</span><span class="st2"><strong>Mantecatura:</strong> parmesão + manteiga gelada fora do fogo. Mexer vigoroso até cremoso.</span></div>
+<div class="sp"><span class="sn2">03</span><span class="st2">Queijo coalho maçaricado sobre o risoto. Crispies de couve.</span></div>
+</div></div></div>
+<div class="fft"><div class="ffb"><div class="ffl">Prato</div><div class="fftx">Filé do Sertão · Demi-glace DUE</div></div></div>
+</div></div>
+</div>
+
+<!-- ══ 08 CREMES & EMULSÕES ══ -->
+<div id="c08"><div class="st"><span class="sn">08</span>Cremes & Emulsões</div>
+
+<div class="fi" data-t="sig nv" data-n="creme de abacate coentro óleo pimenta de cheiro limão gelado arroz polvo">
+<div class="fih" onclick="tog(this)"><span class="fc">B43</span><span class="fn">Creme de <em>Abacate</em></span><div class="fbs"><span class="bd b-sig">⦿ Assinatura</span><span class="bd b-nv">★ Nova</span></div><span class="ftg">▾</span></div>
+<div class="fib"><div class="fbi">
+<div class="ci"><div class="cl">Ingredientes — tudo gelado</div>
+<div class="ig"><div class="igt">Emulsão</div>
+<div class="ir"><span>Abacate maduro</span><span class="iq">400 g</span></div>
+<div class="ir"><span>Óleo de pimenta de cheiro (B31)</span><span class="iq">100 ml</span></div>
+<div class="ir"><span>Suco de limão</span><span class="iq">50 ml</span></div>
+<div class="ir"><span>Folhas de coentro</span><span class="iq">q.b.</span></div>
+<div class="ir"><span>Sal e pimenta</span><span class="iq">q.b.</span></div>
+</div></div>
+<div class="cm"><div class="mb"><div class="mt">Emulsão a Frio — tudo gelado</div>
+<div class="sp"><span class="sn2">01</span><span class="st2">Abacate no liquidificador. <strong>Tudo deve estar gelado.</strong></span></div>
+<div class="sp"><span class="sn2">02</span><span class="st2">Limão + coentro. Bater. Óleo de pimenta em fio até emulsionar. Acertar sal.</span></div>
+</div></div></div>
+<div class="fft"><div class="ffb"><div class="ffl">Uso</div><div class="fftx">Arroz de Polvo · acompanhamentos</div></div>
+<div class="ffb"><div class="ffl">Validade</div><div class="fftx">1 dia · filme em contato</div><div class="ffa">⚠️ Não esquentar — separa. Oxida rápido.</div></div></div>
+</div></div>
+
+<div class="fi" data-t="sig nv" data-n="creme de manga madura verde mostarda joão limão siciliano manjericão óleo girassol gelado">
+<div class="fih" onclick="tog(this)"><span class="fc">B44</span><span class="fn">Creme de <em>Manga</em></span><div class="fbs"><span class="bd b-sig">⦿ Assinatura</span><span class="bd b-nv">★ Nova</span></div><span class="ftg">▾</span></div>
+<div class="fib"><div class="fbi">
+<div class="ci"><div class="cl">Ingredientes — tudo gelado</div>
+<div class="ig"><div class="igt">Emulsão</div>
+<div class="ir"><span>Manga madura (gelada)</span><span class="iq">1 un</span></div>
+<div class="ir"><span>Manga verde (gelada)</span><span class="iq">1 un</span></div>
+<div class="ir"><span>Óleo de girassol (gelado)</span><span class="iq">100-200 ml</span></div>
+<div class="ir"><span>Mostarda de João</span><span class="iq">20 g</span></div>
+<div class="ir"><span>Suco de limão siciliano</span><span class="iq">50 ml</span></div>
+<div class="ir"><span>Manjericão fresco</span><span class="iq">2 g</span></div>
+</div>
+<div class="in">Manga madura = doçura/corpo · manga verde = acidez/firmeza. Calibrar óleo pelo ponto de emulsão.</div>
+</div>
+<div class="cm"><div class="mb"><div class="mt">Emulsão a Frio — tudo gelado</div>
+<div class="sp"><span class="sn2">01</span><span class="st2">Bater as duas mangas até <strong>purê sem fiapo.</strong> Tudo gelado.</span></div>
+<div class="sp"><span class="sn2">02</span><span class="st2">Mostarda + limão siciliano + manjericão. Bater.</span></div>
+<div class="sp"><span class="sn2">03</span><span class="st2">Óleo de girassol gelado em fio lento — <em>100 a 200ml</em> até emulsionar.</span></div>
+</div></div></div>
+<div class="fft"><div class="ffb"><div class="ffl">Validade</div><div class="fftx">2 dias refrigerado · filme em contato</div><div class="ffa">⚠️ Não pode esquentar — separa</div></div></div>
+</div></div>
+</div>
+
+<div class="emp" id="emp" style="display:none">Nenhuma ficha encontrada.</div>
+</main>
+</div>
+
+<div class="g-ft">
+  <div class="fl">DUE RESTAURANTE · Jardim Europa · Aracaju · Sergipe · Ozanne Consultoria · Grimório v5.0 · Maio 2026</div>
+  <div class="fr">Técnica · Território · Resultado</div>
+</div>
+
+<script>
+const fichas=document.querySelectorAll('.fi');
+let curFlt='todas',allExp=false;
+function tog(h){h.closest('.fi').classList.toggle('open');}
+function togAll(){
+  allExp=!allExp;
+  fichas.forEach(f=>{if(!f.classList.contains('hidden'))f.classList.toggle('open',allExp);});
+  document.querySelector('.ea').textContent=allExp?'Recolher Todas':'Expandir Todas';
+}
+function flt(f,btn){
+  curFlt=f;
+  document.querySelectorAll('.ch').forEach(c=>c.classList.remove('active'));
+  btn.classList.add('active');
+  apply();
+}
+function apply(){
+  let v=0;
+  const sv=document.getElementById('srch').value.toLowerCase();
+  fichas.forEach(f=>{
+    const t=f.dataset.t||'',n=f.dataset.n||'';
+    const mf=curFlt==='todas'||t.includes(curFlt);
+    const ms=!sv||n.includes(sv);
+    const show=mf&&ms;
+    f.classList.toggle('hidden',!show);
+    if(show)v++;
+  });
+  document.getElementById('emp').style.display=v===0?'block':'none';
+  document.getElementById('cnt').textContent=v+(v===1?' ficha':' fichas');
+}
+function doSearch(v){apply();}
+function jmp(id){
+  document.getElementById(id)?.scrollIntoView({behavior:'smooth',block:'start'});
+  document.querySelectorAll('.sb-i').forEach(i=>i.classList.remove('active'));
+  event.target.classList.add('active');
+}
+</script>
+</body>
+</html>
