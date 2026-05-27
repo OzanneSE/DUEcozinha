@@ -1,0 +1,874 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DUE — Calculadora de Porcionamento</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap');
+:root{
+  --bg:#0d0d0b; --s1:#161612; --s2:#1e1e19; --s3:#272720; --s4:#333328;
+  --gold:#E8C870; --goldd:#6e5520; --goldl:#f0d890;
+  --cr:#f0ead8; --cr2:#b8ad98; --cr3:#7a7060;
+  --exec:#E8C870; --comp:#4A90D9; --ddm:#C4607A;
+  --ok:#3d6e4e; --warn:#8c6d1f; --alert:#7a2020;
+  --radius:4px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--cr);font-family:'DM Sans',sans-serif;font-size:14px;line-height:1.5;min-height:100vh;padding-bottom:60px}
+/* HEADER */
+.hd{background:var(--s1);border-bottom:1px solid var(--goldd);padding:14px 24px;position:sticky;top:0;z-index:99;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.hd-title{font-family:'Cormorant Garamond',serif;font-size:1.1rem;font-weight:600;letter-spacing:.15em;text-transform:uppercase;color:var(--gold)}
+.hd-sub{font-family:'DM Mono',monospace;font-size:.58rem;letter-spacing:.1em;text-transform:uppercase;color:var(--cr3);margin-top:2px}
+.tabs{display:flex;gap:3px}
+.tab{background:none;border:1px solid transparent;cursor:pointer;font-family:'DM Mono',monospace;font-size:.6rem;letter-spacing:.08em;text-transform:uppercase;color:var(--cr3);padding:6px 14px;border-radius:var(--radius);transition:all .15s}
+.tab:hover{color:var(--goldl);border-color:var(--goldd)}
+.tab.active{color:var(--gold);background:var(--s3);border-color:var(--goldd)}
+/* PANELS */
+.panel{display:none}.panel.active{display:block}
+.content{max-width:960px;margin:0 auto;padding:24px 20px}
+/* SECTION HEADER */
+.sec-hd{font-family:'DM Mono',monospace;font-size:.58rem;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);padding-bottom:8px;border-bottom:1px solid var(--goldd);margin:28px 0 14px}
+.sec-hd:first-child{margin-top:0}
+/* SEMANA — grid */
+.week-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:8px;margin-bottom:20px}
+.day-card{background:var(--s1);border:1px solid var(--s3);border-radius:var(--radius);padding:10px 8px}
+.day-name{font-family:'DM Mono',monospace;font-size:.58rem;letter-spacing:.1em;text-transform:uppercase;color:var(--cr3);margin-bottom:8px;text-align:center}
+.svc-row{margin-bottom:6px}
+.svc-label{font-size:.58rem;font-family:'DM Mono',monospace;letter-spacing:.06em;text-transform:uppercase;margin-bottom:3px;display:flex;align-items:center;gap:4px}
+.svc-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.dot-exec{background:var(--exec)}
+.dot-comp{background:var(--comp)}
+.dot-ddm{background:var(--ddm)}
+.pax-input{width:100%;background:var(--s3);border:1px solid var(--s4);border-radius:2px;color:var(--cr);font-family:'DM Mono',monospace;font-size:.85rem;font-weight:500;text-align:center;padding:5px 4px;outline:none;transition:border-color .15s}
+.pax-input:focus{border-color:var(--gold)}
+/* TOTAIS SEMANA */
+.week-totals{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:24px}
+.total-card{background:var(--s1);border:1px solid var(--s3);border-radius:var(--radius);padding:12px 14px;border-left:3px solid var(--goldd)}
+.total-card.exec{border-left-color:var(--exec)}
+.total-card.comp{border-left-color:var(--comp)}
+.total-card.ddm{border-left-color:var(--ddm)}
+.total-label{font-family:'DM Mono',monospace;font-size:.56rem;letter-spacing:.12em;text-transform:uppercase;color:var(--cr3);margin-bottom:4px}
+.total-value{font-family:'Cormorant Garamond',serif;font-size:2rem;font-weight:600;line-height:1;color:var(--cr)}
+.total-unit{font-family:'DM Mono',monospace;font-size:.56rem;color:var(--cr3);margin-top:2px}
+/* MIX TABLE */
+.mix-section{background:var(--s1);border:1px solid var(--s3);border-radius:var(--radius);margin-bottom:10px;overflow:hidden}
+.mix-header{background:var(--s2);padding:10px 14px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none}
+.mix-header-left{display:flex;align-items:center;gap:8px}
+.mix-svc-badge{font-family:'DM Mono',monospace;font-size:.56rem;letter-spacing:.1em;text-transform:uppercase;padding:2px 8px;border-radius:2px;font-weight:500}
+.badge-exec{background:rgba(232,200,112,.15);color:var(--exec);border:1px solid rgba(232,200,112,.3)}
+.badge-comp{background:rgba(74,144,217,.15);color:var(--comp);border:1px solid rgba(74,144,217,.3)}
+.badge-ddm{background:rgba(196,96,122,.15);color:var(--ddm);border:1px solid rgba(196,96,122,.3)}
+.mix-curso-label{font-family:'DM Mono',monospace;font-size:.6rem;color:var(--cr2)}
+.mix-subtotal{font-family:'DM Mono',monospace;font-size:.6rem;color:var(--cr3)}
+.mix-toggle{font-size:.7rem;color:var(--cr3);transition:transform .15s}
+.mix-body{display:none;padding:0 0 8px}
+.mix-body.open{display:block}
+.mix-curso-hd{font-family:'DM Mono',monospace;font-size:.54rem;letter-spacing:.12em;text-transform:uppercase;color:var(--cr3);padding:10px 14px 4px;border-top:1px solid var(--s3)}
+.mix-curso-hd:first-child{border-top:none}
+.mix-row{display:grid;grid-template-columns:1fr 90px 80px;align-items:center;gap:8px;padding:5px 14px}
+.mix-row:hover{background:var(--s2)}
+.mix-dish-name{font-size:.85rem;color:var(--cr2)}
+.mix-input{width:100%;background:var(--s3);border:1px solid var(--s4);border-radius:2px;color:var(--cr);font-family:'DM Mono',monospace;font-size:.8rem;text-align:center;padding:4px;outline:none;transition:border-color .15s}
+.mix-input:focus{border-color:var(--gold)}
+.mix-calc{font-family:'DM Mono',monospace;font-size:.78rem;color:var(--cr3);text-align:right}
+/* RESULTADO — PRATOS */
+.pratos-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:8px;margin-bottom:24px}
+.prato-card{background:var(--s1);border:1px solid var(--s3);border-radius:var(--radius);padding:10px 12px}
+.prato-svc{font-family:'DM Mono',monospace;font-size:.52rem;letter-spacing:.08em;text-transform:uppercase;margin-bottom:4px}
+.prato-nome{font-family:'Cormorant Garamond',serif;font-size:.9rem;font-weight:600;color:var(--cr);line-height:1.3;margin-bottom:6px}
+.prato-porcoes{font-family:'Cormorant Garamond',serif;font-size:1.5rem;font-weight:600;color:var(--gold);line-height:1}
+.prato-unit{font-family:'DM Mono',monospace;font-size:.52rem;color:var(--cr3);margin-top:2px}
+/* INSUMOS TABLE */
+.cat-block{margin-bottom:20px}
+.cat-name{font-family:'DM Mono',monospace;font-size:.6rem;letter-spacing:.15em;text-transform:uppercase;color:var(--cr3);padding:6px 0;border-bottom:1px solid var(--s3);margin-bottom:6px}
+.ins-row{display:grid;grid-template-columns:1fr 90px 70px 90px;align-items:center;gap:8px;padding:5px 6px;border-radius:2px}
+.ins-row:hover{background:var(--s2)}
+.ins-row.hd-row{font-family:'DM Mono',monospace;font-size:.54rem;letter-spacing:.08em;text-transform:uppercase;color:var(--cr3);padding-bottom:4px}
+.ins-nome{font-size:.85rem;color:var(--cr)}
+.ins-qty{font-family:'DM Mono',monospace;font-size:.85rem;font-weight:500;color:var(--goldl);text-align:right}
+.ins-un{font-family:'DM Mono',monospace;font-size:.75rem;color:var(--cr3)}
+.ins-buf{font-family:'DM Mono',monospace;font-size:.78rem;color:var(--cr2);text-align:right;opacity:.7}
+/* BUFFER TOGGLE */
+.buf-row{display:flex;align-items:center;gap:10px;margin-bottom:16px;flex-wrap:wrap}
+.buf-label{font-family:'DM Mono',monospace;font-size:.6rem;letter-spacing:.08em;text-transform:uppercase;color:var(--cr3)}
+.buf-btn{background:var(--s2);border:1px solid var(--s3);border-radius:2px;color:var(--cr3);font-family:'DM Mono',monospace;font-size:.6rem;padding:4px 10px;cursor:pointer;transition:all .15s}
+.buf-btn.active{background:var(--goldd);color:var(--goldl);border-color:var(--goldd)}
+.buf-sep{flex:1}
+.exp-btn{background:none;border:1px solid var(--goldd);border-radius:2px;color:var(--gold);font-family:'DM Mono',monospace;font-size:.6rem;letter-spacing:.06em;text-transform:uppercase;padding:4px 12px;cursor:pointer;transition:all .15s;display:flex;align-items:center;gap:5px}
+.exp-btn:hover{background:var(--goldd);color:var(--bg)}
+/* PRINT */
+@media print{
+  .hd,.tabs,.buf-row,.info-box,.pratos-grid,.sec-hd:first-of-type{display:none!important}
+  body{background:#fff;color:#111;font-size:11px}
+  .cat-block{break-inside:avoid;margin-bottom:14px}
+  .cat-name{font-weight:bold;border-bottom:1px solid #999;padding-bottom:4px;margin-bottom:6px}
+  .ins-row{display:grid;grid-template-columns:1fr 80px 40px 80px;gap:6px;padding:3px 0;border-bottom:1px solid #eee}
+  .hd-row{font-weight:bold;color:#555}
+  .ins-nome{color:#111}
+  .ins-qty,.ins-buf{text-align:right;font-family:monospace}
+  #print-header{display:block!important}
+}
+/* FICHAS */
+.ficha-acc{background:var(--s1);border:1px solid var(--s3);border-radius:var(--radius);margin-bottom:6px;overflow:hidden}
+.ficha-hd{display:grid;grid-template-columns:auto 1fr auto auto;align-items:center;gap:10px;padding:10px 14px;cursor:pointer;user-select:none}
+.ficha-hd:hover{background:var(--s2)}
+.ficha-code{font-family:'DM Mono',monospace;font-size:.6rem;color:var(--cr3);letter-spacing:.05em}
+.ficha-nome{font-family:'Cormorant Garamond',serif;font-size:.95rem;font-weight:600;color:var(--cr)}
+.ficha-preco{font-family:'DM Mono',monospace;font-size:.7rem;color:var(--gold)}
+.ficha-arr{font-size:.65rem;color:var(--cr3);transition:transform .2s}
+.ficha-acc.open .ficha-arr{transform:rotate(180deg)}
+.ficha-body{display:none;border-top:1px solid var(--s3)}
+.ficha-acc.open .ficha-body{display:block}
+.ficha-table{width:100%;border-collapse:collapse;font-size:.8rem}
+.ficha-table th{font-family:'DM Mono',monospace;font-size:.52rem;letter-spacing:.08em;text-transform:uppercase;color:var(--cr3);padding:7px 10px;text-align:left;border-bottom:1px solid var(--s3);background:var(--s2)}
+.ficha-table td{padding:6px 10px;border-bottom:1px solid var(--s2);color:var(--cr2)}
+.ficha-table tr:last-child td{border-bottom:none}
+.ficha-table .mono{font-family:'DM Mono',monospace;color:var(--cr)}
+.ficha-table .placeholder{color:var(--warn);font-style:italic}
+.ficha-footer{display:flex;gap:16px;padding:8px 10px;background:var(--s2);font-family:'DM Mono',monospace;font-size:.62rem;color:var(--cr3)}
+.ficha-footer span b{color:var(--gold)}
+.placeholder-badge{font-family:'DM Mono',monospace;font-size:.5rem;letter-spacing:.1em;text-transform:uppercase;background:rgba(140,109,31,.2);color:var(--warn);border:1px solid rgba(140,109,31,.4);border-radius:2px;padding:2px 6px;margin-left:6px}
+/* MISC */
+.info-box{background:var(--s2);border:1px solid var(--s3);border-left:3px solid var(--goldd);border-radius:var(--radius);padding:10px 14px;font-family:'DM Mono',monospace;font-size:.6rem;line-height:1.7;color:var(--cr3);margin-bottom:16px}
+.info-box b{color:var(--gold)}
+</style>
+</head>
+<body>
+
+<header class="hd">
+  <div>
+    <div class="hd-title">DUE Restaurante — Porcionamento</div>
+    <div class="hd-sub">Calculadora dinâmica · v3.0 · 26 pratos · Ozanne Consultoria · Maio 2026</div>
+  </div>
+  <div class="tabs">
+    <button class="tab active" onclick="switchTab('semana',this)">Semana</button>
+    <button class="tab" onclick="switchTab('mix',this)">Mix de Pratos</button>
+    <button class="tab" onclick="switchTab('resultado',this)">Resultado</button>
+    <button class="tab" onclick="switchTab('fichas',this)">Fichas</button>
+  </div>
+</header>
+
+<div id="panel-semana" class="panel active"><div class="content">
+  <div class="sec-hd">Planejamento da Semana</div>
+  <div class="info-box"><b>Como usar:</b> Edite os PAX por serviço em cada dia. Os cálculos de porcionamento e insumos atualizam automaticamente nas abas Resultado e Mix.</div>
+  <div class="week-grid" id="weekGrid"></div>
+  <div class="week-totals" id="weekTotals"></div>
+</div></div>
+
+<div id="panel-mix" class="panel"><div class="content">
+  <div class="sec-hd">Mix de Pratos — Taxa por Cardápio</div>
+  <div class="info-box"><b>Taxa:</b> Porções esperadas a cada 100 pax do serviço. Executivo: soma = 100. Completo/DDM: entradas ~55, principais ~100, sobremesas ~35–50.</div>
+  <div id="mixContainer"></div>
+</div></div>
+
+<div id="panel-resultado" class="panel"><div class="content">
+  <div class="sec-hd">Porções por Prato — Esta Semana</div>
+  <div id="pratosGrid" class="pratos-grid"></div>
+  <div class="sec-hd">Insumos Totais</div>
+  <div id="print-header" style="display:none;margin-bottom:16px">
+    <div style="font-family:'DM Mono',monospace;font-size:.7rem;letter-spacing:.15em;text-transform:uppercase;margin-bottom:4px">DUE Restaurante · Lista de Compras</div>
+    <div id="print-meta" style="font-family:'DM Mono',monospace;font-size:.6rem;color:#555"></div>
+  </div>
+  <div class="buf-row">
+    <span class="buf-label">Buffer de segurança:</span>
+    <button class="buf-btn" onclick="setBuf(0,this)">Sem buffer</button>
+    <button class="buf-btn active" onclick="setBuf(10,this)">+10%</button>
+    <button class="buf-btn" onclick="setBuf(15,this)">+15%</button>
+    <button class="buf-btn" onclick="setBuf(20,this)">+20%</button>
+    <span class="buf-sep"></span>
+    <button class="exp-btn" onclick="exportCSV()">⬇ CSV</button>
+    <button class="exp-btn" onclick="printInsumos()">⎙ Imprimir</button>
+  </div>
+  <div id="insumosList"></div>
+</div></div>
+
+<div id="panel-fichas" class="panel"><div class="content">
+  <div class="sec-hd">Fichas Técnicas</div>
+  <div class="info-box"><b>Nota:</b> Pratos marcados <span style="color:var(--warn)">PLACEHOLDER</span> são novos do Dia das Mães — fichas precisam ser validadas com o Chef antes do serviço.</div>
+  <div id="fichasContainer"></div>
+</div></div>
+
+<script>
+/* ══════════════════════════════════════════════════════════
+   FICHAS TÉCNICAS (fonte: DUE_Porcionamento.html + novos DDM)
+   campos: nome,un,qtdBruta,cat
+   cat: P=Proteínas  F=Frutos do Mar  M=Massas  L=Laticínios
+        H=Hortifruti  B=Bases  C=Confeitaria  O=Outros
+══════════════════════════════════════════════════════════ */
+const FICHAS = {
+  P01:{code:'P01',nome:'Tiradito de Peixe',preco:68,cmv:'20.9%',custo:14.21,placeholder:false,
+    ing:[
+      {n:'Peixe Branco',u:'kg',q:0.144,c:'F'},
+      {n:'B15 Cura Rápida Peixes',u:'kg',q:0.005,c:'B'},
+      {n:'B17 Leite de Tigre Sergipano',u:'lt',q:0.05,c:'B'},
+      {n:'Macaxeira',u:'kg',q:0.03,c:'H'},
+      {n:'Microgreens',u:'kg',q:0.005,c:'H'},
+      {n:'Azeite de Oliva',u:'lt',q:0.005,c:'O'},
+    ]},
+  P02:{code:'P02',nome:'Burrata + Camarão Confitado',preco:105,cmv:'34.8%',custo:33.03,placeholder:false,
+    ing:[
+      {n:'Burrata',u:'und',q:1,c:'L'},
+      {n:'B20 Camarão Confitado',u:'kg',q:0.08,c:'B'},
+      {n:'B07 Pesto Sergipano',u:'lt',q:0.03,c:'B'},
+      {n:'Tomate Cereja',u:'kg',q:0.04,c:'H'},
+    ]},
+  P03:{code:'P03',nome:'Tartar do Sertão',preco:58,cmv:'14.7%',custo:8.50,placeholder:false,
+    ing:[
+      {n:'Carne do Sol Dessalgada',u:'kg',q:0.12,c:'P'},
+      {n:'Sagu',u:'kg',q:0.03,c:'M'},
+      {n:'Ovo',u:'und',q:1,c:'L'},
+      {n:'Cebola Roxa',u:'kg',q:0.017,c:'H'},
+      {n:'Chips de Mandioca',u:'kg',q:0.02,c:'H'},
+    ]},
+  P06:{code:'P06',nome:'Croqueta de Polvo DUE',preco:58,cmv:'25.2%',custo:14.63,placeholder:false,
+    ing:[
+      {n:'B11 Polvo Cozido',u:'kg',q:0.15,c:'B'},
+      {n:'B22 Empanamento DUE',u:'kg',q:0.04,c:'B'},
+      {n:'Queijo Coalho Defumado',u:'kg',q:0.02,c:'L'},
+      {n:'B08 Aioli de Páprica',u:'lt',q:0.04,c:'B'},
+      {n:'Ovo',u:'und',q:0.5,c:'L'},
+    ]},
+  P07:{code:'P07',nome:'Taco Sergipano de Camarão',preco:49,cmv:'20.9%',custo:10.27,placeholder:false,
+    ing:[
+      {n:'Camarão',u:'kg',q:0.15,c:'F'},
+      {n:'Farinha de Trigo',u:'kg',q:0.055,c:'M'},
+      {n:'B27 Creme de Abacate',u:'lt',q:0.06,c:'B'},
+      {n:'B26 Picles de Maxixe',u:'kg',q:0.03,c:'B'},
+    ]},
+  P08:{code:'P08',nome:'Toast de Costela',preco:52,cmv:'15.1%',custo:7.83,placeholder:false,
+    ing:[
+      {n:'B12 Costela Desfiada',u:'kg',q:0.10,c:'B'},
+      {n:'Pão Italiano',u:'kg',q:0.06,c:'M'},
+      {n:'Milho Verde',u:'kg',q:0.05,c:'H'},
+      {n:'Cream Cheese',u:'kg',q:0.02,c:'L'},
+    ]},
+  P11:{code:'P11',nome:'Frutos do Mar Tempurá',preco:78,cmv:'13.8%',custo:10.93,placeholder:false,
+    ing:[
+      {n:'Camarão',u:'kg',q:0.10,c:'F'},
+      {n:'Lulas',u:'kg',q:0.06,c:'F'},
+      {n:'B23 Massa Tempurá DUE',u:'lt',q:0.08,c:'B'},
+      {n:'B19 Vinagrete Tropical',u:'lt',q:0.04,c:'B'},
+    ]},
+  P13:{code:'P13',nome:'Filé Alto com Crosta',preco:125,cmv:'15.1%',custo:18.88,placeholder:false,
+    ing:[
+      {n:'Filé Mignon',u:'kg',q:0.242,c:'P'},
+      {n:'B12 Demi-Glace DUE',u:'lt',q:0.030,c:'B'},
+      {n:'B39 Xerém Cremoso Trufado',u:'kg',q:0.100,c:'B'},
+      {n:'Castanha de Caju (farofa)',u:'kg',q:0.025,c:'C'},
+      {n:'Manteiga Sergipana',u:'kg',q:0.010,c:'L'},
+    ]},
+  P14:{code:'P14',nome:'Coxa de Pato Confitada',preco:139,cmv:'21.9%',custo:30.40,placeholder:false,
+    ing:[
+      {n:'B21 Coxa Pato Confit',u:'und',q:1,c:'B'},
+      {n:'B06 Demi-Glace',u:'lt',q:0.03,c:'B'},
+      {n:'Mandioquinha',u:'kg',q:0.138,c:'H'},
+      {n:'Castanha de Caju',u:'kg',q:0.015,c:'C'},
+      {n:'Tangerina',u:'kg',q:0.048,c:'H'},
+    ]},
+  P15:{code:'P15',nome:'Carré de Cordeiro',preco:165,cmv:'27.6%',custo:45.52,placeholder:false,
+    ing:[
+      {n:'Carré de Cordeiro',u:'kg',q:0.336,c:'P'},
+      {n:'B01 Pappardelle Artesanal',u:'kg',q:0.120,c:'B'},
+      {n:'Azeite Trufado',u:'lt',q:0.010,c:'O'},
+      {n:'B12 Demi-Glace DUE',u:'lt',q:0.030,c:'B'},
+      {n:'Castanha de Caju (farofa)',u:'kg',q:0.025,c:'C'},
+    ]},
+  P16:{code:'P16',nome:'Flat Iron + Fonduta Parmesão',preco:125,cmv:'18.2%',custo:22.80,placeholder:false,
+    ing:[
+      {n:'Flat Iron',u:'kg',q:0.22,c:'P'},
+      {n:'Rigatoni',u:'kg',q:0.10,c:'M'},
+      {n:'B01 Molho Pomodoro',u:'lt',q:0.06,c:'B'},
+      {n:'B02 Béchamel / Fonduta',u:'lt',q:0.04,c:'B'},
+      {n:'Parmesão',u:'kg',q:0.015,c:'L'},
+    ]},
+  P17:{code:'P17',nome:'Filé do Sertão + Baião',preco:119,cmv:'11.1%',custo:13.18,placeholder:false,
+    ing:[
+      {n:'Carne do Sol Artesanal (B36)',u:'kg',q:0.207,c:'P'},
+      {n:'B42 Risoto de Baião de Dois',u:'kg',q:0.150,c:'B'},
+      {n:'Queijo Coalho',u:'kg',q:0.030,c:'L'},
+      {n:'B12 Demi-Glace DUE',u:'lt',q:0.025,c:'B'},
+      {n:'Couve-folha (crispie)',u:'mç',q:0.020,c:'H'},
+    ]},
+  P18:{code:'P18',nome:'Robalo com Pele Crocante',preco:118,cmv:'23.1%',custo:27.28,placeholder:false,
+    ing:[
+      {n:'Robalo (filé)',u:'kg',q:0.234,c:'F'},
+      {n:'Banana-da-Terra',u:'kg',q:0.115,c:'H'},
+      {n:'Creme de Leite Fresco',u:'lt',q:0.03,c:'L'},
+      {n:'Maxixe',u:'kg',q:0.06,c:'H'},
+      {n:'B09 Azeite Verde',u:'lt',q:0.01,c:'B'},
+    ]},
+  P19:{code:'P19',nome:'Arroz de Polvo DUE ★',preco:145,cmv:'16.5%',custo:23.87,placeholder:false,
+    ing:[
+      {n:'B11 Polvo Cozido',u:'kg',q:0.15,c:'B'},
+      {n:'Arroz Arbóreo',u:'kg',q:0.10,c:'M'},
+      {n:'B16 Bisque de Crustáceos',u:'lt',q:0.08,c:'B'},
+      {n:'B05 Fumet de Peixe',u:'lt',q:0.12,c:'B'},
+      {n:'Parmesão',u:'kg',q:0.01,c:'L'},
+      {n:'Vinho Branco',u:'lt',q:0.02,c:'O'},
+    ]},
+  P21:{code:'P21',nome:'Pappardelle DUE Frutos do Mar',preco:115,cmv:'11.3%',custo:13.00,placeholder:false,
+    ing:[
+      {n:'B01 Pappardelle Artesanal',u:'kg',q:0.120,c:'B'},
+      {n:'Camarão',u:'kg',q:0.060,c:'F'},
+      {n:'Lulas',u:'kg',q:0.050,c:'F'},
+      {n:'Mexilhões',u:'kg',q:0.040,c:'F'},
+      {n:'B11 Bisque de Crustáceos',u:'lt',q:0.080,c:'B'},
+      {n:'Tomate Cereja',u:'kg',q:0.040,c:'H'},
+      {n:'Parmesão',u:'kg',q:0.015,c:'L'},
+      {n:'Azeite Trufado',u:'lt',q:0.008,c:'O'},
+    ]},
+  P22:{code:'P22',nome:'Rigatoni Ragù de Costela',preco:89,cmv:'13.2%',custo:11.74,placeholder:false,
+    ing:[
+      {n:'Rigatoni',u:'kg',q:0.120,c:'M'},
+      {n:'B35 Costela Desfiada DUE',u:'kg',q:0.120,c:'B'},
+      {n:'B22 Pomodoro DUE',u:'lt',q:0.080,c:'B'},
+      {n:'B23 Fonduta Parmesão',u:'lt',q:0.040,c:'B'},
+      {n:'Parmesão',u:'kg',q:0.015,c:'L'},
+    ]},
+  P27:{code:'P27',nome:'Pannacota de Baunilha [INATIVO]',preco:42,cmv:'15.6%',custo:6.56,placeholder:true,
+    ing:[
+      {n:'Creme de Leite Fresco',u:'lt',q:0.12,c:'L'},
+      {n:'Leite',u:'lt',q:0.06,c:'L'},
+      {n:'Gelatina',u:'kg',q:0.003,c:'C'},
+      {n:'Baunilha (fava)',u:'und',q:0.1,c:'C'},
+      {n:'Goiaba Verde',u:'kg',q:0.05,c:'H'},
+      {n:'Framboesa',u:'kg',q:0.015,c:'C'},
+    ]},
+  P28:{code:'P28',nome:'Namelaka 70% · laranja Bahia',preco:45,cmv:'14.6%',custo:6.59,placeholder:false,
+    ing:[
+      {n:'Chocolate 70%',u:'kg',q:0.06,c:'C'},
+      {n:'Creme de Leite Fresco',u:'lt',q:0.04,c:'L'},
+      {n:'Laranja Bahia',u:'kg',q:0.048,c:'H'},
+      {n:'Suspiro',u:'kg',q:0.01,c:'C'},
+    ]},
+  P30:{code:'P30',nome:'Torta Basca Artesanal',preco:52,cmv:'14.3%',custo:7.44,placeholder:false,
+    ing:[
+      {n:'Cream Cheese',u:'kg',q:0.08,c:'L'},
+      {n:'Biscoito (base)',u:'kg',q:0.03,c:'C'},
+      {n:'Morango',u:'kg',q:0.03,c:'C'},
+      {n:'Mirtilo',u:'kg',q:0.01,c:'C'},
+      {n:'Avelã',u:'kg',q:0.01,c:'C'},
+    ]},
+  /* ═══ EXECUTIVO ═══ */
+  EX1:{code:'EX',nome:'Robalo Território',preco:59,cmv:'~18%',custo:10.80,placeholder:false,
+    ing:[
+      {n:'Robalo (filé)',u:'kg',q:0.234,c:'F'},
+      {n:'Banana-da-Terra',u:'kg',q:0.092,c:'H'},
+      {n:'Maxixe',u:'kg',q:0.05,c:'H'},
+      {n:'B19 Vinagrete Tropical',u:'lt',q:0.04,c:'B'},
+    ]},
+  EX2:{code:'EX',nome:'Frango Tucupi e Jambu',preco:59,cmv:'~19%',custo:11.50,placeholder:false,
+    ing:[
+      {n:'Peito de Frango',u:'kg',q:0.198,c:'P'},
+      {n:'Tucupi',u:'lt',q:0.06,c:'O'},
+      {n:'Jambu',u:'kg',q:0.02,c:'H'},
+      {n:'Macaxeira',u:'kg',q:0.12,c:'H'},
+    ]},
+  EX3:{code:'EX',nome:'Salada Morna de Camarão',preco:59,cmv:'~17%',custo:10.20,placeholder:false,
+    ing:[
+      {n:'Camarão',u:'kg',q:0.15,c:'F'},
+      {n:'Macaxeira',u:'kg',q:0.072,c:'H'},
+      {n:'B26 Picles Maxixe',u:'kg',q:0.03,c:'B'},
+      {n:'Castanha de Caju',u:'kg',q:0.01,c:'C'},
+    ]},
+  EX4:{code:'EX',nome:'Arroz do Sertão Verde',preco:59,cmv:'~8%',custo:4.80,placeholder:false,
+    ing:[
+      {n:'Arroz Agulhinha',u:'kg',q:0.10,c:'M'},
+      {n:'Feijão Verde',u:'kg',q:0.06,c:'M'},
+      {n:'B27 Creme de Abacate',u:'lt',q:0.06,c:'B'},
+      {n:'B26 Picles Maxixe',u:'kg',q:0.03,c:'B'},
+    ]},
+  EX5:{code:'EX',nome:'Rigatoni ao Fundo Escuro',preco:59,cmv:'~13%',custo:7.50,placeholder:false,
+    ing:[
+      {n:'Rigatoni',u:'kg',q:0.12,c:'M'},
+      {n:'B12 Costela Desfiada',u:'kg',q:0.10,c:'B'},
+      {n:'B01 Molho Pomodoro',u:'lt',q:0.08,c:'B'},
+      {n:'Parmesão',u:'kg',q:0.015,c:'L'},
+    ]},
+  EX6:{code:'EX',nome:'Carne de Sol na Manteiga',preco:59,cmv:'~14%',custo:8.50,placeholder:false,
+    ing:[
+      {n:'Carne do Sol',u:'kg',q:0.173,c:'P'},
+      {n:'Arroz Agulhinha',u:'kg',q:0.10,c:'M'},
+      {n:'Manteiga de Garrafa',u:'lt',q:0.02,c:'O'},
+      {n:'Queijo Coalho',u:'kg',q:0.04,c:'L'},
+    ]},
+  /* ═══ DDM NOVOS (placeholders) ═══ */
+  DDM_R:{code:'R01',nome:'Risoto de Camarão',preco:118,cmv:'~24%',custo:28.50,placeholder:false,
+    ing:[
+      {n:'Camarão',u:'kg',q:0.140,c:'F'},
+      {n:'Arroz Arbóreo',u:'kg',q:0.10,c:'M'},
+      {n:'B45 Base de Moqueca',u:'lt',q:0.10,c:'B'},
+      {n:'Parmesão',u:'kg',q:0.015,c:'L'},
+      {n:'Cebola Roxa',u:'kg',q:0.030,c:'H'},
+      {n:'Tomate Cereja',u:'kg',q:0.040,c:'H'},
+    ]},
+  /* ═══ DDM → AGORA CARDÁPIO REGULAR ═══ */
+  DDM_M:{code:'DM1',nome:'Passion',preco:48,cmv:'~20%',custo:9.60,placeholder:false,
+    ing:[
+      {n:'Chocolate Branco',u:'kg',q:0.06,c:'C'},
+      {n:'Creme de Leite Leco',u:'lt',q:0.08,c:'L'},
+      {n:'Maracujá',u:'kg',q:0.08,c:'H'},
+      {n:'Castanha de Caju',u:'kg',q:0.018,c:'C'},
+      {n:'Massa Harumaki',u:'und',q:1,c:'M'},
+      {n:'Manteiga',u:'kg',q:0.015,c:'L'},
+    ]},
+};
+
+/* ══════════════════════════════════════════════════════════
+   CARDÁPIOS — definição com taxas padrão
+   rate = porções esperadas a cada 100 pax do serviço
+══════════════════════════════════════════════════════════ */
+const MENUS = {
+  executivo:{
+    label:'Almoço Executivo', badge:'badge-exec',
+    cursos:[{
+      label:'Pratos (taxa soma = 100%)',
+      items:[
+        {id:'EX6',rate:59},{id:'EX1',rate:27},{id:'EX3',rate:6},
+        {id:'EX2',rate:5},{id:'EX4',rate:3}
+      ]
+    }]
+  },
+  completo:{
+    label:'Jantar Cardápio Completo', badge:'badge-comp',
+    cursos:[
+      {label:'Entradas (opt — taxa soma ≈ 55%)',items:[
+        {id:'P06',rate:16},{id:'P02',rate:8},{id:'P07',rate:8},
+        {id:'P01',rate:8},{id:'P03',rate:7},{id:'P11',rate:5},{id:'P08',rate:3}
+      ]},
+      {label:'Principais (taxa soma ≈ 100%)',items:[
+        {id:'P17',rate:18},{id:'P16',rate:12},{id:'DDM_R',rate:11},
+        {id:'P13',rate:11},{id:'P18',rate:14},{id:'P22',rate:9},
+        {id:'P21',rate:7},{id:'P15',rate:7},{id:'P19',rate:6},
+        {id:'P14',rate:5}
+      ]},
+      {label:'Para os Pequenos (taxa soma ≈ 5%)',items:[
+        {id:'P22',rate:5}
+      ]},
+      {label:'Sobremesas (opt — taxa soma ≈ 35%)',items:[
+        {id:'P30',rate:18},{id:'DDM_M',rate:11},{id:'P28',rate:6}
+      ]}
+    ]
+  },
+  ddm:{
+    label:'Dia das Mães', badge:'badge-ddm',
+    cursos:[
+      {label:'Entradas (opt — taxa soma ≈ 60%)',items:[
+        {id:'P06',rate:22},{id:'P08',rate:18},{id:'P03',rate:20}
+      ]},
+      {label:'Pratos (taxa soma ≈ 95%)',items:[
+        {id:'P18',rate:25},{id:'P13',rate:25},{id:'P15',rate:22},
+        {id:'DDM_R',rate:23}
+      ]},
+      {label:'Para os Pequenos (taxa ≈ 5%)',items:[
+        {id:'P22',rate:5}
+      ]},
+      {label:'Sobremesas (opt — taxa soma ≈ 50%)',items:[
+        {id:'P30',rate:28},{id:'DDM_M',rate:22}
+      ]}
+    ]
+  }
+};
+
+/* ══════════════════════════════════════════════════════════
+   AGENDA SEMANAL (state mutável)
+══════════════════════════════════════════════════════════ */
+let schedule = [
+  {dia:'Segunda', servicos:[{tipo:'executivo',pax:30}]},
+  {dia:'Terça',   servicos:[{tipo:'executivo',pax:25}]},
+  {dia:'Quarta',  servicos:[{tipo:'executivo',pax:30},{tipo:'completo',pax:25}]},
+  {dia:'Quinta',  servicos:[{tipo:'executivo',pax:35},{tipo:'completo',pax:35}]},
+  {dia:'Sexta',   servicos:[{tipo:'executivo',pax:45},{tipo:'completo',pax:50}]},
+  {dia:'Sábado',  servicos:[{tipo:'executivo',pax:25},{tipo:'completo',pax:50}]},
+  {dia:'Domingo', servicos:[]},
+];
+
+let bufferPct = 10;
+
+/* ══════════════════════════════════════════════════════════
+   LÓGICA DE CÁLCULO
+══════════════════════════════════════════════════════════ */
+function getTotalPax() {
+  var t = {executivo:0, completo:0, ddm:0};
+  schedule.forEach(function(d){
+    d.servicos.forEach(function(s){ t[s.tipo] = (t[s.tipo]||0) + s.pax; });
+  });
+  return t;
+}
+
+// Returns: { dishId: portions }
+function calcPorcoes() {
+  var pax = getTotalPax();
+  var result = {};
+  Object.keys(MENUS).forEach(function(menuKey){
+    var menu = MENUS[menuKey];
+    var totalPax = pax[menuKey] || 0;
+    menu.cursos.forEach(function(curso){
+      curso.items.forEach(function(item){
+        var por = totalPax * item.rate / 100;
+        result[menuKey+'_'+item.id] = {id:item.id, menuKey:menuKey, porcoes:por};
+      });
+    });
+  });
+  return result;
+}
+
+// Returns: { ingredientName: { qty, un, cat } }
+function calcInsumos() {
+  var porcoes = calcPorcoes();
+  var result = {};
+  Object.values(porcoes).forEach(function(p){
+    var ficha = FICHAS[p.id];
+    if(!ficha) return;
+    ficha.ing.forEach(function(ing){
+      var key = ing.n;
+      if(!result[key]) result[key] = {qty:0, un:ing.u, cat:ing.c, nome:ing.n};
+      result[key].qty += p.porcoes * ing.q;
+    });
+  });
+  return result;
+}
+
+/* ══════════════════════════════════════════════════════════
+   RENDER — SEMANA
+══════════════════════════════════════════════════════════ */
+function renderSemana(){
+  var grid = document.getElementById('weekGrid');
+  grid.innerHTML = '';
+  schedule.forEach(function(day, di){
+    var card = document.createElement('div');
+    card.className = 'day-card';
+    var html = '<div class="day-name">'+day.dia+'</div>';
+    day.servicos.forEach(function(svc, si){
+      var dotClass = svc.tipo==='executivo' ? 'dot-exec' : svc.tipo==='completo' ? 'dot-comp' : 'dot-ddm';
+      var lbl = svc.tipo==='executivo' ? 'Almoço' : svc.tipo==='completo' ? 'Jantar' : 'Almoço DDM';
+      html += '<div class="svc-row">';
+      html += '<div class="svc-label"><span class="svc-dot '+dotClass+'"></span>'+lbl+'</div>';
+      html += '<input class="pax-input" type="number" min="0" max="300" value="'+svc.pax+'" ';
+      html += 'data-di="'+di+'" data-si="'+si+'" onchange="onPaxChange(this)">';
+      html += '</div>';
+    });
+    card.innerHTML = html;
+    grid.appendChild(card);
+  });
+  renderTotals();
+}
+
+function renderTotals(){
+  var pax = getTotalPax();
+  var total = pax.executivo + pax.completo + pax.ddm;
+  var totDiv = document.getElementById('weekTotals');
+  totDiv.innerHTML =
+    '<div class="total-card exec"><div class="total-label">Almoço Executivo</div>'+
+    '<div class="total-value">'+pax.executivo+'</div><div class="total-unit">pax</div></div>'+
+    '<div class="total-card comp"><div class="total-label">Jantar Completo</div>'+
+    '<div class="total-value">'+pax.completo+'</div><div class="total-unit">pax</div></div>'+
+    '<div class="total-card ddm"><div class="total-label">Dia das Mães</div>'+
+    '<div class="total-value">'+pax.ddm+'</div><div class="total-unit">pax ('+total+' total semana)</div></div>';
+}
+
+function onPaxChange(input){
+  var di = parseInt(input.dataset.di);
+  var si = parseInt(input.dataset.si);
+  schedule[di].servicos[si].pax = Math.max(0, parseInt(input.value)||0);
+  renderTotals();
+  renderMixCalcs();
+  renderResultado();
+}
+
+/* ══════════════════════════════════════════════════════════
+   RENDER — MIX
+══════════════════════════════════════════════════════════ */
+function renderMix(){
+  var pax = getTotalPax();
+  var container = document.getElementById('mixContainer');
+  container.innerHTML = '';
+  Object.keys(MENUS).forEach(function(menuKey){
+    var menu = MENUS[menuKey];
+    var block = document.createElement('div');
+    block.className = 'mix-section';
+    block.id = 'mix-'+menuKey;
+    var totalPax = pax[menuKey]||0;
+    var hd = document.createElement('div');
+    hd.className = 'mix-header';
+    hd.innerHTML = '<div class="mix-header-left"><span class="mix-svc-badge '+menu.badge+'">'+menuKey+'</span>'+
+      '<span class="mix-curso-label">'+menu.label+'</span></div>'+
+      '<div style="display:flex;align-items:center;gap:12px">'+
+      '<span class="mix-subtotal" id="mix-pax-'+menuKey+'">'+totalPax+' pax</span>'+
+      '<span class="mix-toggle">▼</span></div>';
+    hd.onclick = function(){ var b=block.querySelector('.mix-body'); b.classList.toggle('open'); };
+    block.appendChild(hd);
+    var body = document.createElement('div');
+    body.className = 'mix-body';
+    menu.cursos.forEach(function(curso){
+      var chd = document.createElement('div');
+      chd.className = 'mix-curso-hd';
+      chd.textContent = curso.label;
+      body.appendChild(chd);
+      curso.items.forEach(function(item, ii){
+        var ficha = FICHAS[item.id];
+        if(!ficha) return;
+        var row = document.createElement('div');
+        row.className = 'mix-row';
+        var porcoes = (totalPax * item.rate / 100).toFixed(1);
+        row.innerHTML = '<div class="mix-dish-name">'+(ficha.placeholder?'★ ':'')+ficha.nome+'</div>'+
+          '<input class="mix-input" type="number" min="0" max="100" step="1" value="'+item.rate+'" '+
+          'data-menu="'+menuKey+'" data-curso="'+menu.cursos.indexOf(curso)+'" data-item="'+ii+'" '+
+          'onchange="onRateChange(this)">'+
+          '<div class="mix-calc" id="mix-calc-'+menuKey+'-'+menu.cursos.indexOf(curso)+'-'+ii+'">'+porcoes+' porc</div>';
+        body.appendChild(row);
+      });
+    });
+    block.appendChild(body);
+    container.appendChild(block);
+  });
+}
+
+function onRateChange(input){
+  var menuKey = input.dataset.menu;
+  var ci = parseInt(input.dataset.curso);
+  var ii = parseInt(input.dataset.item);
+  MENUS[menuKey].cursos[ci].items[ii].rate = Math.max(0, parseInt(input.value)||0);
+  renderMixCalcs();
+  renderResultado();
+}
+
+function renderMixCalcs(){
+  var pax = getTotalPax();
+  Object.keys(MENUS).forEach(function(menuKey){
+    var menu = MENUS[menuKey];
+    var totalPax = pax[menuKey]||0;
+    var paxEl = document.getElementById('mix-pax-'+menuKey);
+    if(paxEl) paxEl.textContent = totalPax+' pax';
+    menu.cursos.forEach(function(curso, ci){
+      curso.items.forEach(function(item, ii){
+        var el = document.getElementById('mix-calc-'+menuKey+'-'+ci+'-'+ii);
+        if(el) el.textContent = (totalPax * item.rate / 100).toFixed(1)+' porc';
+      });
+    });
+  });
+}
+
+/* ══════════════════════════════════════════════════════════
+   RENDER — RESULTADO (pratos + insumos)
+══════════════════════════════════════════════════════════ */
+function renderResultado(){
+  renderPratos();
+  renderInsumos();
+}
+
+function renderPratos(){
+  var porcoes = calcPorcoes();
+  var container = document.getElementById('pratosGrid');
+  container.innerHTML = '';
+  // Group by menuKey
+  var groups = {executivo:[],completo:[],ddm:[]};
+  // De-duplicate by id within same menu (P22 can appear in multiple cursos)
+  var seen = {};
+  Object.values(porcoes).forEach(function(p){
+    var key = p.menuKey+'_'+p.id;
+    if(seen[key]){
+      seen[key].porcoes += p.porcoes;
+    } else {
+      seen[key] = {id:p.id, menuKey:p.menuKey, porcoes:p.porcoes};
+      groups[p.menuKey].push(seen[key]);
+    }
+  });
+  ['executivo','completo','ddm'].forEach(function(mk){
+    groups[mk].forEach(function(p){
+      var ficha = FICHAS[p.id];
+      if(!ficha) return;
+      var svcColor = mk==='executivo' ? 'var(--exec)' : mk==='completo' ? 'var(--comp)' : 'var(--ddm)';
+      var svcLabel = mk==='executivo' ? 'Executivo' : mk==='completo' ? 'Jantar Completo' : 'Dia das Mães';
+      var card = document.createElement('div');
+      card.className = 'prato-card';
+      card.innerHTML = '<div class="prato-svc" style="color:'+svcColor+'">'+svcLabel+'</div>'+
+        '<div class="prato-nome">'+(ficha.placeholder?'★ ':'')+ficha.nome+'</div>'+
+        '<div class="prato-porcoes">'+Math.ceil(p.porcoes)+'</div>'+
+        '<div class="prato-unit">porções esta semana</div>';
+      container.appendChild(card);
+    });
+  });
+}
+
+var CAT_LABELS = {P:'Proteínas — Carnes & Aves',F:'Frutos do Mar & Peixes',M:'Massas & Carboidratos',
+  L:'Laticínios',H:'Hortifruti',B:'Bases & Batches',C:'Confeitaria',O:'Outros'};
+var CAT_ORDER = ['P','F','M','L','H','B','C','O'];
+
+function renderInsumos(){
+  var insumos = calcInsumos();
+  var buf = 1 + bufferPct/100;
+  var bycat = {};
+  CAT_ORDER.forEach(function(c){ bycat[c]=[]; });
+  Object.values(insumos).forEach(function(i){
+    if(bycat[i.cat]) bycat[i.cat].push(i);
+    else bycat['O'].push(i);
+  });
+  var container = document.getElementById('insumosList');
+  container.innerHTML = '';
+  CAT_ORDER.forEach(function(cat){
+    var items = bycat[cat];
+    if(!items||!items.length) return;
+    items.sort(function(a,b){ return b.qty-a.qty; });
+    var block = document.createElement('div');
+    block.className = 'cat-block';
+    var hd = document.createElement('div');
+    hd.className = 'cat-name';
+    hd.textContent = CAT_LABELS[cat]||cat;
+    block.appendChild(hd);
+    var headerRow = document.createElement('div');
+    headerRow.className = 'ins-row hd-row';
+    headerRow.innerHTML = '<div>Insumo</div><div style="text-align:right">Qtd Neta</div><div>Un</div>'+
+      '<div style="text-align:right">+ '+bufferPct+'% buffer</div>';
+    block.appendChild(headerRow);
+    items.forEach(function(i){
+      var row = document.createElement('div');
+      row.className = 'ins-row';
+      var qtyNet = i.qty;
+      var qtyBuf = i.qty * buf;
+      row.innerHTML = '<div class="ins-nome">'+i.nome+'</div>'+
+        '<div class="ins-qty">'+fmt(qtyNet, i.un)+'</div>'+
+        '<div class="ins-un">'+i.un+'</div>'+
+        '<div class="ins-buf">'+fmt(qtyBuf, i.un)+'</div>';
+      block.appendChild(row);
+    });
+    container.appendChild(block);
+  });
+}
+
+function fmt(qty, un){
+  if(un==='und') return Math.ceil(qty)+'';
+  if(un==='mç') return qty.toFixed(1)+'';
+  if(qty < 0.1) return qty.toFixed(3)+'';
+  if(qty < 10) return qty.toFixed(2)+'';
+  return qty.toFixed(1)+'';
+}
+
+function setBuf(pct, btn){
+  bufferPct = pct;
+  document.querySelectorAll('.buf-btn').forEach(function(b){ b.classList.remove('active'); });
+  btn.classList.add('active');
+  renderInsumos();
+}
+
+function getWeekMeta(){
+  var paxExec=0, paxComp=0, paxDDM=0;
+  schedule.forEach(function(d){
+    paxExec += (d.exec||0);
+    paxComp += (d.comp||0);
+    paxDDM  += (d.ddm||0);
+  });
+  var today = new Date().toLocaleDateString('pt-BR');
+  return 'Gerado em: '+today+
+    ' | PAX semana — Executivo: '+paxExec+
+    ' · Completo: '+paxComp+
+    (paxDDM?' · DDM: '+paxDDM:'')+
+    ' | Buffer: '+(bufferPct?'+'+bufferPct+'%':'sem buffer');
+}
+
+function exportCSV(){
+  var insumos = calcInsumos();
+  var buf = 1 + bufferPct/100;
+  var bycat = {};
+  CAT_ORDER.forEach(function(c){ bycat[c]=[]; });
+  Object.values(insumos).forEach(function(i){
+    if(bycat[i.cat]) bycat[i.cat].push(i);
+    else bycat['O'].push(i);
+  });
+  // BOM UTF-8 para Excel reconhecer acentos
+  var rows = ['﻿'];
+  rows.push('DUE Restaurante — Lista de Compras');
+  rows.push(getWeekMeta());
+  rows.push('');
+  rows.push('Categoria;Insumo;Qtd Neta;Unidade;Qtd c/ Buffer ('+bufferPct+'%);Unidade');
+  CAT_ORDER.forEach(function(cat){
+    var items = bycat[cat];
+    if(!items||!items.length) return;
+    items.sort(function(a,b){ return b.qty-a.qty; });
+    items.forEach(function(i){
+      var qtyNet = fmt(i.qty, i.un).replace('.',',');
+      var qtyBuf = fmt(i.qty*buf, i.un).replace('.',',');
+      rows.push([CAT_LABELS[cat]||cat, i.nome, qtyNet, i.un, qtyBuf, i.un].join(';'));
+    });
+  });
+  var blob = new Blob([rows.join('\r\n')], {type:'text/csv;charset=utf-8'});
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement('a');
+  var d = new Date();
+  var ds = d.getFullYear()+''+String(d.getMonth()+1).padStart(2,'0')+String(d.getDate()).padStart(2,'0');
+  a.href = url;
+  a.download = 'DUE_Insumos_'+ds+(bufferPct?'_buf'+bufferPct:'')+'.csv';
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+function printInsumos(){
+  var meta = getWeekMeta();
+  document.getElementById('print-meta').textContent = meta;
+  document.getElementById('print-header').style.display = 'block';
+  window.print();
+  document.getElementById('print-header').style.display = 'none';
+}
+
+/* ══════════════════════════════════════════════════════════
+   RENDER — FICHAS
+══════════════════════════════════════════════════════════ */
+function renderFichas(){
+  var container = document.getElementById('fichasContainer');
+  container.innerHTML = '';
+  Object.values(FICHAS).forEach(function(f){
+    var acc = document.createElement('div');
+    acc.className = 'ficha-acc';
+    var hd = document.createElement('div');
+    hd.className = 'ficha-hd';
+    hd.innerHTML = '<span class="ficha-code">'+f.code+'</span>'+
+      '<span class="ficha-nome">'+(f.placeholder?'★ ':'')+f.nome+
+      (f.placeholder?'<span class="placeholder-badge">placeholder</span>':'')+'</span>'+
+      '<span class="ficha-preco">R$ '+f.preco+'</span>'+
+      '<span class="ficha-arr">▼</span>';
+    hd.onclick = function(){ acc.classList.toggle('open'); };
+    acc.appendChild(hd);
+    var body = document.createElement('div');
+    body.className = 'ficha-body';
+    var tableHtml = '<table class="ficha-table"><thead><tr>'+
+      '<th>Ingrediente</th><th>Qtd Bruta</th><th>Un</th><th>Cat</th></tr></thead><tbody>';
+    f.ing.forEach(function(i){
+      tableHtml += '<tr class="'+(f.placeholder?'placeholder':'')+'">'+
+        '<td>'+i.n+'</td><td class="mono">'+i.q+'</td><td>'+i.u+'</td><td>'+i.c+'</td></tr>';
+    });
+    tableHtml += '</tbody></table>';
+    var footer = '<div class="ficha-footer">'+
+      '<span>Custo/porção: <b>R$ '+f.custo.toFixed(2)+'</b></span>'+
+      '<span>CMV: <b>'+f.cmv+'</b></span>'+
+      '<span>Venda: <b>R$ '+f.preco+'</b></span>'+
+      (f.placeholder?'<span style="color:var(--warn)">⚠ Validar com Chef</span>':'')+'</div>';
+    body.innerHTML = tableHtml + footer;
+    acc.appendChild(body);
+    container.appendChild(acc);
+  });
+}
+
+/* ══════════════════════════════════════════════════════════
+   TABS
+══════════════════════════════════════════════════════════ */
+function switchTab(id, btn){
+  document.querySelectorAll('.panel').forEach(function(p){ p.classList.remove('active'); });
+  document.querySelectorAll('.tab').forEach(function(t){ t.classList.remove('active'); });
+  document.getElementById('panel-'+id).classList.add('active');
+  btn.classList.add('active');
+  if(id==='resultado') renderResultado();
+  if(id==='mix') renderMixCalcs();
+}
+
+/* ══════════════════════════════════════════════════════════
+   INIT
+══════════════════════════════════════════════════════════ */
+document.addEventListener('DOMContentLoaded', function(){
+  renderSemana();
+  renderMix();
+  renderFichas();
+});
+</script>
+</body>
+</html>
