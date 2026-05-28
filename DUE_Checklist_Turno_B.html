@@ -1,0 +1,1233 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DUE · Checklist Turno B — Edmar & Beatriz</title>
+<style>
+  :root {
+    --caju:       #C8732A;
+    --caju-soft:  #F0D4B8;
+    --maxixe:     #5A7A52;
+    --maxixe-soft:#C8DBC4;
+    --tabuleiro:  #8B6E4E;
+    --mangaba:    #F5EDE0;
+    --breu:       #1C1917;
+    --fumo:       #2E2A26;
+    --cinza:      #6B6560;
+    --branco:     #FDFAF6;
+    --linha:      #E2D8CC;
+    --vermelho:   #B94040;
+    --verde:      #3D7A56;
+    --ouro:       #C8A030;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Georgia', serif;
+    background: var(--mangaba);
+    color: var(--breu);
+    min-height: 100vh;
+  }
+
+  /* ── HEADER ── */
+  .header {
+    background: var(--breu);
+    color: var(--branco);
+    padding: 18px 20px 14px;
+    border-bottom: 3px solid var(--caju);
+  }
+  .header-top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .header-brand {
+    font-family: 'Georgia', serif;
+    font-size: 1.35rem;
+    font-weight: normal;
+    letter-spacing: 4px;
+    color: var(--caju-soft);
+  }
+  .header-brand em { color: var(--caju); font-style: italic; }
+  .header-sub {
+    font-family: monospace;
+    font-size: 0.58rem;
+    letter-spacing: 2px;
+    color: #888;
+    text-transform: uppercase;
+    margin-top: 3px;
+  }
+  .header-date {
+    font-family: monospace;
+    font-size: 0.6rem;
+    letter-spacing: 1px;
+    color: #888;
+    text-align: right;
+  }
+
+  /* ── GLOBAL PROGRESS ── */
+  .global-bar-wrap {
+    background: var(--fumo);
+    padding: 8px 20px;
+    border-bottom: 1px solid #3a3530;
+  }
+  .global-bar-track {
+    height: 3px;
+    background: #3a3530;
+    border-radius: 2px;
+    overflow: hidden;
+    margin-bottom: 5px;
+  }
+  .global-bar-fill {
+    height: 100%;
+    background: var(--caju);
+    border-radius: 2px;
+    width: 0%;
+    transition: width 0.3s ease;
+  }
+  .global-label {
+    font-family: monospace;
+    font-size: 0.58rem;
+    letter-spacing: 1px;
+    color: #888;
+    text-transform: uppercase;
+  }
+
+  /* ── PESSOA TABS ── */
+  .pessoa-tabs {
+    display: flex;
+    border-bottom: 2px solid var(--linha);
+    background: var(--branco);
+    position: sticky;
+    top: 0;
+    z-index: 50;
+  }
+  .pessoa-tab {
+    flex: 1;
+    padding: 14px 16px;
+    cursor: pointer;
+    border: none;
+    background: none;
+    font-family: 'Georgia', serif;
+    font-size: 0.9rem;
+    color: var(--cinza);
+    border-bottom: 3px solid transparent;
+    transition: all 0.15s;
+    text-align: center;
+  }
+  .pessoa-tab:hover { color: var(--breu); background: var(--mangaba); }
+  .pessoa-tab.active { color: var(--breu); border-bottom-color: var(--caju); font-weight: bold; }
+  .pessoa-tab .tab-nome { display: block; font-size: 1rem; }
+  .pessoa-tab .tab-cargo {
+    display: block;
+    font-family: monospace;
+    font-size: 0.55rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-top: 2px;
+    color: var(--cinza);
+  }
+  .pessoa-tab.active .tab-cargo { color: var(--caju); }
+
+  /* ── CONTEÚDO PESSOA ── */
+  .pessoa-content { display: none; }
+  .pessoa-content.active { display: block; }
+
+  /* ── TURNO BADGE ── */
+  .turno-badge {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    padding: 12px 16px;
+    background: var(--fumo);
+    border-bottom: 1px solid #3a3530;
+  }
+  .turno-pill {
+    font-family: monospace;
+    font-size: 0.6rem;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: 4px 10px;
+    border-radius: 20px;
+    border: 1px solid;
+  }
+  .turno-pill.horario { border-color: var(--caju); color: var(--caju-soft); }
+  .turno-pill.cargo { border-color: #888; color: #aaa; }
+  .turno-pill.abertura { border-color: var(--maxixe); color: var(--maxixe-soft); }
+
+  /* ── FASE TABS ── */
+  .fase-tabs {
+    display: flex;
+    gap: 4px;
+    padding: 12px 16px 0;
+    background: var(--branco);
+    border-bottom: 1px solid var(--linha);
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .fase-tabs::-webkit-scrollbar { display: none; }
+  .fase-tab {
+    flex-shrink: 0;
+    padding: 7px 14px;
+    cursor: pointer;
+    border: 1px solid var(--linha);
+    border-bottom: none;
+    border-radius: 6px 6px 0 0;
+    background: none;
+    font-family: monospace;
+    font-size: 0.6rem;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--cinza);
+    transition: all 0.15s;
+  }
+  .fase-tab:hover { color: var(--breu); background: var(--mangaba); }
+  .fase-tab.active { color: var(--breu); background: var(--branco); border-color: var(--caju); color: var(--caju); font-weight: bold; }
+  .fase-tab .ftag { display: inline-block; font-size: 0.5rem; margin-left: 4px; opacity: 0.7; }
+
+  /* ── FASE CONTENT ── */
+  .fase-content { display: none; padding: 16px; }
+  .fase-content.active { display: block; }
+
+  /* ── SECTION ── */
+  .section {
+    background: var(--branco);
+    border: 1px solid var(--linha);
+    border-radius: 8px;
+    margin-bottom: 14px;
+    overflow: hidden;
+  }
+  .section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 14px;
+    background: var(--mangaba);
+    border-bottom: 1px solid var(--linha);
+  }
+  .section-header-left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .section-icon { font-size: 1.1rem; }
+  .section-title {
+    font-size: 0.9rem;
+    font-weight: bold;
+    color: var(--breu);
+  }
+  .section-subtitle {
+    font-family: monospace;
+    font-size: 0.55rem;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--cinza);
+    margin-top: 2px;
+  }
+  .section-progress {
+    font-family: monospace;
+    font-size: 0.7rem;
+    color: var(--cinza);
+    white-space: nowrap;
+  }
+  .section-progress.done { color: var(--verde); font-weight: bold; }
+
+  .mini-progress {
+    height: 2px;
+    background: var(--linha);
+    overflow: hidden;
+  }
+  .mini-progress-fill {
+    height: 100%;
+    background: var(--caju);
+    width: 0%;
+    transition: width 0.3s ease;
+  }
+  .mini-progress-fill.done { background: var(--verde); }
+
+  /* ── CONSELHO NOTE ── */
+  .note {
+    margin: 0 14px 10px;
+    padding: 10px 12px;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    font-style: italic;
+    line-height: 1.5;
+    border-left: 3px solid;
+  }
+  .note.bia { background: #F0F5EE; border-color: var(--maxixe); color: #2a4a30; margin-top: 10px; }
+  .note.mauro { background: #F5EDE0; border-color: var(--caju); color: #5A3000; margin-top: 10px; }
+  .note.fran { background: #FFF8E8; border-color: var(--ouro); color: #5A3E00; margin-top: 10px; }
+  .note-who {
+    font-family: monospace;
+    font-size: 0.55rem;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+    font-style: normal;
+    opacity: 0.8;
+  }
+
+  /* ── CHECKLIST ── */
+  .checklist { list-style: none; padding: 0 0 4px; }
+  .check-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--linha);
+    cursor: pointer;
+    transition: background 0.1s;
+  }
+  .check-item:last-child { border-bottom: none; }
+  .check-item:hover { background: #F8F2E8; }
+  .check-item.checked { background: #F3FAF0; }
+
+  .check-box {
+    width: 20px; height: 20px;
+    border: 2px solid var(--linha);
+    border-radius: 4px;
+    flex-shrink: 0;
+    margin-top: 1px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s;
+    background: var(--branco);
+  }
+  .check-item.checked .check-box {
+    background: var(--verde);
+    border-color: var(--verde);
+  }
+  .check-box svg { display: none; }
+  .check-item.checked .check-box svg { display: block; }
+
+  .check-label {
+    font-size: 0.88rem;
+    line-height: 1.4;
+    color: var(--breu);
+  }
+  .check-item.checked .check-label {
+    text-decoration: line-through;
+    color: var(--cinza);
+  }
+  .check-meta {
+    font-family: monospace;
+    font-size: 0.62rem;
+    color: var(--cinza);
+    line-height: 1.5;
+    margin-top: 3px;
+  }
+  .check-item.checked .check-meta { opacity: 0.5; }
+
+  /* ── TAGS ── */
+  .tag {
+    display: inline-block;
+    font-family: monospace;
+    font-size: 0.5rem;
+    letter-spacing: 0.5px;
+    padding: 2px 6px;
+    border-radius: 3px;
+    margin-left: 5px;
+    vertical-align: middle;
+    text-transform: uppercase;
+  }
+  .tag-critico { background: var(--vermelho); color: #fff; }
+  .tag-d1 { background: #7A2020; color: #FFD0D0; }
+  .tag-fresh { background: var(--maxixe); color: #fff; }
+  .tag-ok { background: var(--verde); color: #fff; }
+  .tag-atencao { background: var(--caju); color: #fff; }
+
+  /* ── COMPLETE BANNER ── */
+  .complete-banner {
+    display: none;
+    margin: 12px 16px;
+    padding: 14px 16px;
+    background: #E8F5E0;
+    border: 1px solid var(--verde);
+    border-radius: 8px;
+    font-size: 0.85rem;
+    color: var(--verde);
+    gap: 8px;
+    flex-direction: column;
+  }
+  .complete-banner.show { display: flex; }
+  .complete-banner strong { font-size: 1rem; }
+
+  /* ── RESET BTN ── */
+  .reset-btn {
+    display: block;
+    margin: 0 16px 20px;
+    padding: 8px 16px;
+    background: none;
+    border: 1px solid var(--linha);
+    border-radius: 6px;
+    font-family: monospace;
+    font-size: 0.6rem;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--cinza);
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .reset-btn:hover { border-color: var(--caju); color: var(--caju); }
+
+  /* ── AVISO ── */
+  .aviso {
+    background: #FFF0F0;
+    border: 1px solid #E0A0A0;
+    border-left: 4px solid var(--vermelho);
+    border-radius: 6px;
+    padding: 10px 14px;
+    margin: 0 0 10px;
+    font-size: 0.8rem;
+    color: var(--vermelho);
+    line-height: 1.5;
+  }
+  .aviso strong { display: block; margin-bottom: 3px; font-size: 0.85rem; }
+
+  /* ── SEPARADOR ── */
+  .sep {
+    font-family: monospace;
+    font-size: 0.55rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--cinza);
+    padding: 6px 0 4px;
+    border-top: 1px dashed var(--linha);
+    margin-top: 4px;
+  }
+
+  @media (max-width: 480px) {
+    .pessoa-tab .tab-nome { font-size: 0.85rem; }
+    .fase-tab { font-size: 0.55rem; padding: 6px 10px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-top">
+    <div>
+      <div class="header-brand">DUE <em>·</em> Turno B</div>
+      <div class="header-sub">Praças por Funcionário · Qua–Sáb · 14h00–23h30</div>
+    </div>
+    <div class="header-date" id="data-header">—</div>
+  </div>
+</div>
+
+<!-- GLOBAL PROGRESS -->
+<div class="global-bar-wrap">
+  <div class="global-bar-track">
+    <div class="global-bar-fill" id="global-bar"></div>
+  </div>
+  <div class="global-label" id="global-label">0 itens concluídos</div>
+</div>
+
+<!-- PESSOA TABS -->
+<div class="pessoa-tabs">
+  <button class="pessoa-tab active" onclick="showPessoa('edmar', this)">
+    <span class="tab-nome">Edmar</span>
+    <span class="tab-cargo">Cozinheiro B</span>
+  </button>
+  <button class="pessoa-tab" onclick="showPessoa('beatriz', this)">
+    <span class="tab-nome">Beatriz</span>
+    <span class="tab-cargo">Auxiliar B</span>
+  </button>
+</div>
+
+
+<!-- ═══════════════════════════════════════
+     EDMAR — COZINHEIRO B
+═══════════════════════════════════════ -->
+<div class="pessoa-content active" id="pessoa-edmar">
+
+  <div class="turno-badge">
+    <span class="turno-pill horario">14h00 → 23h30</span>
+    <span class="turno-pill cargo">Cozinheiro Principal B</span>
+    <span class="turno-pill abertura">Jantar abre 18h00</span>
+  </div>
+
+  <!-- FASE TABS EDMAR -->
+  <div class="fase-tabs">
+    <button class="fase-tab active" onclick="showFase('edmar','recepcao', this)">1 · Recepção <span class="ftag">14h</span></button>
+    <button class="fase-tab" onclick="showFase('edmar','bases', this)">2 · Bases <span class="ftag">14h30</span></button>
+    <button class="fase-tab" onclick="showFase('edmar','proteinas', this)">3 · Proteínas <span class="ftag">16h</span></button>
+    <button class="fase-tab" onclick="showFase('edmar','mise', this)">4 · Mise en Place <span class="ftag">17h</span></button>
+    <button class="fase-tab" onclick="showFase('edmar','pre', this)">5 · Pré-Serviço <span class="ftag">17h45</span></button>
+  </div>
+
+  <!-- FASE 1: RECEPÇÃO -->
+  <div class="fase-content active" id="edmar-recepcao">
+    <div class="section">
+      <div class="section-header">
+        <div class="section-header-left">
+          <div class="section-icon">↔</div>
+          <div>
+            <div class="section-title">Recepção da Cozinha — Rafael → Edmar</div>
+            <div class="section-subtitle">14h00 · Briefing obrigatório antes de qualquer produção</div>
+          </div>
+        </div>
+        <div class="section-progress" id="prog-e-recepcao">0/7</div>
+      </div>
+      <div class="mini-progress"><div class="mini-progress-fill" id="bar-e-recepcao" style="width:0%"></div></div>
+      <div class="note mauro">
+        <div class="note-who">🏗 Mauro — Passagem de Turno</div>
+        "Passagem sem briefing verbal é risco. Um prato 86'd não comunicado derruba o serviço noturno. Rafael não sai sem Edmar confirmar: cozinha recebida."
+      </div>
+      <ul class="checklist" id="list-e-recepcao">
+        <li class="check-item" onclick="toggle(this)">
+          <div class="check-box"><svg width="13" height="10" viewBox="0 0 13 10" fill="none"><path d="M1 5L4.5 8.5L12 1" stroke="white" stroke-width="2" stroke-linecap="round"/></svg></div>
+          <div class="check-text"><div class="check-label">Briefing verbal com Rafael <span class="tag tag-critico">14h00</span></div><div class="check-meta">Pratos 86'd do almoço · Incidentes · O que deixou nas câmaras · Equipamento com problema</div></div>
+        </li>
+        <li class="check-item" onclick="toggle(this)">
+          <div class="check-box"><svg width="13" height="10" viewBox="0 0 13 10" fill="none"><path d="M1 5L4.5 8.5L12 1" stroke="white" stroke-width="2" stroke-linecap="round"/></svg></div>
+          <div class="check-text"><div class="check-label">Verificar temperatura câmaras <span class="tag tag-critico">HACCP</span></div><div class="check-meta">Câmara fria ≤ 4°C · Congelador ≤ −18°C · Registrar no livro · Se fora do range: avisar François imediatamente</div></div>
+        </li>
+        <li class="check-item" onclick="toggle(this)">
+          <div class="check-box"><svg width="13" height="10" viewBox="0 0 13 10" fill="none"><path d="M1 5L4.5 8.5L12 1" stroke="white" stroke-width="2" stroke-linecap="round"/></svg></div>
+          <div class="check-text"><div class="check-label">Conferir D-1 disponíveis na câmara</div><div class="check-meta">Polvo cozido · Costela braseada desfiada · Ragù de costela · Pato confit · Carne do sol dessalgada · Charque dessalgado · Marcar o que está em falta</div></div>
+        </li>
+        <li class="check-item" onclick="toggle(this)">
+          <div class="check-box"><svg width="13" height="10" viewBox="0 0 13 10" fill="none"><path d="M1 5L4.5 8.5L12 1" stroke="white" stroke-width="2" stroke-linecap="round"/></svg></div>
+          <div class="check-text"><div class="check-label">Verificar estoque de bases do almoço</div><div class="check-meta">Bisque · Demi-glace · Mousseline · Fonduta · Xerém · Rubacão · Anotar o que precisa produzir</div></div>
+        </li>
+        <li class="check-item" onclick="toggle(this)">
+          <div class="check-box"><svg width="13" height="10" viewBox="0 0 13 10" fill="none"><path d="M1 5L4.5 8.5L12 1" stroke="white" stroke-width="2" stroke-linecap="round"/></svg></div>
+          <div class="check-text"><div class="check-label">Verificar estado das proteínas do almoço — sobras</div><div class="check-meta">Tudo etiquetado com data/hora? · Proteínas sem etiqueta = descartar · Confirmar validade antes de usar</div></div>
+        </li>
+        <li class="check-item" onclick="toggle(this)">
+          <div class="check-box"><svg width="13" height="10" viewBox="0 0 13 10" fill="none"><path d="M1 5L4.5 8.5L12 1" stroke="white" stroke-width="2" stroke-linecap="round"/></svg></div>
+          <div class="check-text"><div class="check-label">Inspecionar equipamentos da linha</div><div class="check-meta">Chapa limpa e funcional · Forno pré-aquecido confirmado · Banho-maria OK · Termômetro de carne disponível</div></div>
+        </li>
+        <li class="check-item" onclick="toggle(this)">
+          <div class="check-box"><svg width="13" height="10" viewBox="0 0 13 10" fill="none"><path d="M1 5L4.5 8.5L12 1" stroke="white" stroke-width="2" stroke-linecap="round"/></svg></div>
+          <div class="check-text"><div class="check-label">Confirmar recepção com Rafael <span class="tag tag-critico">VERBAL</span></div><div class="check-meta">"Cozinha recebida" · Rafael pode sair · Edmar assume a praça</div></div>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- FASE 2: BASES -->
+  <div class="fase-content" id="edmar-bases">
+    <div class="note fran">
+      <div class="note-who">👨‍🍳 François — Regra das Bases</div>
+      "Bases não são opcionais. Se Fonduta não está em banho-maria às 17h30 o Flat Iron sai errado. Se Rubacão não está pronto o Filé do Sertão está 86. Cada base tem um prato dependente — Edmar sabe quais são."
+    </div>
+
+    <div class="section">
+      <div class="section-header">
+        <div class="section-header-left">
+          <div class="section-icon">🔥</div>
+          <div>
+            <div class="section-title">Bases Quentes — Produzir ou Repor</div>
+            <div class="section-subtitle">14h30–16h30 · Produzir o que estiver abaixo do mínimo</div>
+          </div>
+        </div>
+        <div class="section-progress" id="prog-e-bases">0/9</div>
+      </div>
+      <div class="mini-progress"><div class="mini-progress-fill" id="bar-e-bases" style="width:0%"></div></div>
+      <ul class="checklist" id="list-e-bases">
+        <li class="check-item" onclick="toggle(this)">
+          <div class="check-box"><svg width="13" height="10" viewBox="0 0 13 10" fill="none"><path d="M1 5L4.5 8.5L12 1" stroke="white" stroke-width="2" stroke-linecap="round"/></svg></div>
+          <div class="check-text"><div class="check-label">Bisque de frutos do mar — conferir e repor se necessário <span class="tag tag-atencao">45 MIN</span></div><div class="check-meta">Mínimo 2L para o jantar · Carcaça camarão/caranguejo + vinho branco + cebola + flambagem rum · Temperatura armazenamento 0–4°C · Base de Pappardelle DUE e Arroz de Polvo</div></div>
+        </li>
+        <li class="check-item" onclick="toggle(this)">
+          <div class="check-box"><svg width="13" height="10" viewBox="0 0 13 10" fill="none"><path d="M1 5L4.5 8.5L12 1" stroke="white" stroke-width="2" stroke-linecap="round"/></svg></div>
+          <div class="check-text"><div class="check-label">Demi-glace — conferir textura e quantidade</div><div class="check-meta">Deve gelar firme · Se líquida fora do frio: reduzir mais · Mínimo 500ml · Base do Filé Alto, Carré e Costela braseada · Produção: seg + qui (batch grande)</div></div>
+        </li>
+        <li class="check-item" onclick="toggle(this)">
+          <div class="check-box"><svg width="13" height="10" viewBox="0 0 13 10" fill="none"><path d="M1 5L4.5 8.5L12 1" stroke="white" stroke-width="2" stroke-linecap="round"/></svg></div>
+          <div class="check-text"><div class="check-label">Rubacão Sergipano — conferir ou produzir <span class="tag tag-critico">40 MIN</span></div><div class="check-meta">Feijão verde cozido 18 min + charque dessalgado + coalho defumado + manteiga de garrafa 190°C · Mínimo 3 porções · Se em falta: PRATO 86 (Filé do Sertão P05)</div></div>
+        </li>
+        <li class="check-item" onclick="toggle(this)">
+          <div class="check-box"><svg width="13" height="10" viewBox="0 0 13 10" fill="none"><path d="M1 5L4.5 8.5L12 1" stroke="white" stroke-width="2" stroke-linecap="round"/></svg></div>
+          <div class="check-text"><div class="check-label">Mousseline de banana-da-terra — conferir ou produzir <span class="tag tag-atencao">20 MIN</span></div><div class="check-meta">Banana-da-terra cozida + manteiga + nata · Textura: cremosa, não aguada · Mínimo 3 porções · Base do Robalo com Pele Crocante (P06)</div></div>
+        </li>
+        <li class="check-item" onclick="toggle(this)">
+          <div class="check-box"><svg width="13" height="10" viewBox="0 0 13 10" fill="none"><path d="M1 5L4.5 8.5L12 1" stroke="white" stroke-width="2" stroke-linecap="round"/></svg></div>
+          <div class="check-text"><div class="check-label">Fonduta de parmesão — produzir e colocar em banho-maria <span class="tag tag-atencao">20 MIN</span></div><div class="check-meta">Parmesão 12 meses + creme Leco em banho-maria · NUNCA ferver — separa · Manter aquecido durante todo o serviço · Mínimo 3 porções · Base do Flat Iron (P04)</div></div>
+        </li>
+        <li class="check-item" onclick="toggle(this)">
+          <div class="check-box"><svg width="13" height="10" viewBox="0 0 13 10" fill="none"><path d="M1 5L4.5 8.5L12 1" stroke="white" stroke-width="2" stroke-linecap="round"/></svg></div>
+          <div class="check-text"><div class="check-label">Xerém cremoso DUE — conferir ou produzir <span class="tag tag-atencao">30 MIN</span></div><div class="check-meta">Milho verde processado + xerém hidratado + creme Leco + parmesão + azeite trufado + azeite vermelho · Mínimo 3 porções · Base do Filé Alto (P01)</div></div>
+        </li>
+        <li class="check-item" onclick="toggle(this)">
+          <div class="check-box"><svg width="13" height="10" viewBox="0 0 13 10" fill="none"><path d="M1 5L4.5 8.5L12 1" stroke="white" stroke-width="2" stroke-linecap="round"/></svg></div>
+          <div class="check-text"><div class="check-label">Ragù de costela — aquecer suave e provar <span class="tag tag-d1">D-1</span></div><div class="check-meta">NUNCA ferver — desestrutura · Aquecer em fogo baixo, mexer sempre · Ajustar sal se necessário · Se não produzido D-1: Rigatoni (P09) FORA DO CARDÁPIO · Avisar François</div></div>
+        </li>
+        <li class="check-item" onclick="toggle(this)">
+          <div class="check-box"><svg width="13" height="10" viewBox="0 0 13 10" fill="none"><path d="M1 5L4.5 8.5L12 1" stroke="white" stroke-width="2" stroke-linecap="round"/></svg></div>
+          <div class="check-text"><div class="check-label">Pomodoro artesanal — conferir estoque</div><div class="check-meta">Tomate italiano sem semente · Cozido 2h · Polpa fina · Mínimo 3 porções · Base do Rigatoni e do Flat Iron · Sem acidez excessiva — provar antes de usar</div></div>
+        </li>
+        <li class="check-item" onclick="toggle(this)">
+          <div class="check-box"><svg width="13" height="10" viewBox="0 0 13 10" fill="none"><path d="M1 5L4.5 8.5L12 1" stroke="white" stroke-width="2" stroke-linecap="round"/></svg></div>
+          <div class="check-text"><div class="check-label">Confirmar D-1 em dessalgue para amanhã <span class="tag tag-d1">D+1</span></div><div class="check-meta">Carne do sol: câmara, troca água a cada 2h · Charque: câmara, troca água · Se não iniciado pelo Rafael: iniciar AGORA</div></div>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- FASE 3: PROTEÍNAS -->
+  <div class="fase-content" id="edmar-proteinas">
+    <div class="aviso">
+      <strong>⚠️ Termômetro obrigatório nas primeiras 2 semanas de cada proteína nova no cardápio</strong>
+      Filé Alto: 52°C malpassado / 60–63°C ao ponto · Flat Iron: 60–63°C · Cordeiro: 55–58°C (rosado) · Robalo: 58–60°C · Pato: 75°C · Frango: 75°C
+    </div>
+
+    <div class="section">
+      <div class="section-header">
+        <div class="section-header-left">
+          <div class="section-icon">🥩</div>
+          <div>
+            <div class="section-title">Proteínas da Praça — Limpar, Porcionar, Posicionar</div>
+            <div class="section-subtitle">16h00–17h00 · 11 pratos sob responsabilidade do Cozinheiro</div>
+          </div>
+        </div>
+        <div class="section-progress" id="prog-e-proteinas">0/9</div>
+      </div>
+      <div class="mini-progress"><div class="mini-progress-fill" id="bar-e-proteinas" style="width:0%"></div></div>
+      <ul class="checklist" id="list-e-proteinas">
+        <li class="check-item" onclick="toggle(this)">
+          <div class="check-box"><svg width="13" height="10" viewBox="0 0 13 10" fill="none"><path d="M1 5L4.5 8.5L12 1" stroke="white" stroke-width="2" stroke-linecap="round"/></svg></div>
+          <div class="check-text"><div class="check-label">Filé mignon — limpar, porcionar e temperar <span class="tag tag-critico">P01 · P Âncora</span></div><div class="check-meta">Limpar nervos e gordura excessiva · Porcionar · Sal e pimenta na hora de selar · Forno 180°C pré-aquecido · Ponto: 52°C malpassado / 60–63°C ao ponto</div></div>
+        </li>
+        <li class="check-item" onclick="toggle(this)">
+          <div class="check-box"><svg width="13" height="10" viewBox="0 0 13 10" fill="none"><path d="M1 5L4.5 8.5L12 1" stroke="white" stroke-width="2" stroke-linecap="round"/></svg></div>
+          <div class="check-text"><div class="check-label">Flat iron — limpar e porcionar <span class="tag tag-atencao">P04</span></div><div class="check-meta">Maturado 28 dias · Limpar nervos centrais · Ponto: 60–63°C ao ponto · Acompanha Fonduta (em banho-maria) + Rigatoni al dente</div></div>
+        </li>
+        <li class="check-item" onclick="toggle(this)">
+          <div class="check-box"><svg width="13" height="10" viewBox="0 0 13 10" fill="none"><path d="M1 5L4.5 8.5L12 1" stroke="white" stroke-width="2" stroke-linecap="round"/></svg></div>
+          <div class="check-text"><div class="check-label">Carré de cordeiro — limpar e porcionar <span class="tag tag-critico">P03 · ASSINATURA</span></div><div class="check-meta">François coordena saída do Carré · Ponto: 55–58°C (rosado) — comunicar ao salão ao apresentar · Gremolata: limão siciliano zest + salsa + alho (preparar fresco) · Manteiga trufada: 2 trufa ralada/500g (verificar estoque)</div></div>
+        </li>
+        <li class="check-item" onclick="toggle(this)">
+          <div class="check-box"><svg width="13" height="10" viewBox="0 0 13 10" fill="none"><path d="M1 5L4.5 8.5L12 1" stroke="white" stroke-width="2" stroke-linecap="round"/></svg></div>
+          <div class="check-text"><div class="check-label">Robalo — verificar pele e porcionar <span class="tag tag-critico">P06</span></div><div class="check-meta">Pele obrigatoriamente crocante — nunca tirar antes de estar pronta · Selar pele para baixo com pressão 3–4 min até largar sozinha · Ponto: 58–60°C · Acompanha Mousseline</div></div>
+        </li>
+        <li class="check-item" onclick="toggle(this)">
+          <div class="check-box"><svg width="13" height="10" viewBox="0 0 13 10" fill="none"><path d="M1 5L4.5 8.5L12 1" stroke="white" stroke-width="2" stroke-linecap="round"/></svg></div>
+          <div class="check-text"><div class="check-label">Coxa de pato — verificar porções em câmara <span class="tag tag-d1">D-1 · P02</span></div><div class="check-meta">Deve estar em gordura na câmara (cura 24h + confit 4h a 90°C produzidos D-1) · Regenerar na hora: forno 200°C 4–5 min pele para cima até crocante · Ponto: 75°C interno</div></div>
+        </li>
+        <li class="check-item" onclick="toggle(this)">
+          <div class="check-box"><svg width="13" height="10" viewBox="0 0 13 10" fill="none"><path d="M1 5L4.5 8.5L12 1" stroke="white" stroke-width="2" stroke-linecap="round"/></svg></div>
+          <div class="check-text"><div class="check-label">Carne do sol — verificar dessalgue e porcionar <span class="tag tag-d1">D-1 · P05</span></div><div class="check-meta">Deve estar dessalgando desde ontem (mínimo 4h, overnight ideal) · Água trocada a cada 2h · Porcionar para Filé do Sertão e Menu Executivo Arroz de Sol · Selar 2–3 min chapa</div></div>
+        </li>
+        <li class="check-item" onclick="toggle(this)">
+          <div class="check-box"><svg width="13" height="10" viewBox="0 0 13 10" fill="none"><path d="M1 5L4.5 8.5L12 1" stroke="white" stroke-width="2" stroke-linecap="round"/></svg></div>
+          <div class="check-text"><div class="check-label">Polvo — verificar porções para Arroz de Polvo <span class="tag tag-d1">D-1 · P07</span></div><div class="check-meta">Polvo cozido D-1 armazenado em caldo frio · Porcionar tentáculos para grelhado (3 min chapa + manteiga + alho + alecrim) · ASSINATURA DUE — François coordena saída</div></div>
+        </li>
+        <li class="check-item" onclick="toggle(this)">
+          <div class="check-box"><svg width="13" height="10" viewBox="0 0 13 10" fill="none"><path d="M1 5L4.5 8.5L12 1" stroke="white" stroke-width="2" stroke-linecap="round"/></svg></div>
+          <div class="check-text"><div class="check-label">Costela desfiada — verificar estoque para Toast e Rigatoni <span class="tag tag-d1">D-1</span></div><div class="check-meta">Porções de 100g · Toast de Costela (P15) e Rigatoni Ragù (P09) · Se em falta e ragù pronto: usar ragù para rigatoni, avisar sobre P15</div></div>
+        </li>
+        <li class="check-item" onclick="toggle(this)">
+          <div class="check-box"><svg width="13" height="10" viewBox="0 0 13 10" fill="none"><path d="M1 5L4.5 8.5L12 1" stroke="white" stroke-width="2" stroke-linecap="round"/></svg></div>
+          <div class="check-text"><div class="check-label">Confirmar 86's do dia com Beatriz — alinhar praças</div><div class="check-meta">O que está fora do cardápio · O que está abaixo do mínimo · Avisar o salão antes de abrir</div></div>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- FASE 4: MISE EN PLACE -->
+  <div class="fase-content" id="edmar-mise">
+    <div class="section">
+      <div class="section-header">
+        <div class="section-header-left">
+          <div class="section-icon">⚡</div>
+          <div>
+            <div class="section-title">Mise en Place da Linha — Organizar o Pass</div>
+            <div class="section-subtitle">17h00–17h45 · Tudo no lugar antes de 17h55</div>
+          </div>
+        </div>
+        <div class="section-progress" id="prog-e-mise">0/12</div>
+      </div>
+      <div class="mini-progress"><div class="mini-progress-fill" id="bar-e-mise" style="width:0%"></div></div>
+      <div class="note bia">
+        <div class="note-who">📊 Bia — Mise en Place</div>
+        "Mise en place é religião. Nenhum serviço começa sem 100% conferido. Porcionamento correto é CMV controlado — cada grama conta."
+      </div>
+      <ul class="checklist" id="list-e-mise">
+        <li class="check-item" onclick="toggle(this)">
+          <div class="check-box"><svg width="13" height="10" viewBox="0 0 13 10" fill="none"><path d="M1 5L4.5 8.5L12 1" stroke="white" stroke-width="2" stroke-linecap="round"/></svg></div>
+          <div class="check-text"><div class="check-label">Forno pré-aquecido 180°C</div><div class="check-meta">Para Filé Alto, Carré, Pato (200°C) · Confirmar temperatura real com termômetro de forno</div></div>
+        </li>
+        <li class="check-item" onclick="toggle(this)">
+          <div class="check-box"><svg width="13" height="10" viewBox="0 0 13 10" fill="none"><path d="M1 5L4.5 8.5L12 1" stroke="white" stroke-width="2" stroke-linecap="round"/></svg></div>
+          <div class="check-text"><div class="check-label">Fonduta em banho-maria ativa <span class="tag tag-critico">OBRIGATÓRIO</span></div><div class="check-meta">Temperatura 60–65°C · NUNCA ferver · Se esfriar: volta ao banho-maria · Não deixar sem supervisão no serviço</div></div>
+        </li>
+        <li class="check-item" onclick="toggle(this)">
+          <div class="check-box"><svg width="13" height="10" viewBox="0 0 13 10" fill="none"><path d="M1 5L4.5 8.5L12 1" stroke="white" stroke-width="2" stroke-linecap="round"/></svg></div>
+          <div class="check-text"><div class="check-label">Demi-glace aquecida em banho-maria</div><div class="check-meta">Para finalização do Filé Alto, Carré e proteínas com molho · Temperatura 65°C · Verificar densidade</div></div>
+        </li>
+        <li class="check-item" onclick="toggle(this)">
+          <div class="check-box"><svg width="13" height="10" viewBox="0 0 13 10" fill="none"><path d="M1 5L4.5 8.5L12 1" stroke="white" stroke-width="2" stroke-linecap="round"/></svg></div>
+          <div class="check-text"><div class="check-label">Bisque aquecido e pronto para risoto</div><div class="check-meta">Manter quente em panela separada · Para Arroz de Polvo (P07): arbóreo precisa de caldo quente mexer 18–20 min · Temperatura ~85°C</div></div>
+        </li>
+        <li class="check-item" onclick="toggle(this)">
+          <div class="check-box"><svg width="13" height="10" viewBox="0 0 13 10" fill="none"><path d="M1 5L4.5 8.5L12 1" stroke="white" stroke-width="2" stroke-linecap="round"/></svg></div>
+          <div class="check-text"><div class="check-label">Gremolata preparada — fresco no dia <span class="tag tag-fresh">FRESH</span></div><div class="check-meta">Limão siciliano zest + salsa picada + alho laminado · Para Carré (P03) · Fazer agora — oxidação rápida · Guardar coberta com filme</div></div>
+        </li>
+        <li class="check-item" onclick="toggle(this)">
+          <div class="check-box"><svg width="13" height="10" viewBox="0 0 13 10" fill="none"><path d="M1 5L4.5 8.5L12 1" stroke="white" stroke-width="2" stroke-linecap="round"/></svg></div>
+          <div class="check-text"><div class="check-label">Manteiga trufada — verificar estoque</div><div class="check-meta">2g trufa preta ralada / 500g manteiga · Para Carré (P03) e Pappardelle DUE (P08) · Se em falta: avisar François — pode comprometer assinatura</div></div>
+        </li>
+        <li class="check-item" onclick="toggle(this)">
+          <div class="check-box"><svg width="13" height="10" viewBox="0 0 13 10" fill="none"><path d="M1 5L4.5 8.5L12 1" stroke="white" stroke-width="2" stroke-linecap="round"/></svg></div>
+          <div class="check-text"><div class="check-label">Azeite verde DUE em ramequins</div><div class="check-meta">Para finalização de Filé Alto, Robalo, Tiradito · Validade 7 dias · Verificar cor e aroma</div></div>
+        </li>
+        <li class="check-item" onclick="toggle(this)">
+          <div class="check-box"><svg width="13" height="10" viewBox="0 0 13 10" fill="none"><path d="M1 5L4.5 8.5L12 1" stroke="white" stroke-width="2" stroke-linecap="round"/></svg></div>
+          <div class="check-text"><div class="check-label">Pappardelle artesanal — verificar leva do dia <span class="tag tag-fresh">FRESH · D DO DIA</span></div><div class="check-meta">Farinha + gema + cúrcuma · Se Franciele não produziu: produzir agora com mínimo 30 min descanso antes de laminar · Cozinhar al dente 3 min (fresca cozinha rápido)</div></div>
+        </li>
+        <li class="check-item" onclick="toggle(this)">
+          <div class="check-box"><svg width="13" height="10" viewBox="0 0 13 10" fill="none"><path d="M1 5L4.5 8.5L12 1" stroke="white" stroke-width="2" stroke-linecap="round"/></svg></div>
+          <div class="check-text"><div class="check-label">Parmesão 12 meses — ralar na hora e guardar coberto</div><div class="check-meta">NUNCA pré-ralado — oxida · Para Rigatoni (P09), Flat Iron (P04) e Pappardelle · Ralar agora, usar em até 2h</div></div>
+        </li>
+        <li class="check-item" onclick="toggle(this)">
+          <div class="check-box"><svg width="13" height="10" viewBox="0 0 13 10" fill="none"><path d="M1 5L4.5 8.5L12 1" stroke="white" stroke-width="2" stroke-linecap="round"/></svg></div>
+          <div class="check-text"><div class="check-label">Termômetro de carne disponível e calibrado <span class="tag tag-critico">OBRIGATÓRIO</span></div><div class="check-meta">Sem termômetro: não sai proteína · Especialmente crítico: Cordeiro (55–58°C) e Robalo (58–60°C)</div></div>
+        </li>
+        <li class="check-item" onclick="toggle(this)">
+          <div class="check-box"><svg width="13" height="10" viewBox="0 0 13 10" fill="none"><path d="M1 5L4.5 8.5L12 1" stroke="white" stroke-width="2" stroke-linecap="round"/></svg></div>
+          <div class="check-text"><div class="check-label">Limões tahiti e siciliano cortados e prontos</div><div class="check-meta">Para finalização de Robalo, Carré (gremolata), Tiradito · Cobertos com filme</div></div>
+        </li>
+        <li class="check-item" onclick="toggle(this)">
+          <div class="check-box"><svg width="13" height="10" viewBox="0 0 13 10" fill="none"><path d="M1 5L4.5 8.5L12 1" stroke="white" stroke-width="2" stroke-linecap="round"/></svg></div>
+          <div class="check-text"><div class="check-label">Flor de sal e demais finalizadores no pass</div><div class="check-meta">Flor de sal · Azeite vermelho · Manjericão desidratado (Flat Iron) · Pimenta do moinho</div></div>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- FASE 5: PRÉ-SERVIÇO -->
+  <div class="fase-content" id="edmar-pre">
+    <div class="section">
+      <div class="section-header">
+        <div class="section-header-left">
+          <div class="section-icon">🟢</div>
+          <div>
+            <div class="section-title">Conferência Pré-Serviço — Liberar o Jantar</div>
+            <div class="section-subtitle">17h45–17h55 · François presente se possível</div>
+          </div>
+        </div>
+        <div class="section-progress" id="prog-e-pre">0/6</div>
+      </div>
+      <div class="mini-progress"><div class="mini-progress-fill" id="bar-e-pre" style="width:0%"></div></div>
+      <ul class="checklist" id="list-e-pre">
+        <li class="check-item" onclick="toggle(this)">
+          <div class="check-box"><svg width="13" height="10" viewBox="0 0 13 10" fill="none"><path d="M1 5L4.5 8.5L12 1" stroke="white" stroke-width="2" stroke-linecap="round"/></svg></div>
+          <div class="check-text"><div class="check-label">Confirmar 86's com salão <span class="tag tag-critico">VERBAL</span></div><div class="check-meta">Garçom deve saber o que está fora antes do primeiro cliente sentar · Sem surpresa no serviço</div></div>
+        </li>
+        <li class="check-item" onclick="toggle(this)">
+          <div class="check-box"><svg width="13" height="10" viewBox="0 0 13 10" fill="none"><path d="M1 5L4.5 8.5L12 1" stroke="white" stroke-width="2" stroke-linecap="round"/></svg></div>
+          <div class="check-text"><div class="check-label">Provar bisque, demi-glace e ragù — ajustar tempero</div><div class="check-meta">Sal · Acidez · Densidade · Temperatura · Nada sai sem Edmar provar</div></div>
+        </li>
+        <li class="check-item" onclick="toggle(this)">
+          <div class="check-box"><svg width="13" height="10" viewBox="0 0 13 10" fill="none"><path d="M1 5L4.5 8.5L12 1" stroke="white" stroke-width="2" stroke-linecap="round"/></svg></div>
+          <div class="check-text"><div class="check-label">Beatriz confirmou praça de frios e sobremesas?</div><div class="check-meta">Torta Basca · Namelaka · Passion pré-montadas · Leite de tigre · Pesto · Aioli prontos</div></div>
+        </li>
+        <li class="check-item" onclick="toggle(this)">
+          <div class="check-box"><svg width="13" height="10" viewBox="0 0 13 10" fill="none"><path d="M1 5L4.5 8.5L12 1" stroke="white" stroke-width="2" stroke-linecap="round"/></svg></div>
+          <div class="check-text"><div class="check-label">Protocolo de pico ativo se espera 55+ covers <span class="tag tag-atencao">55+ PAX</span></div><div class="check-meta">Retirar Carré temporariamente · Focar: Filé Alto + Flat Iron + Pappardelle + Rigatoni · Avisar salão ANTES da abertura</div></div>
+        </li>
+        <li class="check-item" onclick="toggle(this)">
+          <div class="check-box"><svg width="13" height="10" viewBox="0 0 13 10" fill="none"><path d="M1 5L4.5 8.5L12 1" stroke="white" stroke-width="2" stroke-linecap="round"/></svg></div>
+          <div class="check-text"><div class="check-label">Conferência pessoal François — 19 pratos 1 a 1 <span class="tag tag-atencao">17h55</span></div><div class="check-meta">Se François presente: correções finais · Liberação para o serviço noturno</div></div>
+        </li>
+        <li class="check-item" onclick="toggle(this)">
+          <div class="check-box"><svg width="13" height="10" viewBox="0 0 13 10" fill="none"><path d="M1 5L4.5 8.5L12 1" stroke="white" stroke-width="2" stroke-linecap="round"/></svg></div>
+          <div class="check-text"><div class="check-label">Edmar libera o jantar <span class="tag tag-critico">18h00</span></div><div class="check-meta">"Cozinha pronta." · Portas abertas.</div></div>
+        </li>
+      </ul>
+    </div>
+    <div id="banner-edmar" class="complete-banner">
+      <strong>✅ Praça do Cozinheiro pronta</strong>
+      <span>Edmar, cozinha liberada para o jantar. Boa noite de serviço.</span>
+    </div>
+    <button class="reset-btn" onclick="resetPessoa('edmar')">↺ Reiniciar Edmar</button>
+  </div>
+
+</div><!-- /edmar -->
+
+
+<!-- ═══════════════════════════════════════
+     BEATRIZ — AUXILIAR B
+═══════════════════════════════════════ -->
+<div class="pessoa-content" id="pessoa-beatriz">
+
+  <div class="turno-badge">
+    <span class="turno-pill horario">14h00 → 23h30</span>
+    <span class="turno-pill cargo">Auxiliar de Cozinha B</span>
+    <span class="turno-pill abertura">Sobremesas pré-montadas: 17h45</span>
+  </div>
+
+  <!-- FASE TABS BEATRIZ -->
+  <div class="fase-tabs">
+    <button class="fase-tab active" onclick="showFase('beatriz','recepcao', this)">1 · Recepção <span class="ftag">14h</span></button>
+    <button class="fase-tab" onclick="showFase('beatriz','bases', this)">2 · Bases Aux <span class="ftag">14h30</span></button>
+    <button class="fase-tab" onclick="showFase('beatriz','sobremesas', this)">3 · Sobremesas <span class="ftag">15h</span></button>
+    <button class="fase-tab" onclick="showFase('beatriz','frios', this)">4 · Garde Manger <span class="ftag">15h30</span></button>
+    <button class="fase-tab" onclick="showFase('beatriz','quente', this)">5 · Aux Quente <span class="ftag">16h</span></button>
+    <button class="fase-tab" onclick="showFase('beatriz','pre', this)">6 · Pré-Serviço <span class="ftag">17h45</span></button>
+  </div>
+
+  <!-- FASE 1: RECEPÇÃO BEATRIZ -->
+  <div class="fase-content active" id="beatriz-recepcao">
+    <div class="section">
+      <div class="section-header">
+        <div class="section-header-left">
+          <div class="section-icon">↔</div>
+          <div>
+            <div class="section-title">Recepção da Praça — Franciele → Beatriz</div>
+            <div class="section-subtitle">14h00 · Conferir antes de começar qualquer produção</div>
+          </div>
+        </div>
+        <div class="section-progress" id="prog-b-recepcao">0/6</div>
+      </div>
+      <div class="mini-progress"><div class="mini-progress-fill" id="bar-b-recepcao" style="width:0%"></div></div>
+      <ul class="checklist" id="list-b-recepcao">
+        <li class="check-item" onclick="toggle(this)">
+          <div class="check-box"><svg width="13" height="10" viewBox="0 0 13 10" fill="none"><path d="M1 5L4.5 8.5L12 1" stroke="white" stroke-width="2" stroke-linecap="round"/></svg></div>
+          <div class="check-text"><div class="check-label">Briefing verbal com Franciele</div><div class="check-meta">O que está pronto · O que faltou fazer · Estado das sobremesas em câmara · Validade das bases de aux</div></div>
+        </li>
+        <li class="check-item" onclick="toggle(this)">
+          <div class="check-box"><svg width="13" height="10" viewBox="0 0 13 10" fill="none"><path d="M1 5L4.5 8.5L12 1" stroke="white" stroke-width="2" stroke-linecap="round"/></svg></div>
+          <div class="check-text"><div class="check-label">Conferir sobremesas em câmara — validade e estado</div><div class="check-meta">Torta Basca: mínimo 4h geladeira antes de cortar · Namelaka: mínimo 6h · Passion: cestinha feita no turno? · Pralinê e calda: estoque suficiente?</div></div>
+        </li>
+        <li class="check-item" onclick="toggle(this)">
+          <div class="check-box"><svg width="13" height="10" viewBox="0 0 13 10" fill="none"><path d="M1 5L4.5 8.5L12 1" stroke="white" stroke-width="2" stroke-linecap="round"/></svg></div>
+          <div class="check-text"><div class="check-label">Conferir estado da praça de frios</div><div class="check-meta">Microgreens frescos? · Gema curada dentro da validade (2 dias)? · Picles maxixe disponível (mínimo 24h)? · Sagu frito disponível?</div></div>
+        </li>
+        <li class="check-item" onclick="toggle(this)">
+          <div class="check-box"><svg width="13" height="10" viewBox="0 0 13 10" fill="none"><path d="M1 5L4.5 8.5L12 1" stroke="white" stroke-width="2" stroke-linecap="round"/></svg></div>
+          <div class="check-text"><div class="check-label">Conferir óleo das fritadeiras</div><div class="check-meta">Se o almoço foi pesado: trocar óleo antes das 17h · Temperatura deve atingir 180°C antes do serviço · Filtrar se reutilizável</div></div>
+        </li>
+        <li class="check-item" onclick="toggle(this)">
+          <div class="check-box"><svg width="13" height="10" viewBox="0 0 13 10" fill="none"><path d="M1 5L4.5 8.5L12 1" stroke="white" stroke-width="2" stroke-linecap="round"/></svg></div>
+          <div class="check-text"><div class="check-label">Verificar bases de aux da Franciele — validade</div><div class="check-meta">Leite de tigre: validade máxima 2h após preparo — descartar se passou · Pesto: máx 24h · Aioli: verificar textura e odor · Teriyaki: provar antes de usar</div></div>
+        </li>
+        <li class="check-item" onclick="toggle(this)">
+          <div class="check-box"><svg width="13" height="10" viewBox="0 0 13 10" fill="none"><path d="M1 5L4.5 8.5L12 1" stroke="white" stroke-width="2" stroke-linecap="round"/></svg></div>
+          <div class="check-text"><div class="check-label">Anotar o que precisa produzir — priorizar por tempo</div><div class="check-meta">Sobremesas D-1 primeiro (mais tempo de câmara) · Depois bases aux · Depois garde manger · Fritadeiras por último</div></div>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- FASE 2: BASES AUX -->
+  <div class="fase-content" id="beatriz-bases">
+    <div class="section">
+      <div class="section-header">
+        <div class="section-header-left">
+          <div class="section-icon">🧄</div>
+          <div>
+            <div class="section-title">Bases do Auxiliar — Produzir ou Repor</div>
+            <div class="section-subtitle">14h30–15h30 · Bases com validade curta: FRESH primeiro</div>
+          </div>
+        </div>
+        <div class="section-progress" id="prog-b-bases">0/5</div>
+      </div>
+      <div class="mini-progress"><div class="mini-progress-fill" id="bar-b-bases" style="width:0%"></div></div>
+      <ul class="checklist" id="list-b-bases">
+        <li class="check-item" onclick="toggle(this)">
+          <div class="check-box"><svg width="13" height="10" viewBox="0 0 13 10" fill="none"><path d="M1 5L4.5 8.5L12 1" stroke="white" stroke-width="2" stroke-linecap="round"/></svg></div>
+          <div class="check-text"><div class="check-label">Leite de tigre sergipano — produzir para o jantar <span class="tag tag-fresh">FRESH · MAX 2H</span></div><div class="check-meta">Fazer no máximo 2h antes do serviço · Limão + laranja + gengibre + coentro + peixe (cura ácida) · Coar · Gelado · Para Tiradito (P10) · NUNCA reutilizar sobra</div></div>
+        </li>
+        <li class="check-item" onclick="toggle(this)">
+          <div class="check-box"><svg width="13" height="10" viewBox="0 0 13 10" fill="none"><path d="M1 5L4.5 8.5L12 1" stroke="white" stroke-width="2" stroke-linecap="round"/></svg></div>
+          <div class="check-text"><div class="check-label">Pesto sergipano de castanha — produzir ou confirmar validade <span class="tag tag-atencao">MAX 24H</span></div><div class="check-meta">Processar com óleo gelado · Cobrir com filme rente · Usar em até 24h · Para Burrata (P11) · Verificar validade do lote da Franciele</div></div>
+        </li>
+        <li class="check-item" onclick="toggle(this)">
+          <div class="check-box"><svg width="13" height="10" viewBox="0 0 13 10" fill="none"><path d="M1 5L4.5 8.5L12 1" stroke="white" stroke-width="2" stroke-linecap="round"/></svg></div>
+          <div class="check-text"><div class="check-label">Aioli de páprica (Lactonese) — conferir ou produzir <span class="tag tag-atencao">10 MIN</span></div><div class="check-meta">Todos os ingredientes gelados · Emulsão estável · Para Croqueta de Polvo (P13) · Se abaixo de 200g: produzir agora</div></div>
+        </li>
+        <li class="check-item" onclick="toggle(this)">
+          <div class="check-box"><svg width="13" height="10" viewBox="0 0 13 10" fill="none"><path d="M1 5L4.5 8.5L12 1" stroke="white" stroke-width="2" stroke-linecap="round"/></svg></div>
+          <div class="check-text"><div class="check-label">Teriyaki de hibisco DUE — conferir ou produzir <span class="tag tag-atencao">25 MIN</span></div><div class="check-meta">Flor de hibisco local + molho teriyaki + redução defumada · Para Frutos do Mar Tempurá (P16) · Se abaixo de 3 porções: produzir agora</div></div>
+        </li>
+        <li class="check-item" onclick="toggle(this)">
+          <div class="check-box"><svg width="13" height="10" viewBox="0 0 13 10" fill="none"><path d="M1 5L4.5 8.5L12 1" stroke="white" stroke-width="2" stroke-linecap="round"/></svg></div>
+          <div class="check-text"><div class="check-label">Creme de abacate — produzir para o jantar <span class="tag tag-fresh">FRESH · 1 DIA</span></div><div class="check-meta">Tudo gelado: abacate + óleo pimenta de cheiro + limão + coentro · Emulsionar em fio · Filme em contato · Validade: 1 dia · Para Taco Sergipano (P14)</div></div>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- FASE 3: SOBREMESAS -->
+  <div class="fase-content" id="beatriz-sobremesas">
+    <div class="note bia">
+      <div class="note-who">📊 Bia — Sobremesas</div>
+      "Sobremesa é a última memória do cliente. Torta Basca quente não corta. Namelaka sem câmara não firma. Cestinha harumaki pré-frita fica murcha. Cada uma tem sua ordem — respeitar o tempo é respeitar o prato."
+    </div>
+
+    <div class="section">
+      <div class="section-header">
+        <div class="section-header-left">
+          <div class="section-icon">🍮</div>
+          <div>
+            <div class="section-title">Sobremesas — Produção e Pré-Montagem</div>
+            <div class="section-subtitle">15h00–17h45 · Pré-montagem completa até 17h45</div>
+          </div>
+        </div>
+        <div class="section-progress" id="prog-b-sobremesas">0/9</div>
+      </div>
+      <div class="mini-progress"><div class="mini-progress-fill" id="bar-b-sobremesas" style="width:0%"></div></div>
+      <ul class="checklist" id="list-b-sobremesas">
+
+        <li class="check-item" onclick="toggle(this)">
+          <div class="check-box"><svg width="13" height="10" viewBox="0 0 13 10" fill="none"><path d="M1 5L4.5 8.5L12 1" stroke="white" stroke-width="2" stroke-linecap="round"/></svg></div>
+          <div class="check-text"><div class="check-label">TORTA BASCA — confirmar D-1 em câmara <span class="tag tag-d1">D-1 · S01</span></div><div class="check-meta">Mínimo 4h câmara antes de cortar — nunca quente · Base biscoito + avelã moída crocante · Cremoso: cream cheese + parmesão + zest limão siciliano · Se não produzida: produzir AGORA (90 min de forno + 4h câmara = não abre para jantar)</div></div>
+        </li>
+        <li class="check-item" onclick="toggle(this)">
+          <div class="check-box"><svg width="13" height="10" viewBox="0 0 13 10" fill="none"><path d="M1 5L4.5 8.5L12 1" stroke="white" stroke-width="2" stroke-linecap="round"/></svg></div>
+          <div class="check-text"><div class="check-label">NAMELAKA 70% — confirmar D-1 em câmara <span class="tag tag-d1">D-1 · S02</span></div><div class="check-meta">Mínimo 6h câmara, overnight ideal · Chocolate belga 70% + crème fraîche (50:50) emulsão suave · Validade: 3 dias · Verificar firmeza: dedo afunda levemente mas não escorrega · Laranja Bahia: suprema (sem pellícula) pronta?</div></div>
+        </li>
+        <li class="check-item" onclick="toggle(this)">
+          <div class="check-box"><svg width="13" height="10" viewBox="0 0 13 10" fill="none"><path d="M1 5L4.5 8.5L12 1" stroke="white" stroke-width="2" stroke-linecap="round"/></svg></div>
+          <div class="check-text"><div class="check-label">PASSION — cestinha harumaki: assar agora <span class="tag tag-fresh">FRESH · S03</span></div><div class="check-meta">Massa harumaki 180°C 5–6 min em forma · Moldar quente · Resfriar em grade · Derreter chocolate branco e aplicar na parede interna (técnica clássica) · Deixar firmar em câmara antes da pré-montagem</div></div>
+        </li>
+        <li class="check-item" onclick="toggle(this)">
+          <div class="check-box"><svg width="13" height="10" viewBox="0 0 13 10" fill="none"><path d="M1 5L4.5 8.5L12 1" stroke="white" stroke-width="2" stroke-linecap="round"/></svg></div>
+          <div class="check-text"><div class="check-label">Pralinê de castanha de caju — conferir estoque</div><div class="check-meta">Castanha torrada + açúcar caramelizado 165°C · Moído fino (pó seco) · Para Passion (S03) · Se abaixo de 5 porções: produzir agora</div></div>
+        </li>
+        <li class="check-item" onclick="toggle(this)">
+          <div class="check-box"><svg width="13" height="10" viewBox="0 0 13 10" fill="none"><path d="M1 5L4.5 8.5L12 1" stroke="white" stroke-width="2" stroke-linecap="round"/></svg></div>
+          <div class="check-text"><div class="check-label">Calda de maracujá com pitanga — conferir ou produzir</div><div class="check-meta">Polpa fresca + açúcar · Redução suave · Pitanga in natura (não cozinhar — desnatura) · Para Passion (S03) · Sementes caramelizadas: maracujá + açúcar, cristal seco</div></div>
+        </li>
+        <li class="check-item" onclick="toggle(this)">
+          <div class="check-box"><svg width="13" height="10" viewBox="0 0 13 10" fill="none"><path d="M1 5L4.5 8.5L12 1" stroke="white" stroke-width="2" stroke-linecap="round"/></svg></div>
+          <div class="check-text"><div class="check-label">Farofa de avelã — conferir e aquecer pré-serviço</div><div class="check-meta">Avelã torrada + manteiga + açúcar demerara · Deve ser crocante e quente na boca do cliente · Preparar na hora (últimos 5 min antes do prato sair)</div></div>
+        </li>
+        <li class="check-item" onclick="toggle(this)">
+          <div class="check-box"><svg width="13" height="10" viewBox="0 0 13 10" fill="none"><path d="M1 5L4.5 8.5L12 1" stroke="white" stroke-width="2" stroke-linecap="round"/></svg></div>
+          <div class="check-text"><div class="check-label">PRÉ-MONTAGEM: Torta Basca <span class="tag tag-critico">17h45</span></div><div class="check-meta">Base + cremoso no prato frio · Cobrir com filme · Câmara · Farofa de avelã e calda: NA HORA (não pré-montar)</div></div>
+        </li>
+        <li class="check-item" onclick="toggle(this)">
+          <div class="check-box"><svg width="13" height="10" viewBox="0 0 13 10" fill="none"><path d="M1 5L4.5 8.5L12 1" stroke="white" stroke-width="2" stroke-linecap="round"/></svg></div>
+          <div class="check-text"><div class="check-label">PRÉ-MONTAGEM: Namelaka 70° <span class="tag tag-critico">17h45</span></div><div class="check-meta">Namelaka no centro do prato + suprema de laranja drenada · Tuile de cacau: inclinada (montar na hora — amolece) · Flor de sal: na hora</div></div>
+        </li>
+        <li class="check-item" onclick="toggle(this)">
+          <div class="check-box"><svg width="13" height="10" viewBox="0 0 13 10" fill="none"><path d="M1 5L4.5 8.5L12 1" stroke="white" stroke-width="2" stroke-linecap="round"/></svg></div>
+          <div class="check-text"><div class="check-label">PRÉ-MONTAGEM: Passion <span class="tag tag-critico">17h45</span></div><div class="check-meta">Cestinha + chocolate interior firmado + pralinê de base · Calda, sementes e pitanga: NA HORA</div></div>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- FASE 4: GARDE MANGER (FRIOS) -->
+  <div class="fase-content" id="beatriz-frios">
+    <div class="section">
+      <div class="section-header">
+        <div class="section-header-left">
+          <div class="section-icon">🧊</div>
+          <div>
+            <div class="section-title">Garde Manger — Praça de Frios</div>
+            <div class="section-subtitle">15h30–17h00 · P10 Tiradito · P11 Burrata · P12 Tartar</div>
+          </div>
+        </div>
+        <div class="section-progress" id="prog-b-frios">0/10</div>
+      </div>
+      <div class="mini-progress"><div class="mini-progress-fill" id="bar-b-frios" style="width:0%"></div></div>
+      <ul class="checklist" id="list-b-frios">
+        <li class="check-item" onclick="toggle(this)">
+          <div class="check-box"><svg width="13" height="10" viewBox="0 0 13 10" fill="none"><path d="M1 5L4.5 8.5L12 1" stroke="white" stroke-width="2" stroke-linecap="round"/></svg></div>
+          <div class="check-text"><div class="check-label">Peixe para Tiradito — verificar frescor e fatiar <span class="tag tag-critico">P10 · Peixe</span></div><div class="check-meta">Sem cheiro de amônia · Firme ao toque · Fatiar fino (3–4mm) · Manter gelado até servir · NÃO temperar antes de servir — leite de tigre cura na hora</div></div>
+        </li>
+        <li class="check-item" onclick="toggle(this)">
+          <div class="check-box"><svg width="13" height="10" viewBox="0 0 13 10" fill="none"><path d="M1 5L4.5 8.5L12 1" stroke="white" stroke-width="2" stroke-linecap="round"/></svg></div>
+          <div class="check-text"><div class="check-label">Chips de batata doce — conferir crocância e quantidade</div><div class="check-meta">Armazenar hermético sem umidade · Para Tiradito (P10) · Fritar à la minute se murchar</div></div>
+        </li>
+        <li class="check-item" onclick="toggle(this)">
+          <div class="check-box"><svg width="13" height="10" viewBox="0 0 13 10" fill="none"><path d="M1 5L4.5 8.5L12 1" stroke="white" stroke-width="2" stroke-linecap="round"/></svg></div>
+          <div class="check-text"><div class="check-label">Microgreens — verificar frescor e umidade</div><div class="check-meta">Sem amolecimento · Lavar e secar em centrifugador se necessário · Para Tiradito (P10) e outros pratos</div></div>
+        </li>
+        <li class="check-item" onclick="toggle(this)">
+          <div class="check-box"><svg width="13" height="10" viewBox="0 0 13 10" fill="none"><path d="M1 5L4.5 8.5L12 1" stroke="white" stroke-width="2" stroke-linecap="round"/></svg></div>
+          <div class="check-text"><div class="check-label">Burrata — verificar disponibilidade (importada Campania) <span class="tag tag-critico">P11</span></div><div class="check-meta">Burrata importada · Verificar validade · Camarão confit: temperatura câmara OK? · Tomates confitados: estoque (validade 7 dias submerso)</div></div>
+        </li>
+        <li class="check-item" onclick="toggle(this)">
+          <div class="check-box"><svg width="13" height="10" viewBox="0 0 13 10" fill="none"><path d="M1 5L4.5 8.5L12 1" stroke="white" stroke-width="2" stroke-linecap="round"/></svg></div>
+          <div class="check-text"><div class="check-label">Camarão confit para Burrata — verificar temperatura e estoque</div><div class="check-meta">Confit 24h · Temperatura câmara ≤ 4°C · Se em falta: avisar imediatamente — prato comprometido</div></div>
+        </li>
+        <li class="check-item" onclick="toggle(this)">
+          <div class="check-box"><svg width="13" height="10" viewBox="0 0 13 10" fill="none"><path d="M1 5L4.5 8.5L12 1" stroke="white" stroke-width="2" stroke-linecap="round"/></svg></div>
+          <div class="check-text"><div class="check-label">Tartar do Sertão — carne do sol dessalgada, porcionar <span class="tag tag-d1">D-1 · P12</span></div><div class="check-meta">Carne do sol dessalgada (4h+ câmara) · Cortar em brunoise fino · Mistura tartar: conferir estoque (validade 3 dias) · Porcionar porções de 100g</div></div>
+        </li>
+        <li class="check-item" onclick="toggle(this)">
+          <div class="check-box"><svg width="13" height="10" viewBox="0 0 13 10" fill="none"><path d="M1 5L4.5 8.5L12 1" stroke="white" stroke-width="2" stroke-linecap="round"/></svg></div>
+          <div class="check-text"><div class="check-label">Gema curada — verificar validade e quantidade <span class="tag tag-d1">D-1 · 12H</span></div><div class="check-meta">Validade: 2 dias · Para Tartar do Sertão (P12) · Deve estar em câmara há mínimo 12h · Textura: semi-firme, gema intacta</div></div>
+        </li>
+        <li class="check-item" onclick="toggle(this)">
+          <div class="check-box"><svg width="13" height="10" viewBox="0 0 13 10" fill="none"><path d="M1 5L4.5 8.5L12 1" stroke="white" stroke-width="2" stroke-linecap="round"/></svg></div>
+          <div class="check-text"><div class="check-label">Sagu crocante — produzir pré-serviço <span class="tag tag-fresh">FRESH</span></div><div class="check-meta">Fritar pré-serviço · Para Tartar (P12) · NUNCA pré-fritar com antecedência — murcha · Produzir agora e guardar hermético sem umidade</div></div>
+        </li>
+        <li class="check-item" onclick="toggle(this)">
+          <div class="check-box"><svg width="13" height="10" viewBox="0 0 13 10" fill="none"><path d="M1 5L4.5 8.5L12 1" stroke="white" stroke-width="2" stroke-linecap="round"/></svg></div>
+          <div class="check-text"><div class="check-label">Chips de mandioca — conferir crocância</div><div class="check-meta">Para Tartar (P12) · Armazenar hermético · Fritar à la minute se murchar</div></div>
+        </li>
+        <li class="check-item" onclick="toggle(this)">
+          <div class="check-box"><svg width="13" height="10" viewBox="0 0 13 10" fill="none"><path d="M1 5L4.5 8.5L12 1" stroke="white" stroke-width="2" stroke-linecap="round"/></svg></div>
+          <div class="check-text"><div class="check-label">Picles de maxixe — verificar validade (mínimo 24h)</div><div class="check-meta">Para Tartar (P12), Taco (P14), Robalo (P06) · Salmoura correta · Firmeza do maxixe — se murcho, não serve · Confirmar nova leva iniciada pelo Rafael/Franciele</div></div>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- FASE 5: AUX QUENTE -->
+  <div class="fase-content" id="beatriz-quente">
+    <div class="aviso">
+      <strong>⚠️ Jambu — Frango Tucupi &amp; Jambu (Menu Executivo)</strong>
+      Jambu causa adormecimento lingual 6–8 min. AVISAR O CLIENTE ANTES DO PEDIDO, SEM EXCEÇÃO. Garçom tem script obrigatório.
+    </div>
+
+    <div class="section">
+      <div class="section-header">
+        <div class="section-header-left">
+          <div class="section-icon">🔥</div>
+          <div>
+            <div class="section-title">Aux Quente — Frituras, Massas e Apoio</div>
+            <div class="section-subtitle">16h00–17h30 · P13 Croqueta · P14 Taco · P15 Toast · P16 Tempurá</div>
+          </div>
+        </div>
+        <div class="section-progress" id="prog-b-quente">0/9</div>
+      </div>
+      <div class="mini-progress"><div class="mini-progress-fill" id="bar-b-quente" style="width:0%"></div></div>
+      <ul class="checklist" id="list-b-quente">
+        <li class="check-item" onclick="toggle(this)">
+          <div class="check-box"><svg width="13" height="10" viewBox="0 0 13 10" fill="none"><path d="M1 5L4.5 8.5L12 1" stroke="white" stroke-width="2" stroke-linecap="round"/></svg></div>
+          <div class="check-text"><div class="check-label">Polvo cozido — verificar estoque para Croqueta <span class="tag tag-d1">D-1 · P13</span></div><div class="check-meta">Polvo D-1 em caldo frio na câmara · Porcionar para Croqueta (P13) e para Arroz de Polvo (Edmar) · Cabeças e caldo → base da Croqueta · Fritar 180°C, 3 min</div></div>
+        </li>
+        <li class="check-item" onclick="toggle(this)">
+          <div class="check-box"><svg width="13" height="10" viewBox="0 0 13 10" fill="none"><path d="M1 5L4.5 8.5L12 1" stroke="white" stroke-width="2" stroke-linecap="round"/></svg></div>
+          <div class="check-text"><div class="check-label">Croqueta DUE — preparar leva para o jantar <span class="tag tag-atencao">P13</span></div><div class="check-meta">Polvo + coalho defumado empanados · Empanamento DUE (farinha, ovo, farinha panko) · Porções empanadas vão à câmara até a hora de fritar · 180°C, 3 min · Coalho artesanal local</div></div>
+        </li>
+        <li class="check-item" onclick="toggle(this)">
+          <div class="check-box"><svg width="13" height="10" viewBox="0 0 13 10" fill="none"><path d="M1 5L4.5 8.5L12 1" stroke="white" stroke-width="2" stroke-linecap="round"/></svg></div>
+          <div class="check-text"><div class="check-label">Tortilha de fubá com cúrcuma — produzir no dia <span class="tag tag-fresh">D DO DIA · P14</span></div><div class="check-meta">Fubá Yoki + água + sal + manteiga · Fazer no turno · Para Taco Sergipano (P14) · Maxixe em salmoura: verificar estoque (24h mínimo)</div></div>
+        </li>
+        <li class="check-item" onclick="toggle(this)">
+          <div class="check-box"><svg width="13" height="10" viewBox="0 0 13 10" fill="none"><path d="M1 5L4.5 8.5L12 1" stroke="white" stroke-width="2" stroke-linecap="round"/></svg></div>
+          <div class="check-text"><div class="check-label">Pão de batata — verificar estoque para Toast de Costela <span class="tag tag-d1">D-1 · P15</span></div><div class="check-meta">Pão de batata caseiro (véspera) · Para Toast de Costela (P15) · Se em falta: informar 86 para o salão</div></div>
+        </li>
+        <li class="check-item" onclick="toggle(this)">
+          <div class="check-box"><svg width="13" height="10" viewBox="0 0 13 10" fill="none"><path d="M1 5L4.5 8.5L12 1" stroke="white" stroke-width="2" stroke-linecap="round"/></svg></div>
+          <div class="check-text"><div class="check-label">Fritadeira a 180°C — verificar temperatura e óleo</div><div class="check-meta">Temperatura estável antes do serviço · Óleo trocado se o almoço foi pesado · Para Croqueta (P13), Taco (P14) e Toast (P15)</div></div>
+        </li>
+        <li class="check-item" onclick="toggle(this)">
+          <div class="check-box"><svg width="13" height="10" viewBox="0 0 13 10" fill="none"><path d="M1 5L4.5 8.5L12 1" stroke="white" stroke-width="2" stroke-linecap="round"/></svg></div>
+          <div class="check-text"><div class="check-label">Massa tempurá — NÃO pré-preparar <span class="tag tag-fresh">À LA MINUTE · P16</span></div><div class="check-meta">Para Frutos do Mar Tempurá (P16): fazer SOMENTE na hora do pedido · Cerveja gelada no batter · Massa feita na hora = crocância garantida · Camarão e lulas: verificar disponibilidade</div></div>
+        </li>
+        <li class="check-item" onclick="toggle(this)">
+          <div class="check-box"><svg width="13" height="10" viewBox="0 0 13 10" fill="none"><path d="M1 5L4.5 8.5L12 1" stroke="white" stroke-width="2" stroke-linecap="round"/></svg></div>
+          <div class="check-text"><div class="check-label">Coordenação com Edmar — Pappardelle DUE <span class="tag tag-atencao">P08</span></div><div class="check-meta">Frutos do mar: separados, grelhados 2 min chapa, finalizar azeite trufado (Aux Quente) · Bisque + montagem: Edmar (Cozinheiro) · Coordenação obrigatória na saída</div></div>
+        </li>
+        <li class="check-item" onclick="toggle(this)">
+          <div class="check-box"><svg width="13" height="10" viewBox="0 0 13 10" fill="none"><path d="M1 5L4.5 8.5L12 1" stroke="white" stroke-width="2" stroke-linecap="round"/></svg></div>
+          <div class="check-text"><div class="check-label">Menu Executivo — verificar opções disponíveis para o jantar</div><div class="check-meta">Confirmar com Edmar quais executivos estão disponíveis · ⚠️ Frango Tucupi &amp; Jambu: garçom tem script obrigatório de aviso · Vegan disponível: Arroz do Sertão Verde</div></div>
+        </li>
+        <li class="check-item" onclick="toggle(this)">
+          <div class="check-box"><svg width="13" height="10" viewBox="0 0 13 10" fill="none"><path d="M1 5L4.5 8.5L12 1" stroke="white" stroke-width="2" stroke-linecap="round"/></svg></div>
+          <div class="check-text"><div class="check-label">Para os Pequenos — confirmar disponibilidade</div><div class="check-meta">Rigatoni na Manteiga (P25): manteiga clarificada + parmesão · Frango Grelhado (P26): peito sem osso + purê + legumes · Paillard de Filé (P27): filé achatado</div></div>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- FASE 6: PRÉ-SERVIÇO BEATRIZ -->
+  <div class="fase-content" id="beatriz-pre">
+    <div class="section">
+      <div class="section-header">
+        <div class="section-header-left">
+          <div class="section-icon">🟢</div>
+          <div>
+            <div class="section-title">Conferência Final — Liberar Praça</div>
+            <div class="section-subtitle">17h45–17h55 · Tudo pronto antes de Edmar liberar o jantar</div>
+          </div>
+        </div>
+        <div class="section-progress" id="prog-b-pre">0/6</div>
+      </div>
+      <div class="mini-progress"><div class="mini-progress-fill" id="bar-b-pre" style="width:0%"></div></div>
+      <ul class="checklist" id="list-b-pre">
+        <li class="check-item" onclick="toggle(this)">
+          <div class="check-box"><svg width="13" height="10" viewBox="0 0 13 10" fill="none"><path d="M1 5L4.5 8.5L12 1" stroke="white" stroke-width="2" stroke-linecap="round"/></svg></div>
+          <div class="check-text"><div class="check-label">Três sobremesas pré-montadas em câmara <span class="tag tag-critico">OBRIGATÓRIO</span></div><div class="check-meta">Torta Basca ✓ · Namelaka 70° ✓ · Passion ✓ · Bases nos pratos, componentes quentes/crocantes FORA</div></div>
+        </li>
+        <li class="check-item" onclick="toggle(this)">
+          <div class="check-box"><svg width="13" height="10" viewBox="0 0 13 10" fill="none"><path d="M1 5L4.5 8.5L12 1" stroke="white" stroke-width="2" stroke-linecap="round"/></svg></div>
+          <div class="check-text"><div class="check-label">Garde manger pronto — frios organizados e gelados</div><div class="check-meta">Peixe para tiradito fatiado e gelado · Gema curada acessível · Sagu e chips herméticos · Microgreens frescos · Burrata câmara</div></div>
+        </li>
+        <li class="check-item" onclick="toggle(this)">
+          <div class="check-box"><svg width="13" height="10" viewBox="0 0 13 10" fill="none"><path d="M1 5L4.5 8.5L12 1" stroke="white" stroke-width="2" stroke-linecap="round"/></svg></div>
+          <div class="check-text"><div class="check-label">Bases de aux prontas e geladas</div><div class="check-meta">Leite de tigre gelado · Pesto coberto · Aioli firme · Teriyaki pronto · Creme de abacate com filme em contato</div></div>
+        </li>
+        <li class="check-item" onclick="toggle(this)">
+          <div class="check-box"><svg width="13" height="10" viewBox="0 0 13 10" fill="none"><path d="M1 5L4.5 8.5L12 1" stroke="white" stroke-width="2" stroke-linecap="round"/></svg></div>
+          <div class="check-text"><div class="check-label">Fritadeira a 180°C — temperatura confirmada</div><div class="check-meta">Croqueta, Taco e Toast saem em 3–8 min no serviço · Fritadeira fria = atraso</div></div>
+        </li>
+        <li class="check-item" onclick="toggle(this)">
+          <div class="check-box"><svg width="13" height="10" viewBox="0 0 13 10" fill="none"><path d="M1 5L4.5 8.5L12 1" stroke="white" stroke-width="2" stroke-linecap="round"/></svg></div>
+          <div class="check-text"><div class="check-label">Alérgenos críticos confirmados com salão <span class="tag tag-critico">HACCP</span></div><div class="check-meta">Glúten, crustáceo, molusco, ovo, leite, frutos secos · Se cliente relatar alergia no serviço: avisar Edmar IMEDIATAMENTE</div></div>
+        </li>
+        <li class="check-item" onclick="toggle(this)">
+          <div class="check-box"><svg width="13" height="10" viewBox="0 0 13 10" fill="none"><path d="M1 5L4.5 8.5L12 1" stroke="white" stroke-width="2" stroke-linecap="round"/></svg></div>
+          <div class="check-text"><div class="check-label">Beatriz confirma praça pronta para Edmar <span class="tag tag-critico">17h50</span></div><div class="check-meta">"Praça pronta." · Edmar libera o jantar às 18h00.</div></div>
+        </li>
+      </ul>
+    </div>
+    <div id="banner-beatriz" class="complete-banner">
+      <strong>✅ Praça da Auxiliar pronta</strong>
+      <span>Beatriz, tudo conferido. Boa noite de serviço.</span>
+    </div>
+    <button class="reset-btn" onclick="resetPessoa('beatriz')">↺ Reiniciar Beatriz</button>
+  </div>
+
+</div><!-- /beatriz -->
+
+
+<script>
+// ─── DADOS ───────────────────────────────────────────────────
+const PESSOAS = {
+  edmar: {
+    fases: ['recepcao','bases','proteinas','mise','pre'],
+    banner: 'banner-edmar'
+  },
+  beatriz: {
+    fases: ['recepcao','bases','sobremesas','frios','quente','pre'],
+    banner: 'banner-beatriz'
+  }
+};
+
+// ─── INIT ─────────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', () => {
+  const hoje = new Date();
+  const opts = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+  const s = hoje.toLocaleDateString('pt-BR', opts);
+  document.getElementById('data-header').textContent = s.charAt(0).toUpperCase() + s.slice(1);
+  loadState();
+  updateAllProgress();
+});
+
+// ─── TOGGLE ──────────────────────────────────────────────────
+function toggle(el) {
+  el.classList.toggle('checked');
+  const listId = el.closest('.checklist').id;
+  const secId = listId.replace('list-', '');
+  updateSection(secId);
+  updateGlobal();
+  saveState();
+}
+
+// ─── SEÇÃO ───────────────────────────────────────────────────
+function updateSection(sId) {
+  const list = document.getElementById('list-' + sId);
+  if (!list) return;
+  const items = list.querySelectorAll('.check-item');
+  const done  = list.querySelectorAll('.check-item.checked');
+  const total = items.length, n = done.length;
+  const pct = total ? (n / total * 100) : 0;
+  const prog = document.getElementById('prog-' + sId);
+  const bar  = document.getElementById('bar-' + sId);
+  if (prog) { prog.textContent = n + '/' + total; prog.className = 'section-progress' + (n === total ? ' done' : ''); }
+  if (bar)  { bar.style.width = pct + '%'; n === total && total > 0 ? bar.classList.add('done') : bar.classList.remove('done'); }
+}
+
+// ─── GLOBAL ──────────────────────────────────────────────────
+function updateGlobal() {
+  const all = document.querySelectorAll('.check-item');
+  const done = document.querySelectorAll('.check-item.checked');
+  const total = all.length, n = done.length;
+  const pct = total ? (n / total * 100) : 0;
+  document.getElementById('global-bar').style.width = pct + '%';
+  document.getElementById('global-label').textContent =
+    n === total && total > 0
+      ? '✅ Tudo pronto — ' + n + '/' + total
+      : n + ' de ' + total + ' itens concluídos — ' + Math.round(pct) + '%';
+
+  // banners
+  Object.entries(PESSOAS).forEach(([pid, cfg]) => {
+    let t = 0, d = 0;
+    cfg.fases.forEach(f => {
+      const prefix = pid[0] === 'e' ? 'e' : 'b';
+      const l = document.getElementById('list-' + prefix + '-' + f);
+      if (!l) return;
+      t += l.querySelectorAll('.check-item').length;
+      d += l.querySelectorAll('.check-item.checked').length;
+    });
+    const banner = document.getElementById(cfg.banner);
+    if (banner) banner.className = 'complete-banner' + (d === t && t > 0 ? ' show' : '');
+  });
+}
+
+function updateAllProgress() {
+  const secs = [
+    'e-recepcao','e-bases','e-proteinas','e-mise','e-pre',
+    'b-recepcao','b-bases','b-sobremesas','b-frios','b-quente','b-pre'
+  ];
+  secs.forEach(s => updateSection(s));
+  updateGlobal();
+}
+
+// ─── PESSOA TABS ─────────────────────────────────────────────
+function showPessoa(pid, btn) {
+  document.querySelectorAll('.pessoa-content').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('.pessoa-tab').forEach(el => el.classList.remove('active'));
+  document.getElementById('pessoa-' + pid).classList.add('active');
+  btn.classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ─── FASE TABS ───────────────────────────────────────────────
+function showFase(pid, fid, btn) {
+  const pessoa = document.getElementById('pessoa-' + pid);
+  pessoa.querySelectorAll('.fase-content').forEach(el => el.classList.remove('active'));
+  pessoa.querySelectorAll('.fase-tab').forEach(el => el.classList.remove('active'));
+  document.getElementById(pid + '-' + fid).classList.add('active');
+  btn.classList.add('active');
+}
+
+// ─── RESET ───────────────────────────────────────────────────
+function resetPessoa(pid) {
+  if (!confirm('Reiniciar checklist de ' + pid.charAt(0).toUpperCase() + pid.slice(1) + '?')) return;
+  const pessoa = document.getElementById('pessoa-' + pid);
+  pessoa.querySelectorAll('.check-item').forEach(el => el.classList.remove('checked'));
+  updateAllProgress();
+  saveState();
+}
+
+// ─── PERSISTÊNCIA ────────────────────────────────────────────
+function getKey() {
+  const d = new Date();
+  return 'due_turnoB_' + d.getFullYear() + '_' + (d.getMonth()+1) + '_' + d.getDate();
+}
+function saveState() {
+  try {
+    const state = {};
+    document.querySelectorAll('.checklist').forEach(list => {
+      const items = list.querySelectorAll('.check-item');
+      state[list.id] = [];
+      items.forEach((item, i) => { if (item.classList.contains('checked')) state[list.id].push(i); });
+    });
+    localStorage.setItem(getKey(), JSON.stringify(state));
+  } catch(e) {}
+}
+function loadState() {
+  try {
+    const stored = localStorage.getItem(getKey());
+    if (!stored) return;
+    const state = JSON.parse(stored);
+    Object.entries(state).forEach(([listId, checked]) => {
+      const list = document.getElementById(listId);
+      if (!list) return;
+      const items = list.querySelectorAll('.check-item');
+      checked.forEach(i => { if (items[i]) items[i].classList.add('checked'); });
+    });
+  } catch(e) {}
+}
+</script>
+</body>
+</html>
