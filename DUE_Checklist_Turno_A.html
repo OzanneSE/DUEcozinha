@@ -1,0 +1,933 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DUE · Checklist Turno A — Rafael & Franciele</title>
+<style>
+:root {
+  --caju:      #C8732A;
+  --caju-soft: #F0D4B8;
+  --maxixe:    #5A7A52;
+  --maxixe-soft:#D6E8D2;
+  --mangaba:   #F5EDE0;
+  --breu:      #1C1917;
+  --branco:    #FDFAF6;
+  --cinza:     #8A8075;
+  --perigo:    #C0392B;
+  --perigo-soft:#FDECEA;
+  --alerta:    #D4A017;
+  --alerta-soft:#FEF9E7;
+  --verde-ok:  #27AE60;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{
+  background:var(--mangaba);
+  color:var(--breu);
+  font-family:Georgia,serif;
+  font-size:15px;
+  min-height:100vh;
+}
+
+/* ── HEADER ── */
+header{
+  background:var(--breu);
+  color:var(--branco);
+  padding:16px 20px 12px;
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:12px;
+}
+.header-left h1{
+  font-size:18px;
+  font-weight:700;
+  letter-spacing:.5px;
+  line-height:1.2;
+}
+.header-left .sub{
+  font-family:monospace;
+  font-size:11px;
+  color:var(--caju-soft);
+  letter-spacing:1px;
+  text-transform:uppercase;
+  margin-top:3px;
+}
+.header-right{
+  text-align:right;
+  flex-shrink:0;
+}
+.date-badge{
+  font-family:monospace;
+  font-size:11px;
+  color:var(--cinza);
+  letter-spacing:.5px;
+}
+
+/* ── PESSOA TABS ── */
+.pessoa-tabs{
+  display:flex;
+  background:var(--breu);
+  border-top:1px solid #333;
+}
+.pessoa-tab{
+  flex:1;
+  padding:10px 8px;
+  text-align:center;
+  cursor:pointer;
+  font-size:13px;
+  font-family:monospace;
+  letter-spacing:.5px;
+  color:var(--cinza);
+  border-bottom:3px solid transparent;
+  transition:all .15s;
+}
+.pessoa-tab.active{
+  color:var(--branco);
+  border-bottom-color:var(--caju);
+}
+.pessoa-tab .tab-label{
+  display:block;
+  font-size:10px;
+  text-transform:uppercase;
+  margin-bottom:2px;
+}
+.pessoa-tab .tab-name{
+  font-size:13px;
+}
+
+/* ── GLOBAL PROGRESS ── */
+.global-progress{
+  background:var(--breu);
+  padding:8px 20px 12px;
+}
+.prog-header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:5px;
+}
+.prog-label{
+  font-family:monospace;
+  font-size:10px;
+  letter-spacing:1px;
+  text-transform:uppercase;
+  color:var(--cinza);
+}
+.prog-pct{
+  font-family:monospace;
+  font-size:12px;
+  font-weight:700;
+  color:var(--caju);
+}
+.bar-bg{
+  background:#333;
+  border-radius:2px;
+  height:4px;
+  overflow:hidden;
+}
+.bar-fill{
+  height:100%;
+  background:var(--caju);
+  border-radius:2px;
+  transition:width .3s ease;
+}
+
+/* ── AVISO CRÍTICO ── */
+.aviso-critico{
+  background:var(--perigo-soft);
+  border-left:4px solid var(--perigo);
+  border-radius:4px;
+  padding:10px 14px;
+  margin:14px 16px;
+  font-size:13px;
+  line-height:1.5;
+}
+.aviso-critico strong{
+  color:var(--perigo);
+  font-family:monospace;
+  font-size:11px;
+  letter-spacing:.5px;
+  text-transform:uppercase;
+  display:block;
+  margin-bottom:3px;
+}
+
+/* ── BANNER PESSOA ── */
+.banner-pessoa{
+  margin:14px 16px 6px;
+  padding:10px 14px;
+  border-radius:6px;
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+.banner-rafael{ background:#E8F4F0; border-left:4px solid var(--maxixe); }
+.banner-franciele{ background:#FEF5E7; border-left:4px solid var(--alerta); }
+.banner-pessoa .b-icon{ font-size:22px; }
+.banner-pessoa .b-info .b-nome{
+  font-weight:700;
+  font-size:14px;
+  color:var(--breu);
+}
+.banner-pessoa .b-info .b-cargo{
+  font-family:monospace;
+  font-size:10px;
+  letter-spacing:.5px;
+  text-transform:uppercase;
+  color:var(--cinza);
+}
+
+/* ── FASE TABS ── */
+.fase-tabs{
+  display:flex;
+  overflow-x:auto;
+  padding:0 16px;
+  gap:6px;
+  scrollbar-width:none;
+  margin-bottom:14px;
+}
+.fase-tabs::-webkit-scrollbar{display:none;}
+.fase-tab{
+  flex-shrink:0;
+  padding:6px 12px;
+  border-radius:20px;
+  border:1.5px solid #CCC;
+  background:transparent;
+  cursor:pointer;
+  font-size:11px;
+  font-family:monospace;
+  letter-spacing:.3px;
+  color:var(--cinza);
+  white-space:nowrap;
+  transition:all .15s;
+}
+.fase-tab.active{
+  background:var(--caju);
+  border-color:var(--caju);
+  color:#fff;
+  font-weight:700;
+}
+.fase-tab .ft-count{
+  display:inline-block;
+  background:rgba(0,0,0,.15);
+  border-radius:8px;
+  padding:1px 5px;
+  font-size:9px;
+  margin-left:4px;
+}
+
+/* ── SEÇÃO ── */
+.section-wrap{ display:none; padding:0 16px 8px; }
+.section-wrap.active{ display:block; }
+
+/* ── SECTION PROGRESS ── */
+.sec-progress{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  margin-bottom:10px;
+}
+.sec-bar-bg{
+  flex:1;
+  background:#DDD;
+  border-radius:2px;
+  height:3px;
+  overflow:hidden;
+}
+.sec-bar-fill{
+  height:100%;
+  background:var(--maxixe);
+  border-radius:2px;
+  transition:width .3s;
+}
+.sec-pct{
+  font-family:monospace;
+  font-size:10px;
+  color:var(--cinza);
+  flex-shrink:0;
+  width:28px;
+  text-align:right;
+}
+
+/* ── SECTION HEADER ── */
+.section-header{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  margin-bottom:8px;
+}
+.section-icon{ font-size:16px; }
+.section-title{
+  font-size:13px;
+  font-weight:700;
+  color:var(--breu);
+  letter-spacing:.3px;
+}
+.section-hora{
+  font-family:monospace;
+  font-size:10px;
+  color:var(--cinza);
+  margin-left:auto;
+}
+
+/* ── CHECKLIST ── */
+ul.checklist{
+  list-style:none;
+  display:flex;
+  flex-direction:column;
+  gap:1px;
+  margin-bottom:16px;
+}
+ul.checklist li{
+  background:var(--branco);
+  border-radius:4px;
+  overflow:hidden;
+}
+ul.checklist li label{
+  display:flex;
+  align-items:flex-start;
+  gap:10px;
+  padding:10px 12px;
+  cursor:pointer;
+  line-height:1.4;
+}
+ul.checklist li input[type=checkbox]{ display:none; }
+.cb-box{
+  width:18px;
+  height:18px;
+  border:2px solid #BBB;
+  border-radius:3px;
+  flex-shrink:0;
+  margin-top:1px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  transition:all .15s;
+  font-size:11px;
+}
+ul.checklist li input:checked ~ .cb-box{
+  background:var(--verde-ok);
+  border-color:var(--verde-ok);
+  color:#fff;
+}
+ul.checklist li input:checked ~ .cb-box::after{ content:"✓"; }
+.cb-text{
+  flex:1;
+  font-size:14px;
+  color:var(--breu);
+}
+ul.checklist li input:checked ~ .cb-box ~ .cb-text{
+  text-decoration:line-through;
+  color:var(--cinza);
+}
+.cb-tag{
+  font-family:monospace;
+  font-size:9px;
+  letter-spacing:.5px;
+  text-transform:uppercase;
+  padding:2px 6px;
+  border-radius:3px;
+  flex-shrink:0;
+  align-self:flex-start;
+  margin-top:2px;
+}
+.tag-d1{
+  background:#FDECEA;
+  color:var(--perigo);
+  border:1px solid #F5C6C6;
+}
+.tag-op{
+  background:var(--maxixe-soft);
+  color:var(--maxixe);
+  border:1px solid #B8D8B4;
+}
+.tag-base{
+  background:#EAF4FB;
+  color:#1A7AB0;
+  border:1px solid #AED6F1;
+}
+.tag-mis{
+  background:var(--caju-soft);
+  color:var(--caju);
+  border:1px solid #E8B98A;
+}
+.tag-alerta{
+  background:var(--alerta-soft);
+  color:#7D6008;
+  border:1px solid #F9E79F;
+}
+.tag-perigo{
+  background:var(--perigo-soft);
+  color:var(--perigo);
+  border:1px solid #F5C6C6;
+  font-weight:700;
+}
+
+/* ── RESET ── */
+.reset-btn{
+  display:block;
+  width:100%;
+  margin:8px 0 20px;
+  padding:10px;
+  background:transparent;
+  border:1.5px solid #CCC;
+  border-radius:6px;
+  font-family:monospace;
+  font-size:11px;
+  letter-spacing:1px;
+  text-transform:uppercase;
+  color:var(--cinza);
+  cursor:pointer;
+  transition:all .15s;
+}
+.reset-btn:hover{
+  border-color:var(--perigo);
+  color:var(--perigo);
+}
+
+/* ── PESSOA WRAP ── */
+.pessoa-wrap{ display:none; }
+.pessoa-wrap.active{ display:block; }
+
+/* ── FOOTER ── */
+footer{
+  text-align:center;
+  padding:20px 16px 32px;
+  font-family:monospace;
+  font-size:10px;
+  letter-spacing:.5px;
+  color:var(--cinza);
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-left">
+    <h1>Checklist Turno A</h1>
+    <div class="sub">Rafael &amp; Franciele · DUE Cozinha</div>
+  </div>
+  <div class="header-right">
+    <div class="date-badge" id="date-display">—</div>
+  </div>
+</header>
+
+<!-- PESSOA TABS -->
+<div class="pessoa-tabs">
+  <div class="pessoa-tab active" onclick="showPessoa('rafael')" id="tab-pessoa-rafael">
+    <span class="tab-label">Cozinheiro A</span>
+    <span class="tab-name">Rafael</span>
+  </div>
+  <div class="pessoa-tab" onclick="showPessoa('franciele')" id="tab-pessoa-franciele">
+    <span class="tab-label">Auxiliar A</span>
+    <span class="tab-name">Franciele</span>
+  </div>
+</div>
+
+<!-- GLOBAL PROGRESS -->
+<div class="global-progress">
+  <div class="prog-header">
+    <span class="prog-label" id="prog-label-rafael">Rafael — progresso</span>
+    <span class="prog-pct" id="prog-pct-rafael">0%</span>
+  </div>
+  <div class="bar-bg"><div class="bar-fill" id="prog-bar-rafael" style="width:0%"></div></div>
+</div>
+
+<!-- ═══════════════ RAFAEL ═══════════════ -->
+<div class="pessoa-wrap active" id="pessoa-rafael">
+
+  <div class="banner-pessoa banner-rafael">
+    <span class="b-icon">👨‍🍳</span>
+    <div class="b-info">
+      <div class="b-nome">Rafael Cardozo Maciel</div>
+      <div class="b-cargo">Cozinheiro A · Turno Abertura</div>
+    </div>
+  </div>
+
+  <!-- FASE TABS RAFAEL -->
+  <div class="fase-tabs" id="fasetabs-rafael">
+    <div class="fase-tab active" onclick="showFase('rafael','abertura')" id="ftab-rafael-abertura">Abertura <span class="ft-count" id="fc-rafael-abertura">0/7</span></div>
+    <div class="fase-tab" onclick="showFase('rafael','d1')" id="ftab-rafael-d1">D-1 Produção <span class="ft-count" id="fc-rafael-d1">0/8</span></div>
+    <div class="fase-tab" onclick="showFase('rafael','bases')" id="ftab-rafael-bases">Bases <span class="ft-count" id="fc-rafael-bases">0/8</span></div>
+    <div class="fase-tab" onclick="showFase('rafael','proteinas')" id="ftab-rafael-proteinas">Proteínas <span class="ft-count" id="fc-rafael-proteinas">0/8</span></div>
+    <div class="fase-tab" onclick="showFase('rafael','executivo')" id="ftab-rafael-executivo">Executivo <span class="ft-count" id="fc-rafael-executivo">0/7</span></div>
+    <div class="fase-tab" onclick="showFase('rafael','passagem')" id="ftab-rafael-passagem">Passagem B <span class="ft-count" id="fc-rafael-passagem">0/6</span></div>
+  </div>
+
+  <!-- F1: ABERTURA -->
+  <div class="section-wrap active" id="sec-rafael-abertura">
+    <div class="sec-progress">
+      <div class="sec-bar-bg"><div class="sec-bar-fill" id="sb-rafael-abertura" style="width:0%"></div></div>
+      <div class="sec-pct" id="sp-rafael-abertura">0%</div>
+    </div>
+    <div class="section-header">
+      <span class="section-icon">🔑</span>
+      <span class="section-title">Abertura da Cozinha</span>
+      <span class="section-hora">08h00 – 09h00</span>
+    </div>
+    <ul class="checklist" id="list-rafael-abertura">
+      <li><label><input type="checkbox" onchange="toggle(this)"><span class="cb-box"></span><span class="cb-text">Ligar exaustores, coberturas e iluminação</span><span class="cb-tag tag-op">Abertura</span></label></li>
+      <li><label><input type="checkbox" onchange="toggle(this)"><span class="cb-box"></span><span class="cb-text">Câmara fria 1 (proteínas): verificar temperatura 0–4°C</span><span class="cb-tag tag-op">HACCP</span></label></li>
+      <li><label><input type="checkbox" onchange="toggle(this)"><span class="cb-box"></span><span class="cb-text">Câmara fria 2 (laticínios/garde): verificar temperatura 0–4°C</span><span class="cb-tag tag-op">HACCP</span></label></li>
+      <li><label><input type="checkbox" onchange="toggle(this)"><span class="cb-box"></span><span class="cb-text">Ligar forno combinado — preaquecimento 180°C</span><span class="cb-tag tag-op">Equip.</span></label></li>
+      <li><label><input type="checkbox" onchange="toggle(this)"><span class="cb-box"></span><span class="cb-text">Ligar banho-marias e conferir nível de água</span><span class="cb-tag tag-op">Equip.</span></label></li>
+      <li><label><input type="checkbox" onchange="toggle(this)"><span class="cb-box"></span><span class="cb-text">Checar registro do livro de passagem — pendências noite anterior</span><span class="cb-tag tag-alerta">Passagem</span></label></li>
+      <li><label><input type="checkbox" onchange="toggle(this)"><span class="cb-box"></span><span class="cb-text">Conferir recebimento do dia: carnes, peixes, hortaliças e laticínios</span><span class="cb-tag tag-op">Estoque</span></label></li>
+    </ul>
+  </div>
+
+  <!-- F2: D-1 PRODUÇÃO -->
+  <div class="section-wrap" id="sec-rafael-d1">
+    <div class="sec-progress">
+      <div class="sec-bar-bg"><div class="sec-bar-fill" id="sb-rafael-d1" style="width:0%"></div></div>
+      <div class="sec-pct" id="sp-rafael-d1">0%</div>
+    </div>
+    <div class="section-header">
+      <span class="section-icon">⏳</span>
+      <span class="section-title">D-1 — Produções de Longa Duração</span>
+      <span class="section-hora">08h30 – 11h00</span>
+    </div>
+    <div class="aviso-critico" style="margin:0 0 12px;">
+      <strong>⚠ Regra absoluta</strong>
+      D-1 não produzido = prato FORA DO CARDÁPIO. Iniciar antes de qualquer outra preparação.
+    </div>
+    <ul class="checklist" id="list-rafael-d1">
+      <li><label><input type="checkbox" onchange="toggle(this)"><span class="cb-box"></span><span class="cb-text">Polvo na panela de pressão — 45 a 60 min (para Arroz de Polvo e Croqueta)</span><span class="cb-tag tag-d1">D-1 · 45–60 MIN</span></label></li>
+      <li><label><input type="checkbox" onchange="toggle(this)"><span class="cb-box"></span><span class="cb-text">Costela — iniciar marinada 12h (para Ragù e Toast de Costela)</span><span class="cb-tag tag-d1">D-1 · 12H</span></label></li>
+      <li><label><input type="checkbox" onchange="toggle(this)"><span class="cb-box"></span><span class="cb-text">Costela D-1 anterior — forno 105°C · 3h (se marinada pronta)</span><span class="cb-tag tag-d1">D-1 · 3H FORNO</span></label></li>
+      <li><label><input type="checkbox" onchange="toggle(this)"><span class="cb-box"></span><span class="cb-text">Pato confit — verificar etapa: cura 24h ou forno 90°C · 3–4h</span><span class="cb-tag tag-d1">D-1 · PATO</span></label></li>
+      <li><label><input type="checkbox" onchange="toggle(this)"><span class="cb-box"></span><span class="cb-text">Carne do sol — dessalgar 4h mínimo em água gelada trocada</span><span class="cb-tag tag-d1">D-1 · 4H</span></label></li>
+      <li><label><input type="checkbox" onchange="toggle(this)"><span class="cb-box"></span><span class="cb-text">Charque — dessalgar overnight (colocar agora para amanhã se necessário)</span><span class="cb-tag tag-d1">D-1 · OVERNIGHT</span></label></li>
+      <li><label><input type="checkbox" onchange="toggle(this)"><span class="cb-box"></span><span class="cb-text">Gema curada — iniciar cura 12h sal+açúcar (para Garde Manger)</span><span class="cb-tag tag-d1">D-1 · 12H</span></label></li>
+      <li><label><input type="checkbox" onchange="toggle(this)"><span class="cb-box"></span><span class="cb-text">Registrar no livro: o que foi iniciado, horário e responsável</span><span class="cb-tag tag-op">Registro</span></label></li>
+    </ul>
+  </div>
+
+  <!-- F3: BASES -->
+  <div class="section-wrap" id="sec-rafael-bases">
+    <div class="sec-progress">
+      <div class="sec-bar-bg"><div class="sec-bar-fill" id="sb-rafael-bases" style="width:0%"></div></div>
+      <div class="sec-pct" id="sp-rafael-bases">0%</div>
+    </div>
+    <div class="section-header">
+      <span class="section-icon">🥄</span>
+      <span class="section-title">Bases do Dia</span>
+      <span class="section-hora">09h00 – 11h00</span>
+    </div>
+    <ul class="checklist" id="list-rafael-bases">
+      <li><label><input type="checkbox" onchange="toggle(this)"><span class="cb-box"></span><span class="cb-text">Bisque de camarão — 45 min (cascas + legumes + brandy)</span><span class="cb-tag tag-base">BASE · 45 MIN</span></label></li>
+      <li><label><input type="checkbox" onchange="toggle(this)"><span class="cb-box"></span><span class="cb-text">Demi-glace — redução mínima 2h; coar e reservar em banho-maria</span><span class="cb-tag tag-base">BASE · 2H</span></label></li>
+      <li><label><input type="checkbox" onchange="toggle(this)"><span class="cb-box"></span><span class="cb-text">Rubacão Sergipano — feijão verde + charque D-1 + coalho + manteiga garrafa · 40 min</span><span class="cb-tag tag-base">BASE · 40 MIN</span></label></li>
+      <li><label><input type="checkbox" onchange="toggle(this)"><span class="cb-box"></span><span class="cb-text">Mousseline de banana-da-terra — forno 200°C + manteiga noisette · 20 min</span><span class="cb-tag tag-base">BASE · 20 MIN</span></label></li>
+      <li><label><input type="checkbox" onchange="toggle(this)"><span class="cb-box"></span><span class="cb-text">Fonduta de parmesão — banho-maria 20 min; manter aquecida</span><span class="cb-tag tag-base">BASE · 20 MIN</span></label></li>
+      <li><label><input type="checkbox" onchange="toggle(this)"><span class="cb-box"></span><span class="cb-text">Molho pomodoro — refogado 20 min; reservar para Rigatoni e Executivo</span><span class="cb-tag tag-base">BASE · 20 MIN</span></label></li>
+      <li><label><input type="checkbox" onchange="toggle(this)"><span class="cb-box"></span><span class="cb-text">Xerém de milho — 30 min em caldo de peixe; ajustar cremosidade</span><span class="cb-tag tag-base">BASE · 30 MIN</span></label></li>
+      <li><label><input type="checkbox" onchange="toggle(this)"><span class="cb-box"></span><span class="cb-text">Ragù de costela (D-1 pronto) — aquecer lentamente; ajustar tempero</span><span class="cb-tag tag-d1">D-1 · AQUECER</span></label></li>
+    </ul>
+  </div>
+
+  <!-- F4: PROTEÍNAS -->
+  <div class="section-wrap" id="sec-rafael-proteinas">
+    <div class="sec-progress">
+      <div class="sec-bar-bg"><div class="sec-bar-fill" id="sb-rafael-proteinas" style="width:0%"></div></div>
+      <div class="sec-pct" id="sp-rafael-proteinas">0%</div>
+    </div>
+    <div class="section-header">
+      <span class="section-icon">🥩</span>
+      <span class="section-title">Proteínas — Porcionamento e Mise</span>
+      <span class="section-hora">09h30 – 11h00</span>
+    </div>
+    <ul class="checklist" id="list-rafael-proteinas">
+      <li><label><input type="checkbox" onchange="toggle(this)"><span class="cb-box"></span><span class="cb-text">Filé mignon — porcionamento 220g, limpar e reservar em câmara</span><span class="cb-tag tag-mis">Mise</span></label></li>
+      <li><label><input type="checkbox" onchange="toggle(this)"><span class="cb-box"></span><span class="cb-text">Flat Iron — porcionamento 250g; atenção à direção das fibras</span><span class="cb-tag tag-mis">Mise</span></label></li>
+      <li><label><input type="checkbox" onchange="toggle(this)"><span class="cb-box"></span><span class="cb-text">Carré de cordeiro — amarrar, porcionamento 3 costeletas; câmara até serviço</span><span class="cb-tag tag-mis">Mise · CORDEIRO</span></label></li>
+      <li><label><input type="checkbox" onchange="toggle(this)"><span class="cb-box"></span><span class="cb-text">Robalo — escalar, secar pele com papel, porcionamento 200g; pele obrigatória</span><span class="cb-tag tag-mis">Mise · PEIXE</span></label></li>
+      <li><label><input type="checkbox" onchange="toggle(this)"><span class="cb-box"></span><span class="cb-text">Pato confit (D-1 pronto) — verificar textura, reservar em gordura até serviço</span><span class="cb-tag tag-d1">D-1 · PATO</span></label></li>
+      <li><label><input type="checkbox" onchange="toggle(this)"><span class="cb-box"></span><span class="cb-text">Frango Menu Executivo — porcionamento coxa/sobrecoxa, marinar tucupi+jambu</span><span class="cb-tag tag-alerta">Exec · JAMBU ⚠</span></label></li>
+      <li><label><input type="checkbox" onchange="toggle(this)"><span class="cb-box"></span><span class="cb-text">Carne do sol dessalgada — secar, porcionamento para Filé do Sertão e Rubacão</span><span class="cb-tag tag-d1">D-1 · C. SOL</span></label></li>
+      <li><label><input type="checkbox" onchange="toggle(this)"><span class="cb-box"></span><span class="cb-text">Confirmar quantidade de cada proteína com Franciele — 86s antecipados</span><span class="cb-tag tag-op">Coord.</span></label></li>
+    </ul>
+  </div>
+
+  <!-- F5: EXECUTIVO -->
+  <div class="section-wrap" id="sec-rafael-executivo">
+    <div class="sec-progress">
+      <div class="sec-bar-bg"><div class="sec-bar-fill" id="sb-rafael-executivo" style="width:0%"></div></div>
+      <div class="sec-pct" id="sp-rafael-executivo">0%</div>
+    </div>
+    <div class="section-header">
+      <span class="section-icon">🍽️</span>
+      <span class="section-title">Serviço Executivo</span>
+      <span class="section-hora">11h30 – 15h00</span>
+    </div>
+    <div class="aviso-critico" style="margin:0 0 12px;">
+      <strong>⚠ Jambu — Aviso Obrigatório</strong>
+      Frango Tucupi &amp; Jambu causa adormecimento lingual 6–8 min. Avisar o cliente ANTES de servir, sem exceção. Comunicar ao garçom antes do início do serviço.
+    </div>
+    <ul class="checklist" id="list-rafael-executivo">
+      <li><label><input type="checkbox" onchange="toggle(this)"><span class="cb-box"></span><span class="cb-text">Briefing salão: comunicar opções 86 do dia, aviso Jambu confirmado</span><span class="cb-tag tag-op">11h20</span></label></li>
+      <li><label><input type="checkbox" onchange="toggle(this)"><span class="cb-box"></span><span class="cb-text">Robalo Território — mise pronta, molho separado em bowls</span><span class="cb-tag tag-mis">Exec P1</span></label></li>
+      <li><label><input type="checkbox" onchange="toggle(this)"><span class="cb-box"></span><span class="cb-text">Frango Tucupi &amp; Jambu — frango marinado, jambu branqueado, tucupi aquecido</span><span class="cb-tag tag-mis">Exec P2</span></label></li>
+      <li><label><input type="checkbox" onchange="toggle(this)"><span class="cb-box"></span><span class="cb-text">Arroz de Sol DUE + Rigatoni da Nonna + Arroz do Sertão Verde — pronto 11h25</span><span class="cb-tag tag-mis">Exec P3-5</span></label></li>
+      <li><label><input type="checkbox" onchange="toggle(this)"><span class="cb-box"></span><span class="cb-text">Salada Morna de Camarão — camarão confit porcionado, guarnições frias prontas</span><span class="cb-tag tag-mis">Exec P6</span></label></li>
+      <li><label><input type="checkbox" onchange="toggle(this)"><span class="cb-box"></span><span class="cb-text">Para os Pequenos (se houver reserva): Rigatoni manteiga + Frango + Paillard</span><span class="cb-tag tag-mis">Kids</span></label></li>
+      <li><label><input type="checkbox" onchange="toggle(this)"><span class="cb-box"></span><span class="cb-text">Às 14h30: iniciar limpeza executivo, manter carta à la carte ativa até 15h</span><span class="cb-tag tag-op">Encerrar</span></label></li>
+    </ul>
+  </div>
+
+  <!-- F6: PASSAGEM -->
+  <div class="section-wrap" id="sec-rafael-passagem">
+    <div class="sec-progress">
+      <div class="sec-bar-bg"><div class="sec-bar-fill" id="sb-rafael-passagem" style="width:0%"></div></div>
+      <div class="sec-pct" id="sp-rafael-passagem">0%</div>
+    </div>
+    <div class="section-header">
+      <span class="section-icon">🔁</span>
+      <span class="section-title">Passagem de Turno — Rafael → Edmar</span>
+      <span class="section-hora">14h30 – 15h00</span>
+    </div>
+    <ul class="checklist" id="list-rafael-passagem">
+      <li><label><input type="checkbox" onchange="toggle(this)"><span class="cb-box"></span><span class="cb-text">Briefing verbal com Edmar: D-1 em andamento, proteínas disponíveis, 86s do dia</span><span class="cb-tag tag-op">Passagem</span></label></li>
+      <li><label><input type="checkbox" onchange="toggle(this)"><span class="cb-box"></span><span class="cb-text">Bases prontas etiquetadas com hora de produção e quantidade restante</span><span class="cb-tag tag-op">Etiquetas</span></label></li>
+      <li><label><input type="checkbox" onchange="toggle(this)"><span class="cb-box"></span><span class="cb-text">Proteínas da câmara conferidas com Edmar — contagem assinada no livro</span><span class="cb-tag tag-op">Câmara</span></label></li>
+      <li><label><input type="checkbox" onchange="toggle(this)"><span class="cb-box"></span><span class="cb-text">D-1 em andamento comunicado: polvo, costela, pato — etapa e horário previsto</span><span class="cb-tag tag-d1">D-1 Status</span></label></li>
+      <li><label><input type="checkbox" onchange="toggle(this)"><span class="cb-box"></span><span class="cb-text">Registrar no livro de passagem: produzido, consumido no almoço, pendências</span><span class="cb-tag tag-op">Registro</span></label></li>
+      <li><label><input type="checkbox" onchange="toggle(this)"><span class="cb-box"></span><span class="cb-text">Praça limpa e organizada — Edmar confirma recepção ✓</span><span class="cb-tag tag-op">Encerrar</span></label></li>
+    </ul>
+  </div>
+
+  <button class="reset-btn" onclick="resetPessoa('rafael')">↺ Resetar checklist de Rafael</button>
+</div>
+<!-- FIM RAFAEL -->
+
+
+<!-- ═══════════════ FRANCIELE ═══════════════ -->
+<div class="pessoa-wrap" id="pessoa-franciele">
+
+  <div class="banner-pessoa banner-franciele">
+    <span class="b-icon">👩‍🍳</span>
+    <div class="b-info">
+      <div class="b-nome">Franciele Barreto</div>
+      <div class="b-cargo">Auxiliar A · Turno Abertura</div>
+    </div>
+  </div>
+
+  <!-- FASE TABS FRANCIELE -->
+  <div class="fase-tabs" id="fasetabs-franciele">
+    <div class="fase-tab active" onclick="showFase('franciele','abertura')" id="ftab-franciele-abertura">Abertura <span class="ft-count" id="fc-franciele-abertura">0/6</span></div>
+    <div class="fase-tab" onclick="showFase('franciele','sobremesas')" id="ftab-franciele-sobremesas">Sobremesas <span class="ft-count" id="fc-franciele-sobremesas">0/9</span></div>
+    <div class="fase-tab" onclick="showFase('franciele','gardemanger')" id="ftab-franciele-gardemanger">Garde Manger <span class="ft-count" id="fc-franciele-gardemanger">0/10</span></div>
+    <div class="fase-tab" onclick="showFase('franciele','bases')" id="ftab-franciele-bases">Bases Aux <span class="ft-count" id="fc-franciele-bases">0/5</span></div>
+    <div class="fase-tab" onclick="showFase('franciele','quente')" id="ftab-franciele-quente">Aux Quente <span class="ft-count" id="fc-franciele-quente">0/8</span></div>
+    <div class="fase-tab" onclick="showFase('franciele','passagem')" id="ftab-franciele-passagem">Passagem B <span class="ft-count" id="fc-franciele-passagem">0/6</span></div>
+  </div>
+
+  <!-- F1: ABERTURA -->
+  <div class="section-wrap active" id="sec-franciele-abertura">
+    <div class="sec-progress">
+      <div class="sec-bar-bg"><div class="sec-bar-fill" id="sb-franciele-abertura" style="width:0%"></div></div>
+      <div class="sec-pct" id="sp-franciele-abertura">0%</div>
+    </div>
+    <div class="section-header">
+      <span class="section-icon">🔑</span>
+      <span class="section-title">Abertura — Praça Auxiliar</span>
+      <span class="section-hora">08h00 – 09h00</span>
+    </div>
+    <ul class="checklist" id="list-franciele-abertura">
+      <li><label><input type="checkbox" onchange="toggle(this)"><span class="cb-box"></span><span class="cb-text">Checar câmara sobremesas e frios — temperatura 0–4°C, registrar</span><span class="cb-tag tag-op">HACCP</span></label></li>
+      <li><label><input type="checkbox" onchange="toggle(this)"><span class="cb-box"></span><span class="cb-text">Verificar sobremesas D-1: Torta Basca e Namelaka — aspecto, textura, validade</span><span class="cb-tag tag-d1">D-1 Chk</span></label></li>
+      <li><label><input type="checkbox" onchange="toggle(this)"><span class="cb-box"></span><span class="cb-text">Ligar batedeira planetária e processador — teste rápido</span><span class="cb-tag tag-op">Equip.</span></label></li>
+      <li><label><input type="checkbox" onchange="toggle(this)"><span class="cb-box"></span><span class="cb-text">Verificar validade de cremes, iogurtes e laticínios recebidos</span><span class="cb-tag tag-op">HACCP</span></label></li>
+      <li><label><input type="checkbox" onchange="toggle(this)"><span class="cb-box"></span><span class="cb-text">Checar registro do livro de passagem — pendências da noite anterior</span><span class="cb-tag tag-alerta">Passagem</span></label></li>
+      <li><label><input type="checkbox" onchange="toggle(this)"><span class="cb-box"></span><span class="cb-text">Anotar prioridades do dia — o que precisa ser produzido primeiro</span><span class="cb-tag tag-op">Planej.</span></label></li>
+    </ul>
+  </div>
+
+  <!-- F2: SOBREMESAS -->
+  <div class="section-wrap" id="sec-franciele-sobremesas">
+    <div class="sec-progress">
+      <div class="sec-bar-bg"><div class="sec-bar-fill" id="sb-franciele-sobremesas" style="width:0%"></div></div>
+      <div class="sec-pct" id="sp-franciele-sobremesas">0%</div>
+    </div>
+    <div class="section-header">
+      <span class="section-icon">🍮</span>
+      <span class="section-title">Produção de Sobremesas</span>
+      <span class="section-hora">08h30 – 10h30</span>
+    </div>
+    <ul class="checklist" id="list-franciele-sobremesas">
+      <li><label><input type="checkbox" onchange="toggle(this)"><span class="cb-box"></span><span class="cb-text">Torta Basca — se D-1 ausente: assar agora a 220°C 25 min; resfriar 1h antes de servir</span><span class="cb-tag tag-d1">D-1 ou Agora</span></label></li>
+      <li><label><input type="checkbox" onchange="toggle(this)"><span class="cb-box"></span><span class="cb-text">Namelaka 70% — se D-1 ausente: produzir agora (cristalizar 6h mínimo em câmara)</span><span class="cb-tag tag-d1">D-1 · 6H MIN</span></label></li>
+      <li><label><input type="checkbox" onchange="toggle(this)"><span class="cb-box"></span><span class="cb-text">Passion — assar cestinhas de filo agora; reservar em local seco</span><span class="cb-tag tag-mis">FRESH</span></label></li>
+      <li><label><input type="checkbox" onchange="toggle(this)"><span class="cb-box"></span><span class="cb-text">Pralinê de castanha-de-caju — caramelizar + quebrar; conservar seco</span><span class="cb-tag tag-mis">Compnente</span></label></li>
+      <li><label><input type="checkbox" onchange="toggle(this)"><span class="cb-box"></span><span class="cb-text">Calda de maracujá pitanga — redução 15 min; ajustar acidez; refrigerar</span><span class="cb-tag tag-mis">Componente</span></label></li>
+      <li><label><input type="checkbox" onchange="toggle(this)"><span class="cb-box"></span><span class="cb-text">Farofa de avelã — torrar e triturar grosseiro; conservar seco</span><span class="cb-tag tag-mis">Componente</span></label></li>
+      <li><label><input type="checkbox" onchange="toggle(this)"><span class="cb-box"></span><span class="cb-text">Sagu crocante — preparar FRESH; usar na hora da montagem</span><span class="cb-tag tag-mis">FRESH</span></label></li>
+      <li><label><input type="checkbox" onchange="toggle(this)"><span class="cb-box"></span><span class="cb-text">Pré-montagem Torta Basca — prato, base, finalização exceto chantilly</span><span class="cb-tag tag-mis">Pré-mont.</span></label></li>
+      <li><label><input type="checkbox" onchange="toggle(this)"><span class="cb-box"></span><span class="cb-text">Pré-montagem Namelaka + Passion — bases prontas para finalização na hora</span><span class="cb-tag tag-mis">Pré-mont.</span></label></li>
+    </ul>
+  </div>
+
+  <!-- F3: GARDE MANGER -->
+  <div class="section-wrap" id="sec-franciele-gardemanger">
+    <div class="sec-progress">
+      <div class="sec-bar-bg"><div class="sec-bar-fill" id="sb-franciele-gardemanger" style="width:0%"></div></div>
+      <div class="sec-pct" id="sp-franciele-gardemanger">0%</div>
+    </div>
+    <div class="section-header">
+      <span class="section-icon">🥗</span>
+      <span class="section-title">Garde Manger — Entradas Frias</span>
+      <span class="section-hora">09h00 – 11h00</span>
+    </div>
+    <ul class="checklist" id="list-franciele-gardemanger">
+      <li><label><input type="checkbox" onchange="toggle(this)"><span class="cb-box"></span><span class="cb-text">Peixe para Tiradito — fatiar fino na hora do serviço; conservar coberto na câmara</span><span class="cb-tag tag-mis">FRESH</span></label></li>
+      <li><label><input type="checkbox" onchange="toggle(this)"><span class="cb-box"></span><span class="cb-text">Burrata — verificar integridade, porcionar 1 un/prato; mantida em soro até serviço</span><span class="cb-tag tag-mis">Mise</span></label></li>
+      <li><label><input type="checkbox" onchange="toggle(this)"><span class="cb-box"></span><span class="cb-text">Tartar carne do sol — carne do sol D-1 dessalgada + brunoise + temperos; câmara</span><span class="cb-tag tag-d1">D-1 · C. SOL</span></label></li>
+      <li><label><input type="checkbox" onchange="toggle(this)"><span class="cb-box"></span><span class="cb-text">Gema curada (D-1) — verificar firmeza; porcionar 1 un por tartar</span><span class="cb-tag tag-d1">D-1 · 12H</span></label></li>
+      <li><label><input type="checkbox" onchange="toggle(this)"><span class="cb-box"></span><span class="cb-text">Camarão confit — cozinhar em azeite aromatizado; refrigerar até uso</span><span class="cb-tag tag-mis">Confit</span></label></li>
+      <li><label><input type="checkbox" onchange="toggle(this)"><span class="cb-box"></span><span class="cb-text">Chips de batata-doce — fritar, escorrer, salgar; conservar em local seco</span><span class="cb-tag tag-mis">Chips</span></label></li>
+      <li><label><input type="checkbox" onchange="toggle(this)"><span class="cb-box"></span><span class="cb-text">Chips de mandioca — fritar e escorrer; conservar em local seco</span><span class="cb-tag tag-mis">Chips</span></label></li>
+      <li><label><input type="checkbox" onchange="toggle(this)"><span class="cb-box"></span><span class="cb-text">Picles de maxixe — verificar fermentação, ajustar pH se necessário</span><span class="cb-tag tag-mis">Ferment.</span></label></li>
+      <li><label><input type="checkbox" onchange="toggle(this)"><span class="cb-box"></span><span class="cb-text">Microgreens — lavar, secar em centrifugadora; refrigerar em papel úmido</span><span class="cb-tag tag-mis">Fresco</span></label></li>
+      <li><label><input type="checkbox" onchange="toggle(this)"><span class="cb-box"></span><span class="cb-text">Organizar câmara garde manger — tudo etiquetado com hora de produção</span><span class="cb-tag tag-op">Org.</span></label></li>
+    </ul>
+  </div>
+
+  <!-- F4: BASES AUX -->
+  <div class="section-wrap" id="sec-franciele-bases">
+    <div class="sec-progress">
+      <div class="sec-bar-bg"><div class="sec-bar-fill" id="sb-franciele-bases" style="width:0%"></div></div>
+      <div class="sec-pct" id="sp-franciele-bases">0%</div>
+    </div>
+    <div class="section-header">
+      <span class="section-icon">🫙</span>
+      <span class="section-title">Bases Auxiliares</span>
+      <span class="section-hora">09h30 – 11h00</span>
+    </div>
+    <ul class="checklist" id="list-franciele-bases">
+      <li><label><input type="checkbox" onchange="toggle(this)"><span class="cb-box"></span><span class="cb-text">Leite de tigre — produzir FRESH, validade máx 2h; comunicar Beatriz ao passar turno</span><span class="cb-tag tag-mis">FRESH · 2H</span></label></li>
+      <li><label><input type="checkbox" onchange="toggle(this)"><span class="cb-box"></span><span class="cb-text">Pesto de manjericão — processar, finalizar azeite; refrigerar, validade 24h</span><span class="cb-tag tag-mis">MAX 24H</span></label></li>
+      <li><label><input type="checkbox" onchange="toggle(this)"><span class="cb-box"></span><span class="cb-text">Aioli clássico — emulsionar; conservar em câmara, validade 24h</span><span class="cb-tag tag-mis">MAX 24H</span></label></li>
+      <li><label><input type="checkbox" onchange="toggle(this)"><span class="cb-box"></span><span class="cb-text">Teriyaki de hibisco DUE — redução hibisco + açúcar mascavo + shoyu; 25 min</span><span class="cb-tag tag-base">BASE · 25 MIN</span></label></li>
+      <li><label><input type="checkbox" onchange="toggle(this)"><span class="cb-box"></span><span class="cb-text">Creme de abacate — produzir FRESH, validade 1 dia; cobrir com filme contato</span><span class="cb-tag tag-mis">FRESH · 1D</span></label></li>
+    </ul>
+  </div>
+
+  <!-- F5: AUX QUENTE -->
+  <div class="section-wrap" id="sec-franciele-quente">
+    <div class="sec-progress">
+      <div class="sec-bar-bg"><div class="sec-bar-fill" id="sb-franciele-quente" style="width:0%"></div></div>
+      <div class="sec-pct" id="sp-franciele-quente">0%</div>
+    </div>
+    <div class="section-header">
+      <span class="section-icon">🔥</span>
+      <span class="section-title">Suporte Quente — Almoço</span>
+      <span class="section-hora">10h30 – 15h00</span>
+    </div>
+    <ul class="checklist" id="list-franciele-quente">
+      <li><label><input type="checkbox" onchange="toggle(this)"><span class="cb-box"></span><span class="cb-text">Polvo para Croqueta (D-1 pronto) — desfiar, moldar, empanar; câmara</span><span class="cb-tag tag-d1">D-1 Polvo</span></label></li>
+      <li><label><input type="checkbox" onchange="toggle(this)"><span class="cb-box"></span><span class="cb-text">Pão de batata DUE (D-1) — verificar e separar porções para Taco e Toast</span><span class="cb-tag tag-d1">D-1 · Pão</span></label></li>
+      <li><label><input type="checkbox" onchange="toggle(this)"><span class="cb-box"></span><span class="cb-text">Tortilha de fubá — produzir D DO DIA para Taco Sergipano de Camarão</span><span class="cb-tag tag-mis">D DO DIA</span></label></li>
+      <li><label><input type="checkbox" onchange="toggle(this)"><span class="cb-box"></span><span class="cb-text">Fritadeira: aquecer a 180°C — óleo limpo confirmado</span><span class="cb-tag tag-op">Equip.</span></label></li>
+      <li><label><input type="checkbox" onchange="toggle(this)"><span class="cb-box"></span><span class="cb-text">Massa tempurá Frutos do Mar — à la minute no serviço; preparar mix de farinhas</span><span class="cb-tag tag-mis">À LA MIN.</span></label></li>
+      <li><label><input type="checkbox" onchange="toggle(this)"><span class="cb-box"></span><span class="cb-text">Pappardelle fresco DUE — produzir 500g mínimo; cobrir com pano úmido</span><span class="cb-tag tag-mis">Massa</span></label></li>
+      <li><label><input type="checkbox" onchange="toggle(this)"><span class="cb-box"></span><span class="cb-text">Para os Pequenos: Rigatoni manteiga + Paillard de filé — mise pronta</span><span class="cb-tag tag-mis">Kids</span></label></li>
+      <li><label><input type="checkbox" onchange="toggle(this)"><span class="cb-box"></span><span class="cb-text">Alérgenos confirmados: registrar Jambu, glúten, lactose, frutos do mar no livro</span><span class="cb-tag tag-perigo">HACCP Alerg.</span></label></li>
+    </ul>
+  </div>
+
+  <!-- F6: PASSAGEM -->
+  <div class="section-wrap" id="sec-franciele-passagem">
+    <div class="sec-progress">
+      <div class="sec-bar-bg"><div class="sec-bar-fill" id="sb-franciele-passagem" style="width:0%"></div></div>
+      <div class="sec-pct" id="sp-franciele-passagem">0%</div>
+    </div>
+    <div class="section-header">
+      <span class="section-icon">🔁</span>
+      <span class="section-title">Passagem de Turno — Franciele → Beatriz</span>
+      <span class="section-hora">14h30 – 15h00</span>
+    </div>
+    <ul class="checklist" id="list-franciele-passagem">
+      <li><label><input type="checkbox" onchange="toggle(this)"><span class="cb-box"></span><span class="cb-text">Briefing verbal com Beatriz: sobremesas disponíveis, validade de cada uma</span><span class="cb-tag tag-op">Passagem</span></label></li>
+      <li><label><input type="checkbox" onchange="toggle(this)"><span class="cb-box"></span><span class="cb-text">Câmara garde manger conferida com Beatriz — contagem e validade assinadas</span><span class="cb-tag tag-op">Garde</span></label></li>
+      <li><label><input type="checkbox" onchange="toggle(this)"><span class="cb-box"></span><span class="cb-text">Bases auxiliares: informar o que está pronto, validade restante (leite de tigre, aioli, pesto)</span><span class="cb-tag tag-mis">Bases</span></label></li>
+      <li><label><input type="checkbox" onchange="toggle(this)"><span class="cb-box"></span><span class="cb-text">Informar status croqueta: empanada e pronta ou pendente para Beatriz</span><span class="cb-tag tag-d1">D-1 Status</span></label></li>
+      <li><label><input type="checkbox" onchange="toggle(this)"><span class="cb-box"></span><span class="cb-text">Registrar no livro de passagem: produzido, consumido no almoço, pendências</span><span class="cb-tag tag-op">Registro</span></label></li>
+      <li><label><input type="checkbox" onchange="toggle(this)"><span class="cb-box"></span><span class="cb-text">Praça limpa e organizada — Beatriz confirma recepção ✓</span><span class="cb-tag tag-op">Encerrar</span></label></li>
+    </ul>
+  </div>
+
+  <button class="reset-btn" onclick="resetPessoa('franciele')">↺ Resetar checklist de Franciele</button>
+</div>
+<!-- FIM FRANCIELE -->
+
+<footer>DUE Cozinha · Turno A · v1.0 · 2026</footer>
+
+<script>
+const PESSOAS = ['rafael','franciele'];
+const FASES = {
+  rafael:    ['abertura','d1','bases','proteinas','executivo','passagem'],
+  franciele: ['abertura','sobremesas','gardemanger','bases','quente','passagem']
+};
+
+/* ── STATE ── */
+function stateKey(){
+  const d=new Date();
+  return `due_turnoA_${d.getFullYear()}_${d.getMonth()+1}_${d.getDate()}`;
+}
+
+function saveState(){
+  const state={};
+  document.querySelectorAll('input[type=checkbox]').forEach((cb,i)=>{
+    state[cb.closest('li').dataset.idx||i]=cb.checked;
+  });
+  // store keyed by li id
+  const out={};
+  document.querySelectorAll('ul.checklist li').forEach(li=>{
+    const cb=li.querySelector('input[type=checkbox]');
+    out[li.id]=cb.checked;
+  });
+  localStorage.setItem(stateKey(),JSON.stringify(out));
+}
+
+function loadState(){
+  const raw=localStorage.getItem(stateKey());
+  if(!raw)return;
+  const out=JSON.parse(raw);
+  document.querySelectorAll('ul.checklist li').forEach(li=>{
+    if(out[li.id]!==undefined){
+      const cb=li.querySelector('input[type=checkbox]');
+      cb.checked=out[li.id];
+    }
+  });
+}
+
+/* ── assign IDs to li ── */
+function assignIds(){
+  document.querySelectorAll('ul.checklist').forEach(ul=>{
+    ul.querySelectorAll('li').forEach((li,i)=>{
+      li.id=ul.id+'-item-'+i;
+    });
+  });
+}
+
+/* ── TOGGLE ── */
+function toggle(cb){
+  updateSection(cb);
+  updateGlobal();
+  saveState();
+}
+
+/* ── PESSOA ── */
+let activePessoa='rafael';
+function showPessoa(p){
+  activePessoa=p;
+  PESSOAS.forEach(x=>{
+    document.getElementById('tab-pessoa-'+x).classList.toggle('active',x===p);
+    document.getElementById('pessoa-'+x).classList.toggle('active',x===p);
+  });
+  // update prog bar label/color
+  const label=document.getElementById('prog-label-rafael');
+  const pct=document.getElementById('prog-pct-rafael');
+  const bar=document.getElementById('prog-bar-rafael');
+  label.textContent=(p==='rafael'?'Rafael':'Franciele')+' — progresso';
+  updateGlobal();
+}
+
+/* ── FASE ── */
+function showFase(pessoa,fase){
+  FASES[pessoa].forEach(f=>{
+    const sw=document.getElementById('sec-'+pessoa+'-'+f);
+    const tb=document.getElementById('ftab-'+pessoa+'-'+f);
+    if(sw) sw.classList.toggle('active',f===fase);
+    if(tb) tb.classList.toggle('active',f===fase);
+  });
+}
+
+/* ── PROGRESS ── */
+function countSection(pessoa,fase){
+  const ul=document.getElementById('list-'+pessoa+'-'+fase);
+  if(!ul) return [0,0];
+  const cbs=ul.querySelectorAll('input[type=checkbox]');
+  const done=[...cbs].filter(c=>c.checked).length;
+  return [done,cbs.length];
+}
+
+function updateSection(cb){
+  const ul=cb.closest('ul.checklist');
+  if(!ul)return;
+  const id=ul.id; // list-rafael-abertura
+  const parts=id.split('-');
+  // list-pessoa-fase or list-pessoa-gardemanger etc
+  // parts[0]=list, parts[1]=pessoa, parts[2..]=fase
+  const pessoa=parts[1];
+  const fase=parts.slice(2).join('-');
+  const [done,total]=countSection(pessoa,fase);
+  const pct=total?Math.round(done/total*100):0;
+  const sb=document.getElementById('sb-'+pessoa+'-'+fase);
+  const sp=document.getElementById('sp-'+pessoa+'-'+fase);
+  const fc=document.getElementById('fc-'+pessoa+'-'+fase);
+  if(sb) sb.style.width=pct+'%';
+  if(sp) sp.textContent=pct+'%';
+  if(fc) fc.textContent=done+'/'+total;
+}
+
+function updateGlobal(){
+  const p=activePessoa;
+  let total=0,done=0;
+  FASES[p].forEach(f=>{
+    const [d,t]=countSection(p,f);
+    done+=d; total+=t;
+  });
+  const pct=total?Math.round(done/total*100):0;
+  document.getElementById('prog-pct-rafael').textContent=pct+'%';
+  document.getElementById('prog-bar-rafael').style.width=pct+'%';
+}
+
+function updateAllProgress(){
+  PESSOAS.forEach(p=>{
+    FASES[p].forEach(f=>{
+      const ul=document.getElementById('list-'+p+'-'+f);
+      if(!ul)return;
+      const [done,total]=countSection(p,f);
+      const pct=total?Math.round(done/total*100):0;
+      const sb=document.getElementById('sb-'+p+'-'+f);
+      const sp=document.getElementById('sp-'+p+'-'+f);
+      const fc=document.getElementById('fc-'+p+'-'+f);
+      if(sb) sb.style.width=pct+'%';
+      if(sp) sp.textContent=pct+'%';
+      if(fc) fc.textContent=done+'/'+total;
+    });
+  });
+  updateGlobal();
+}
+
+/* ── RESET ── */
+function resetPessoa(p){
+  if(!confirm('Resetar todos os itens de '+p.charAt(0).toUpperCase()+p.slice(1)+'?'))return;
+  FASES[p].forEach(f=>{
+    const ul=document.getElementById('list-'+p+'-'+f);
+    if(!ul)return;
+    ul.querySelectorAll('input[type=checkbox]').forEach(cb=>cb.checked=false);
+  });
+  updateAllProgress();
+  saveState();
+}
+
+/* ── DATE ── */
+function showDate(){
+  const d=new Date();
+  const dias=['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
+  const meses=['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
+  document.getElementById('date-display').textContent=
+    dias[d.getDay()]+' '+d.getDate()+' '+meses[d.getMonth()]+' '+d.getFullYear();
+}
+
+/* ── INIT ── */
+assignIds();
+showDate();
+loadState();
+updateAllProgress();
+</script>
+</body>
+</html>
