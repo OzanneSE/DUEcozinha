@@ -1,0 +1,1907 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#0f0f0f">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="DUE Etiquetas">
+<title>DUE · Etiquetas</title>
+<style>
+:root {
+  --bg: #0f0f0f;
+  --surface: #1a1a1a;
+  --surface2: #242424;
+  --border: #2e2e2e;
+  --text: #f0ece4;
+  --muted: #777;
+  --accent: #c8a96e;
+  --ok: #4caf7d;
+  --warn: #e67e22;
+  --danger: #e05252;
+  --radius: 14px;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 16px; }
+body {
+  font-family: system-ui, -apple-system, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100dvh;
+  overflow-x: hidden;
+  -webkit-tap-highlight-color: transparent;
+  padding: max(0px, env(safe-area-inset-left));
+  padding-right: max(0px, env(safe-area-inset-right));
+}
+
+/* HEADER */
+.header {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.logo { font-size: 20px; font-weight: 900; letter-spacing: 4px; color: var(--accent); }
+.logo-sub { font-size: 9px; color: var(--muted); letter-spacing: 2px; }
+
+/* BT PILL */
+.bt-pill {
+  display: flex; align-items: center; gap: 6px;
+  background: var(--surface2); border: 1px solid var(--border);
+  border-radius: 20px; padding: 8px 14px; cursor: pointer;
+  font-size: 12px; font-weight: 700; color: var(--muted);
+  font-family: inherit; min-height: 44px;
+}
+.bt-pill.connected { border-color: var(--ok); color: var(--ok); background: #0d2218; }
+.bt-pill.connecting { border-color: var(--warn); color: var(--warn); }
+.bt-dot { width: 8px; height: 8px; border-radius: 50%; background: currentColor; flex-shrink: 0; }
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+.bt-dot.pulse { animation: pulse 1.2s infinite; }
+
+/* SIZE TOGGLE */
+.size-toggle { display: flex; background: var(--surface2); border: 1px solid var(--border); border-radius: 20px; padding: 3px; gap: 2px; }
+.size-btn { background: transparent; border: none; border-radius: 16px; padding: 5px 10px; font-size: 11px; font-weight: 700; color: var(--muted); cursor: pointer; font-family: inherit; letter-spacing: 0.5px; transition: all 0.2s; white-space: nowrap; }
+.size-btn.active { background: var(--accent); color: #1a1a1a; }
+.header-left { display: flex; flex-direction: column; }
+.header-right { display: flex; align-items: center; gap: 8px; }
+
+/* PREVIEW 30mm */
+.label30 { width: 189px; background: white; border-radius: 4px; overflow: hidden; display: flex; flex-direction: column; box-shadow: 0 4px 20px rgba(0,0,0,0.5); color: #111; }
+.label30-stripe { height: 5px; flex-shrink: 0; }
+.label30-stripe.porcao { background: #1a1a2e; }
+.label30-stripe.producao { background: #1a2e1a; }
+.label30-stripe.entrada { background: #2e1a1a; }
+.label30-stripe.personalizada { background: #2e1a2e; }
+.label30-stripe.limpeza { background: #1a2e2e; }
+.label30-stripe.bar { background: #2e2a1a; }
+.label30-stripe.seco { background: #2a1a2e; }
+.label30-header { display: flex; justify-content: space-between; align-items: center; padding: 2px 5px; border-bottom: 1px solid #eee; flex-shrink: 0; }
+.label30-brand { font-size: 9px; font-weight: 900; letter-spacing: 2px; }
+.label30-tipo { font-size: 6px; font-weight: 700; padding: 1px 3px; border: 1px solid #111; letter-spacing: 1px; text-transform: uppercase; }
+.label30-produto { padding: 4px 6px; font-size: 10px; font-weight: 700; line-height: 1.2; border-bottom: 1px solid #eee; flex-shrink: 0; }
+.label30-val-wrap { background: #111; color: white; padding: 3px 6px; flex-shrink: 0; }
+.label30-val-label { font-size: 6px; font-weight: 700; letter-spacing: 1px; display: block; opacity: 0.7; }
+.label30-val-date { font-size: 11px; font-weight: 900; }
+.label30-footer { display: flex; justify-content: space-between; padding: 2px 6px; background: #f7f7f7; border-top: 1px solid #eee; flex-shrink: 0; }
+.label30-footer-item { font-size: 6px; color: #aaa; font-weight: 600; }
+
+/* CHEF BAR */
+.chef-bar {
+  background: var(--surface2); border-bottom: 1px solid var(--border);
+  padding: 8px 12px; display: flex; align-items: center; gap: 6px;
+  overflow-x: auto; scrollbar-width: none;
+}
+.chef-bar::-webkit-scrollbar { display: none; }
+.chef-label { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; white-space: nowrap; flex-shrink: 0; }
+.chef-btn {
+  background: var(--surface); border: 1.5px solid var(--border);
+  color: var(--muted); padding: 0 14px; height: 36px;
+  border-radius: 18px; cursor: pointer; font-size: 12px; font-weight: 700;
+  letter-spacing: 1px; white-space: nowrap; flex-shrink: 0; font-family: inherit;
+}
+.chef-btn.active { background: var(--accent); border-color: var(--accent); color: #1a1a1a; }
+
+/* MAIN */
+main {
+  padding: 16px; display: flex; flex-direction: column; gap: 16px;
+  padding-bottom: max(120px, calc(16px + env(safe-area-inset-bottom)));
+}
+
+/* SECTION LABEL */
+.section-label {
+  font-size: 10px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 1.5px; color: var(--muted); margin-bottom: 8px;
+}
+
+/* TIPO GRID */
+.tipo-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.tipo-card {
+  background: var(--surface); border: 2px solid var(--border);
+  border-radius: var(--radius); padding: 14px 8px; text-align: center;
+  cursor: pointer; font-family: inherit; color: inherit; width: 100%;
+}
+.tipo-card.active { border-color: var(--accent); background: #1f1a10; }
+.tipo-icon { font-size: 22px; margin-bottom: 4px; }
+.tipo-name { font-size: 11px; font-weight: 700; color: var(--text); }
+.tipo-desc { font-size: 9px; color: var(--muted); margin-top: 2px; }
+
+/* CARD */
+.card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 14px; display: flex;
+  flex-direction: column; gap: 12px;
+}
+
+/* FIELD */
+.field { display: flex; flex-direction: column; gap: 6px; }
+.field label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); }
+.field input, .field select {
+  background: var(--surface2); border: 1px solid var(--border);
+  border-radius: 8px; color: var(--text); font-size: 15px;
+  padding: 12px 14px; width: 100%; font-family: inherit;
+  -webkit-appearance: none; min-height: 48px; transition: border-color 0.2s;
+}
+.field input:focus, .field select:focus { border-color: var(--accent); outline: none; }
+.field input::placeholder { color: var(--muted); opacity: 0.8; }
+
+/* SEARCH BAR */
+.search-wrap { position: relative; }
+.search-wrap input { padding-left: 36px; }
+.search-icon { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); font-size: 14px; pointer-events: none; }
+
+/* QTY */
+.qty-wrap { display: flex; align-items: center; gap: 0; border: 1px solid var(--border); border-radius: 10px; overflow: hidden; }
+.qty-btn { background: var(--surface2); border: none; color: var(--text); font-size: 22px; width: 52px; height: 48px; cursor: pointer; font-family: inherit; flex-shrink: 0; }
+.qty-num { flex: 1; text-align: center; font-size: 20px; font-weight: 900; }
+
+/* VALIDADE CHIP */
+.val-chip { background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 8px 12px; font-size: 13px; font-weight: 700; color: var(--ok); }
+
+/* STORAGE CHIPS */
+.storage-chips { display: flex; gap: 8px; }
+.storage-chip {
+  flex: 1; background: var(--surface2); border: 2px solid var(--border);
+  border-radius: 10px; padding: 10px 8px; text-align: center;
+  cursor: pointer; font-family: inherit; font-size: 13px; font-weight: 700; color: var(--muted);
+}
+.storage-chip.active { border-color: var(--ok); color: var(--ok); background: #0d2218; }
+.storage-chip.active.cong { border-color: #5ba8d9; color: #5ba8d9; background: #0d1e2e; }
+.storage-chip.active.temp { border-color: var(--warn); color: var(--warn); background: #2e1a0a; }
+.storage-chip.disabled { opacity: 0.3; cursor: not-allowed; pointer-events: none; }
+.storage-chip-icon { font-size: 18px; display: block; margin-bottom: 2px; }
+.storage-chip-label { font-size: 11px; display: block; }
+
+/* TABS */
+.tabs { display: flex; background: var(--surface2); border-radius: 10px; padding: 3px; gap: 2px; }
+.tab { flex: 1; padding: 10px; text-align: center; font-size: 12px; font-weight: 700; letter-spacing: 0.5px; border-radius: 8px; cursor: pointer; color: var(--muted); background: transparent; border: none; font-family: inherit; }
+.tab.active { background: var(--surface); color: var(--text); }
+.tab-content { display: none; }
+.tab-content.active { display: flex; flex-direction: column; gap: 12px; }
+
+/* PREVIEW */
+.preview-wrap { display: flex; justify-content: center; }
+.label {
+  width: 189px; height: 302px; background: white;
+  border-radius: 4px; overflow: hidden; display: flex; flex-direction: column;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.5); color: #111;
+}
+.label-stripe { height: 8px; }
+.label-stripe.porcao { background: #1a1a2e; }
+.label-stripe.producao { background: #1a2e1a; }
+.label-stripe.entrada { background: #2e1a1a; }
+.label-stripe.personalizada { background: #2e1a2e; }
+.label-stripe.limpeza { background: #1a2e2e; }
+.label-stripe.bar { background: #2e2a1a; }
+.label-stripe.seco { background: #2a1a2e; }
+.label-header { display: flex; justify-content: space-between; align-items: center; padding: 4px 6px 2px; border-bottom: 1px solid #eee; }
+.label-brand { font-size: 11px; font-weight: 900; letter-spacing: 3px; }
+.label-type-tag { font-size: 6px; font-weight: 700; padding: 2px 4px; border: 1px solid #111; letter-spacing: 1px; text-transform: uppercase; }
+.label-produto { padding: 5px 6px 3px; font-size: 12px; font-weight: 700; line-height: 1.2; border-bottom: 1px solid #eee; }
+.label-body { flex: 1; padding: 4px 6px; display: flex; flex-direction: column; gap: 3px; }
+.label-row { display: flex; justify-content: space-between; align-items: baseline; }
+.label-key { font-size: 6px; font-weight: 600; text-transform: uppercase; color: #999; }
+.label-val { font-size: 9px; font-weight: 700; }
+.label-val.big { font-size: 12px; font-weight: 900; }
+.label-validade { background: #111; color: white; padding: 6px 6px 4px; }
+.label-val-label { font-size: 6px; font-weight: 700; letter-spacing: 2px; display: block; opacity: 0.7; }
+.label-val-date { font-size: 14px; font-weight: 900; letter-spacing: 1px; }
+.label-footer { display: flex; justify-content: space-between; padding: 2px 6px; background: #f7f7f7; border-top: 1px solid #eee; }
+.label-footer-item { font-size: 6px; color: #aaa; font-weight: 600; }
+
+/* LOG */
+.log-item { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 10px 12px; display: flex; flex-direction: column; gap: 4px; }
+.log-item-nome { font-size: 13px; font-weight: 700; }
+.log-item-meta { font-size: 11px; color: var(--muted); }
+
+/* BOTÃO FIXO */
+.fab-area {
+  position: fixed; bottom: 0; left: 0; right: 0;
+  padding: 10px 16px;
+  padding-bottom: max(20px, env(safe-area-inset-bottom));
+  background: linear-gradient(transparent, var(--bg) 35%);
+  z-index: 100; display: flex; flex-direction: column; gap: 6px;
+  pointer-events: none;
+}
+.fab-area > * { pointer-events: auto; }
+
+.btn-print {
+  background: var(--accent); color: #1a1a1a; border: none;
+  border-radius: var(--radius); height: 56px; font-size: 15px;
+  font-weight: 900; letter-spacing: 2px; text-transform: uppercase;
+  cursor: pointer; width: 100%; display: flex; align-items: center;
+  justify-content: center; gap: 8px; font-family: inherit;
+}
+.btn-print:disabled { opacity: 0.35; cursor: not-allowed; }
+.btn-print.sending { background: var(--warn); }
+.btn-print.success { background: var(--ok); }
+
+.btn-teste {
+  background: var(--surface2); color: var(--muted);
+  border: 1px solid var(--border); border-radius: 10px;
+  height: 34px; font-size: 11px; font-weight: 700;
+  cursor: pointer; width: 100%; font-family: inherit; display: none;
+}
+
+/* MODAL */
+.modal-bg { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.75); z-index: 500; align-items: flex-end; }
+.modal-bg.show { display: flex; }
+.modal { background: var(--surface); border-radius: 20px 20px 0 0; padding: 24px 20px 36px; width: 100%; display: flex; flex-direction: column; gap: 14px; }
+.modal-title { font-size: 16px; font-weight: 800; letter-spacing: 1px; }
+.modal-sub { font-size: 13px; color: var(--muted); line-height: 1.5; }
+.modal-btn { background: var(--accent); color: #1a1a1a; border: none; border-radius: var(--radius); height: 52px; font-size: 14px; font-weight: 800; cursor: pointer; font-family: inherit; width: 100%; }
+.modal-btn-sec { background: transparent; color: var(--muted); border: 1px solid var(--border); border-radius: var(--radius); height: 44px; font-size: 13px; cursor: pointer; font-family: inherit; width: 100%; }
+
+/* TOAST */
+.toast {
+  position: fixed; top: 80px; left: 50%;
+  transform: translateX(-50%) translateY(-20px);
+  background: var(--ok); color: white; padding: 10px 20px;
+  border-radius: 20px; font-size: 13px; font-weight: 700;
+  opacity: 0; transition: all 0.3s; z-index: 999;
+  white-space: nowrap; pointer-events: none;
+}
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+.toast.error { background: var(--danger); }
+.toast.warn { background: var(--warn); }
+
+/* EDITOR LINK */
+.editor-link { display: flex; align-items: center; justify-content: center; gap: 6px; padding: 10px 14px; background: var(--surface2); border: 1px solid var(--border); border-radius: 10px; font-size: 12px; font-weight: 700; color: var(--muted); text-decoration: none; text-align: center; }
+.editor-link:active { background: var(--surface); }
+
+/* RENDIMENTO */
+.rend-bar-bg { height: 6px; background: var(--border); border-radius: 3px; flex: 1; overflow: hidden; }
+.rend-bar-fill { height: 100%; background: var(--ok); border-radius: 3px; transition: width 0.3s; }
+.rend-wrap-inner { display: flex; align-items: center; gap: 10px; }
+.rend-pct { font-size: 13px; font-weight: 900; color: var(--ok); white-space: nowrap; }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-left">
+    <div class="logo">DUE</div>
+    <div class="logo-sub">ETIQUETAS v2</div>
+  </div>
+  <div class="header-right">
+    <div class="size-toggle">
+      <button type="button" class="size-btn active" id="sz-80" onclick="setLabelSize('80')">80mm</button>
+      <button type="button" class="size-btn" id="sz-30" onclick="setLabelSize('30')">30mm</button>
+    </div>
+    <button type="button" class="bt-pill" id="bt-pill" onclick="toggleBluetooth()">
+      <div class="bt-dot" id="bt-dot"></div>
+      <span id="bt-label">BT</span>
+    </button>
+  </div>
+</div>
+
+<!-- CHEF BAR -->
+<div class="chef-bar" id="chef-bar">
+  <span class="chef-label">Chef:</span>
+</div>
+
+<!-- MAIN -->
+<main>
+
+  <!-- TABS -->
+  <div class="tabs">
+    <button type="button" class="tab active" onclick="setTab('imprimir',this)">🖨 Imprimir</button>
+    <button type="button" class="tab" onclick="setTab('lote',this)">📦 Lote</button>
+    <button type="button" class="tab" onclick="setTab('log',this)">📋 Log</button>
+  </div>
+
+  <!-- TAB IMPRIMIR -->
+  <div class="tab-content active" id="tab-imprimir">
+
+    <!-- TIPO -->
+    <div>
+      <div class="section-label">Tipo de etiqueta</div>
+      <div class="tipo-grid">
+        <button type="button" class="tipo-card active" onclick="setTipo('porcao',this)">
+          <div class="tipo-icon">🔪</div>
+          <div class="tipo-name">Porção</div>
+          <div class="tipo-desc">Mise en place</div>
+        </button>
+        <button type="button" class="tipo-card" onclick="setTipo('producao',this)">
+          <div class="tipo-icon">🫙</div>
+          <div class="tipo-name">Produção</div>
+          <div class="tipo-desc">Potes / Vácuo</div>
+        </button>
+        <button type="button" class="tipo-card" onclick="setTipo('entrada',this)">
+          <div class="tipo-icon">📦</div>
+          <div class="tipo-name">Entrada</div>
+          <div class="tipo-desc">Recebimento NF</div>
+        </button>
+        <button type="button" class="tipo-card" onclick="setTipo('personalizada',this)">
+          <div class="tipo-icon">✏️</div>
+          <div class="tipo-name">Personalizada</div>
+          <div class="tipo-desc">Nome livre</div>
+        </button>
+      </div>
+    </div>
+
+    <!-- PRODUTO -->
+    <div class="card">
+      <!-- BUSCA -->
+      <div class="field">
+        <label>Buscar Produto</label>
+        <div class="search-wrap">
+          <span class="search-icon">🔍</span>
+          <input type="text" id="search-produto" placeholder="Digite para filtrar..." autocomplete="off" autocorrect="off" spellcheck="false" oninput="filtrarProdutos()">
+        </div>
+      </div>
+
+      <div id="sel-wrap" class="field">
+        <label>Produto</label>
+        <select id="sel-produto" onchange="onProduto()">
+          <option value="">— selecione —</option>
+        </select>
+      </div>
+
+      <!-- NOME LIVRE (personalizada) -->
+      <div id="nome-livre-wrap" class="field" style="display:none">
+        <label>Nome do produto</label>
+        <input type="text" id="campo-nomeLivre" placeholder="Ex: Especial da casa..." autocomplete="off" autocorrect="off" spellcheck="false" oninput="atualizar()">
+      </div>
+
+      <!-- STORAGE SELECTOR -->
+      <div id="storage-wrap" style="display:none">
+        <div class="section-label" style="margin-bottom:6px">Armazenamento</div>
+        <div class="storage-chips" id="storage-chips"></div>
+      </div>
+
+      <!-- CAMPOS DINÂMICOS -->
+      <div id="campos"></div>
+
+      <!-- VALIDADE -->
+      <div id="val-wrap" style="display:none">
+        <div class="val-chip" id="val-chip">—</div>
+      </div>
+
+      <!-- VALIDADE MANUAL (personalizada) -->
+      <div id="val-manual-wrap" style="display:none" class="field">
+        <label>Validade (dias)</label>
+        <input type="number" id="campo-validadeManual" min="0" max="365" placeholder="Ex: 3" style="font-size:22px;font-weight:900;text-align:center" oninput="onValidadeManual()">
+      </div>
+
+      <!-- CHIP VALIDADE PERSONALIZADA -->
+      <div id="val-manual-chip" style="display:none">
+        <div class="val-chip" id="val-manual-chip-text">—</div>
+      </div>
+
+      <!-- RENDIMENTO -->
+      <div id="rend-wrap" style="display:none">
+        <div class="rend-wrap-inner">
+          <div class="rend-bar-bg">
+            <div class="rend-bar-fill" id="rend-bar" style="width:0%"></div>
+          </div>
+          <div class="rend-pct" id="rend-pct">—%</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- QUANTIDADE -->
+    <div class="card">
+      <div class="field">
+        <label>Quantidade de etiquetas</label>
+        <div class="qty-wrap">
+          <button type="button" class="qty-btn" onclick="changeQty(-1)">−</button>
+          <div class="qty-num" id="qty-num">1</div>
+          <button type="button" class="qty-btn" onclick="changeQty(+1)">+</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- PREVIEW -->
+    <div>
+      <div class="section-label">Preview — <span id="preview-size-label">50×80mm</span></div>
+      <div class="preview-wrap" id="preview-wrap"></div>
+    </div>
+
+    <!-- LINK EDITOR -->
+    <a class="editor-link" href="DUE_Label_Editor.html">
+      🎨 Editor de Layout
+    </a>
+
+  </div><!-- /tab-imprimir -->
+
+  <!-- TAB LOTE -->
+  <div class="tab-content" id="tab-lote">
+    <div>
+      <div class="section-label">Impressão em Lote</div>
+      <div style="display:flex;gap:6px;margin-bottom:12px">
+        <button id="lote-tab-json" type="button" onclick="switchLoteTab('json')" style="flex:1;padding:10px 6px;border-radius:8px;border:1px solid var(--accent);background:var(--accent);color:#1a1a1a;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit">📋 JSON</button>
+        <button id="lote-tab-csv" type="button" onclick="switchLoteTab('csv')" style="flex:1;padding:10px 6px;border-radius:8px;border:1px solid var(--border);background:var(--surface2);color:var(--muted);font-size:12px;font-weight:600;cursor:pointer;font-family:inherit">🔗 CSV / Sheets</button>
+      </div>
+
+      <!-- Painel JSON -->
+      <div id="lote-painel-json" class="card">
+        <div class="field">
+          <label>Cole aqui o JSON com a lista de etiquetas</label>
+          <textarea id="lote-json" placeholder='[{"produto":"Polvo Cozido","chef":"RAFA","tipo":"porcao","peso":"150g","qty":1},...]' style="min-height:140px;font-family:monospace;font-size:12px;resize:vertical;line-height:1.5;padding:12px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--text);width:100%;box-sizing:border-box;-webkit-appearance:none"></textarea>
+        </div>
+        <div style="display:flex;gap:8px">
+          <button type="button" onclick="validarLote()" style="flex:1;background:var(--surface2);border:1px solid var(--border);color:var(--text);padding:12px 10px;border-radius:8px;cursor:pointer;font-size:12px;font-weight:700;font-family:inherit;min-height:48px">✓ Validar</button>
+          <button type="button" onclick="importarJSON()" style="flex:1;background:var(--surface2);border:1px solid var(--border);color:var(--text);padding:12px 10px;border-radius:8px;cursor:pointer;font-size:12px;font-weight:700;font-family:inherit;min-height:48px">📥 Arquivo</button>
+        </div>
+      </div>
+
+      <!-- Painel CSV -->
+      <div id="lote-painel-csv" class="card" style="display:none">
+        <div class="field">
+          <label style="font-size:11px;color:var(--muted);margin-bottom:8px;display:block">URL do Google Sheets (Publicar na web → CSV)</label>
+          <input id="lote-csv-url" type="url" placeholder="https://docs.google.com/spreadsheets/d/.../pub?...output=csv"
+            style="width:100%;padding:12px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:12px;box-sizing:border-box;-webkit-appearance:none;font-family:inherit">
+        </div>
+        <button type="button" onclick="carregarCSVURL()" style="width:100%;background:#6b9e7a;border:none;color:#fff;padding:12px;border-radius:8px;cursor:pointer;font-size:13px;font-weight:700;font-family:inherit;min-height:48px;margin-bottom:10px">🔗 Carregar da URL</button>
+        <div style="text-align:center;font-size:11px;color:var(--muted);margin-bottom:10px">— ou —</div>
+        <input id="lote-csv-file" type="file" accept=".csv" onchange="carregarCSVArquivo(this)"
+          style="width:100%;padding:10px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:12px;box-sizing:border-box;font-family:inherit">
+      </div>
+    </div>
+
+    <div id="lote-preview" style="display:none">
+      <div class="section-label">Preview — <span id="lote-count">0</span> etiquetas</div>
+      <div id="lote-items" style="display:flex;flex-direction:column;gap:8px;max-height:220px;overflow-y:auto;padding:4px;margin:-4px"></div>
+    </div>
+
+    <div id="lote-btn-area" style="display:none;margin-top:16px">
+      <button type="button" id="btn-lote-imprimir" onclick="imprimirLote()" style="width:100%;background:var(--ok);border:none;color:white;padding:14px;border-radius:10px;cursor:pointer;font-size:14px;font-weight:700;min-height:56px;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:8px">🖨 Imprimir Lote (0)</button>
+    </div>
+
+    <div id="lote-progress" style="display:none;margin-top:16px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+        <span style="font-size:11px;color:var(--muted);font-weight:600">Progresso:</span>
+        <span id="lote-progress-text" style="font-size:13px;font-weight:700;color:var(--ok)">0 / 0</span>
+      </div>
+      <div style="width:100%;height:8px;background:var(--border);border-radius:4px;overflow:hidden">
+        <div id="lote-progress-bar" style="height:100%;background:var(--ok);width:0%;transition:width 0.3s"></div>
+      </div>
+    </div>
+  </div><!-- /tab-lote -->
+
+  <!-- TAB LOG -->
+  <div class="tab-content" id="tab-log">
+    <div style="display:flex;justify-content:space-between;align-items:center">
+      <div class="section-label" style="margin:0">Histórico da sessão</div>
+      <button type="button" onclick="exportCSV()" style="background:transparent;border:1px solid var(--border);color:var(--muted);border-radius:8px;padding:6px 12px;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit">⬇ CSV</button>
+    </div>
+    <div id="log-lista">
+      <div style="text-align:center;color:var(--muted);padding:40px;font-size:13px">Nenhuma impressão ainda</div>
+    </div>
+  </div>
+
+</main>
+
+<!-- BOTÃO FIXO -->
+<div class="fab-area">
+  <button type="button" class="btn-teste" id="btn-teste" onclick="imprimirTeste()">🔧 TESTE MÍNIMO</button>
+  <button type="button" class="btn-print" id="btn-imprimir" disabled onclick="imprimir()">
+    <span id="btn-icon">📡</span>
+    <span id="btn-text">IMPRIMIR VIA BLUETOOTH</span>
+  </button>
+</div>
+
+<!-- MODAL BLUETOOTH -->
+<div class="modal-bg" id="modal-bt">
+  <div class="modal">
+    <div class="modal-title">📡 Conectar Impressora</div>
+    <div class="modal-sub">
+      Chrome vai abrir a lista de dispositivos BLE próximos.<br>
+      Ligue a <strong>XD210 / PT260</strong> e selecione na lista.
+    </div>
+    <button type="button" class="modal-btn" onclick="conectarBluetooth()">Buscar Impressora</button>
+    <button type="button" class="modal-btn-sec" onclick="fecharModal()">Cancelar</button>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<!-- BLOQUEIO DESKTOP -->
+<div id="desktop-block" style="display:none;position:fixed;inset:0;background:var(--bg);z-index:9999;flex-direction:column;align-items:center;justify-content:center;padding:40px;text-align:center;gap:24px">
+  <div style="font-size:56px">📱</div>
+  <div style="font-size:30px;font-weight:900;letter-spacing:5px;color:#c8a96e">DUE</div>
+  <div style="font-size:13px;color:#777;letter-spacing:2px;text-transform:uppercase;margin-top:-16px">Etiquetas</div>
+  <div style="font-size:15px;font-weight:700;color:#f0ece4;max-width:280px;line-height:1.7;margin-top:8px">Este app funciona exclusivamente no<br><span style="color:#c8a96e">Chrome Android</span></div>
+  <div style="font-size:12px;color:#555;max-width:260px;line-height:1.8;border:1px solid #2e2e2e;border-radius:12px;padding:14px;background:#1a1a1a">A impressão Bluetooth (Web BLE) só é suportada<br>no Chrome para Android. Acesse este link<br>no <strong style="color:#777">tablet da cozinha</strong>.</div>
+  <div style="font-size:10px;color:#333;font-family:monospace;margin-top:8px">flaco-iminente.github.io/DUEcozinha/<br>DUE_Label_App.html</div>
+</div>
+
+<script>
+// ===== CONFIG =====
+const CONFIG = {
+  marca: 'DUE',
+  equipe: [
+    { code: 'RAFA',  nome: 'Rafael',   turno: 'A' },
+    { code: 'FRAN',  nome: 'Franci',   turno: 'A' },
+    { code: 'JOSE',  nome: 'Josiane',  turno: 'A' },
+    { code: 'EDMA',  nome: 'Edmar',    turno: 'B' },
+    { code: 'BEAT',  nome: 'Beatriz',  turno: 'B' },
+    { code: 'RAYA',  nome: 'Rayane',   turno: 'B' },
+    { code: 'OZAN',  nome: 'Ozanne',   turno: null },
+  ],
+
+  // ── CATÁLOGO COMPLETO ───────────────────────────────────────────
+  // refrig = dias em refrigeração | congel = dias congelado
+  // semCongel = true  → não congela
+  // tempAmb  = true   → armazenar em temperatura ambiente
+  // valTemp  = dias em temperatura ambiente
+  // semVal   = true   → sem validade definida (produto seco/limpeza/etc.)
+  // setor    = define cor da etiqueta (cozinha | bar | sg | estoque)
+  produtos: [
+
+    // ════════════════════════════════════════════════════════════
+    // TÉCNICAS EXCLUSIVAS DUE
+    // ════════════════════════════════════════════════════════════
+    { nome: 'Bisque de Crustáceos',    cat: 'tecnicas',  tipo: 'producao', refrig: 3,  congel: 30 },
+    { nome: 'Demi-Glace DUE',          cat: 'tecnicas',  tipo: 'producao', refrig: 5,  congel: 30 },
+    { nome: 'Gema Curada 48h',         cat: 'tecnicas',  tipo: 'porcao',   refrig: 5,  semCongel: true },
+    { nome: 'Pappardelle Artesanal',   cat: 'tecnicas',  tipo: 'porcao',   refrig: 1,  congel: 30 },
+    { nome: 'Xerém Cremoso DUE',       cat: 'tecnicas',  tipo: 'producao', refrig: 3,  congel: 30 },
+    { nome: 'Picles de Maxixe',        cat: 'tecnicas',  tipo: 'producao', refrig: 14, semCongel: true },
+
+    // ════════════════════════════════════════════════════════════
+    // FUNDOS & CALDOS
+    // ════════════════════════════════════════════════════════════
+    { nome: 'Fumet de Peixe',          cat: 'fundos', tipo: 'producao', refrig: 2,  congel: 30 },
+    { nome: 'Caldo de Camarão',        cat: 'fundos', tipo: 'producao', refrig: 2,  congel: 30 },
+    { nome: 'Caldo de Frango',         cat: 'fundos', tipo: 'producao', refrig: 3,  congel: 30 },
+    { nome: 'Caldo de Legumes',        cat: 'fundos', tipo: 'producao', refrig: 3,  congel: 30 },
+    { nome: 'Caldo de Costela',        cat: 'fundos', tipo: 'producao', refrig: 3,  congel: 30 },
+
+    // ════════════════════════════════════════════════════════════
+    // MOLHOS & BASES DE SERVIÇO
+    // ════════════════════════════════════════════════════════════
+    { nome: 'Aioli / Lactonese',       cat: 'molhos', tipo: 'producao', refrig: 5,  semCongel: true },
+    { nome: 'Pesto Sergipano',         cat: 'molhos', tipo: 'producao', refrig: 1,  congel: 30 },
+    { nome: 'Leite de Tigre Sergipano',cat: 'molhos', tipo: 'producao', refrig: 1,  semCongel: true },
+    { nome: 'Azeite Verde DUE',        cat: 'molhos', tipo: 'producao', refrig: 7,  semCongel: true },
+    { nome: 'Azeite Vermelho DUE',     cat: 'molhos', tipo: 'producao', refrig: 14, semCongel: true },
+    { nome: 'Fonduta de Parmesão',     cat: 'molhos', tipo: 'producao', refrig: 3,  congel: 30 },
+    { nome: 'Ragù de Costela',         cat: 'molhos', tipo: 'producao', refrig: 3,  congel: 30 },
+    { nome: 'Mousseline de Banana',    cat: 'molhos', tipo: 'producao', refrig: 2,  congel: 30 },
+    { nome: 'Molho de Tomate DUE',     cat: 'molhos', tipo: 'producao', refrig: 4,  congel: 30 },
+    { nome: 'Tomates Confitados',      cat: 'molhos', tipo: 'producao', refrig: 5,  semCongel: true },
+    { nome: 'Camarão Confitado',       cat: 'molhos', tipo: 'producao', refrig: 2,  congel: 30 },
+    { nome: 'Confit de Laranja',       cat: 'molhos', tipo: 'producao', refrig: 14, congel: 30 },
+    { nome: 'Redução Balsâmica',       cat: 'molhos', tipo: 'producao', refrig: 14, semCongel: true },
+    { nome: 'Manteiga de Garrafa',     cat: 'molhos', tipo: 'producao', refrig: 14, semCongel: true },
+    { nome: 'Manteiga Trufada',        cat: 'molhos', tipo: 'producao', refrig: 5,  congel: 30 },
+    { nome: 'Vinagrete Tropical DUE',  cat: 'molhos', tipo: 'producao', refrig: 3,  semCongel: true },
+    { nome: 'Massa Tempurá',           cat: 'molhos', tipo: 'producao', refrig: 0,  semCongel: true },
+    { nome: 'Massa do Taco (Tortilha)',cat: 'molhos', tipo: 'producao', refrig: 2,  congel: 30 },
+    { nome: 'Creme de Abacate',        cat: 'molhos', tipo: 'producao', refrig: 1,  semCongel: true },
+
+    // ════════════════════════════════════════════════════════════
+    // PURÊS & GUARNIÇÕES
+    // ════════════════════════════════════════════════════════════
+    { nome: 'Purê de Mandioquinha',    cat: 'pures', tipo: 'producao', refrig: 2, congel: 30 },
+    { nome: 'Purê de Batata',          cat: 'pures', tipo: 'producao', refrig: 2, congel: 30 },
+    { nome: 'Rubacão (Feijão Verde)',  cat: 'pures', tipo: 'producao', refrig: 2, congel: 30 },
+    { nome: 'Arroz Arbóreo Base',      cat: 'pures', tipo: 'producao', refrig: 2, congel: 30 },
+
+    // ════════════════════════════════════════════════════════════
+    // PROTEÍNAS — COZIDAS / D-1
+    // ════════════════════════════════════════════════════════════
+    { nome: 'Polvo Cozido (inteiro)',  cat: 'proteinas_d1', tipo: 'porcao', refrig: 3, congel: 30 },
+    { nome: 'Polvo Porcionado',        cat: 'proteinas_d1', tipo: 'porcao', refrig: 2, congel: 30 },
+    { nome: 'Costela Desfiada',        cat: 'proteinas_d1', tipo: 'porcao', refrig: 3, congel: 30 },
+    { nome: 'Pato Confit (coxa)',      cat: 'proteinas_d1', tipo: 'porcao', refrig: 5, congel: 30 },
+    { nome: 'Carne de Sol Dessalgada', cat: 'proteinas_d1', tipo: 'porcao', refrig: 3, congel: 30 },
+    { nome: 'Charque Dessalgado',      cat: 'proteinas_d1', tipo: 'porcao', refrig: 1, semCongel: true },
+
+    // ════════════════════════════════════════════════════════════
+    // PROTEÍNAS — PORCIONADAS CRUAS
+    // ════════════════════════════════════════════════════════════
+    { nome: 'Filé Mignon',             cat: 'proteinas_cruas', tipo: 'porcao', refrig: 2, congel: 30 },
+    { nome: 'Flat Iron',               cat: 'proteinas_cruas', tipo: 'porcao', refrig: 2, congel: 30 },
+    { nome: 'Carré de Cordeiro',       cat: 'proteinas_cruas', tipo: 'porcao', refrig: 2, congel: 30 },
+    { nome: 'Camarão (limpo)',         cat: 'proteinas_cruas', tipo: 'porcao', refrig: 1, congel: 30 },
+    { nome: 'Robalo (filé)',           cat: 'proteinas_cruas', tipo: 'porcao', refrig: 1, congel: 30 },
+    { nome: 'Peixe Branco (genérico)',cat: 'proteinas_cruas', tipo: 'porcao', refrig: 1, congel: 30 },
+    { nome: 'Lula (limpa)',            cat: 'proteinas_cruas', tipo: 'porcao', refrig: 1, congel: 30 },
+    { nome: 'Mexilhão (limpo)',        cat: 'proteinas_cruas', tipo: 'porcao', refrig: 1, congel: 30 },
+    { nome: 'Peito de Frango',         cat: 'proteinas_cruas', tipo: 'porcao', refrig: 2, congel: 30 },
+
+    // ════════════════════════════════════════════════════════════
+    // EMPANADOS & PRÉ-FRITOS
+    // ════════════════════════════════════════════════════════════
+    { nome: 'Croqueta de Polvo (crua)', cat: 'empanados', tipo: 'porcao', refrig: 2, congel: 14 },
+    { nome: 'Brie Empanado',           cat: 'empanados', tipo: 'porcao', refrig: 2, congel: 14 },
+    { nome: 'Frutos do Mar Tempurá (mis.)', cat: 'empanados', tipo: 'porcao', refrig: 1, semCongel: true },
+
+    // ════════════════════════════════════════════════════════════
+    // SOBREMESAS
+    // ════════════════════════════════════════════════════════════
+    { nome: 'Pannacota de Baunilha',   cat: 'sobremesas', tipo: 'producao', refrig: 3,  semCongel: true },
+    { nome: 'Ganache Chocolate 70%',   cat: 'sobremesas', tipo: 'producao', refrig: 5,  congel: 30 },
+    { nome: 'Cheesecake Artesanal',    cat: 'sobremesas', tipo: 'producao', refrig: 4,  congel: 30 },
+    { nome: 'Base Cheesecake',         cat: 'sobremesas', tipo: 'producao', refrig: 3,  congel: 30 },
+
+    // ════════════════════════════════════════════════════════════
+    // CROCANTES & ELEMENTOS SECOS DE MONTAGEM
+    // ════════════════════════════════════════════════════════════
+    { nome: 'Sagu Crocante',           cat: 'crocantes', tipo: 'producao', refrig: 3,  semCongel: true },
+    { nome: 'Suspiro Artesanal',       cat: 'crocantes', tipo: 'producao', refrig: 5,  semCongel: true },
+    { nome: 'Chips de Macaxeira',      cat: 'crocantes', tipo: 'producao', refrig: 2,  semCongel: true },
+    { nome: 'Chips de Batata Doce',    cat: 'crocantes', tipo: 'producao', refrig: 2,  semCongel: true },
+    { nome: 'Crocante de Tapioca',     cat: 'crocantes', tipo: 'producao', refrig: 2,  semCongel: true },
+    { nome: 'Farofa de Castanha',      cat: 'crocantes', tipo: 'producao', refrig: 5,  semCongel: true },
+    { nome: 'Farofa de Avelã',         cat: 'crocantes', tipo: 'producao', refrig: 5,  semCongel: true },
+    { nome: 'Manjericão Desidratado',  cat: 'crocantes', tipo: 'producao', refrig: 7,  semCongel: true },
+    { nome: 'Couve Crocante',          cat: 'crocantes', tipo: 'producao', refrig: 1,  semCongel: true },
+    { nome: 'Milho Tostado',           cat: 'crocantes', tipo: 'producao', refrig: 3,  semCongel: true },
+
+    // ════════════════════════════════════════════════════════════
+    // MISE EN PLACE — FRIOS / GARDE MANGER
+    // ════════════════════════════════════════════════════════════
+    { nome: 'Tiradito — Peixe Laminado', cat: 'mise_frios', tipo: 'porcao', refrig: 1, semCongel: true },
+    { nome: 'Tartar do Sertão — Montagem', cat: 'mise_frios', tipo: 'porcao', refrig: 1, semCongel: true },
+    { nome: 'Burrata (porcionada)',     cat: 'mise_frios', tipo: 'porcao', refrig: 1,  semCongel: true },
+    { nome: 'Microgreens (porcionados)',cat: 'mise_frios', tipo: 'porcao', refrig: 2,  semCongel: true },
+    { nome: 'Frutas Vermelhas (mis.)', cat: 'mise_frios', tipo: 'porcao', refrig: 2,  semCongel: true },
+    { nome: 'Goiaba Verde Confitada',  cat: 'mise_frios', tipo: 'producao', refrig: 7, semCongel: true },
+    { nome: 'Cura de Gemas (em andamento)', cat: 'mise_frios', tipo: 'producao', refrig: 2, semCongel: true },
+
+    // ════════════════════════════════════════════════════════════
+    // BAR — PREPAROS & XAROPES
+    // ════════════════════════════════════════════════════════════
+    { nome: 'Xarope Simples',          cat: 'bar', tipo: 'producao', refrig: 14, semCongel: true },
+    { nome: 'Xarope de Hibisco',       cat: 'bar', tipo: 'producao', refrig: 10, semCongel: true },
+    { nome: 'Xarope de Gengibre',      cat: 'bar', tipo: 'producao', refrig: 10, semCongel: true },
+    { nome: 'Xarope de Maracujá',      cat: 'bar', tipo: 'producao', refrig: 7,  semCongel: true },
+    { nome: 'Shrub de Umbu',           cat: 'bar', tipo: 'producao', refrig: 14, semCongel: true },
+    { nome: 'Shrub de Acerola',        cat: 'bar', tipo: 'producao', refrig: 14, semCongel: true },
+    { nome: 'Cordial de Mangaba',      cat: 'bar', tipo: 'producao', refrig: 14, semCongel: true },
+    { nome: 'Infusão Alcoólica (rotular)', cat: 'bar', tipo: 'producao', refrig: 30, semCongel: true },
+    { nome: 'Água Tônica Artesanal',   cat: 'bar', tipo: 'producao', refrig: 3,  semCongel: true },
+    { nome: 'Purê de Frutas — Bar',    cat: 'bar', tipo: 'producao', refrig: 3,  congel: 30 },
+    { nome: 'Suco Natural (porcionado)',cat: 'bar', tipo: 'producao', refrig: 1,  semCongel: true },
+    { nome: 'Limão Siciliano (suco)',  cat: 'bar', tipo: 'producao', refrig: 2,  congel: 30 },
+    { nome: 'Garnish — Cítrico',       cat: 'bar', tipo: 'porcao',   refrig: 1,  semCongel: true },
+    { nome: 'Garnish — Ervas',         cat: 'bar', tipo: 'porcao',   refrig: 1,  semCongel: true },
+    { nome: 'Sal de Especiarias',      cat: 'bar', tipo: 'producao', refrig: 30, semCongel: true },
+
+    // ════════════════════════════════════════════════════════════
+    // ESTOQUE SECO — FARINHAS & GRÃOS
+    // ════════════════════════════════════════════════════════════
+    { nome: 'Farinha de Trigo',        cat: 'seco_farinha', tipo: 'entrada', tempAmb: true, valTemp: 90,  semCongel: true },
+    { nome: 'Farinha de Trigo (aberto)',cat: 'seco_farinha', tipo: 'porcao', tempAmb: true, valTemp: 30,  semCongel: true },
+    { nome: 'Farinha de Rosca',        cat: 'seco_farinha', tipo: 'entrada', tempAmb: true, valTemp: 90,  semCongel: true },
+    { nome: 'Fubá Mimoso',             cat: 'seco_farinha', tipo: 'entrada', tempAmb: true, valTemp: 90,  semCongel: true },
+    { nome: 'Xerém de Caju',           cat: 'seco_farinha', tipo: 'entrada', tempAmb: true, valTemp: 90,  semCongel: true },
+    { nome: 'Sagu (grão)',             cat: 'seco_farinha', tipo: 'entrada', tempAmb: true, valTemp: 180, semCongel: true },
+    { nome: 'Fécula de Batata',        cat: 'seco_farinha', tipo: 'entrada', tempAmb: true, valTemp: 90,  semCongel: true },
+    { nome: 'Amido de Milho',          cat: 'seco_farinha', tipo: 'entrada', tempAmb: true, valTemp: 90,  semCongel: true },
+    { nome: 'Arroz Arbóreo (pacote)',  cat: 'seco_farinha', tipo: 'entrada', tempAmb: true, valTemp: 180, semCongel: true },
+    { nome: 'Rigatoni (seco)',         cat: 'seco_farinha', tipo: 'entrada', tempAmb: true, valTemp: 180, semCongel: true },
+    { nome: 'Panko',                   cat: 'seco_farinha', tipo: 'entrada', tempAmb: true, valTemp: 90,  semCongel: true },
+
+    // ════════════════════════════════════════════════════════════
+    // ESTOQUE SECO — TEMPEROS & CONDIMENTOS
+    // ════════════════════════════════════════════════════════════
+    { nome: 'Sal Refinado',            cat: 'seco_tempero', tipo: 'entrada', tempAmb: true, valTemp: 365, semCongel: true },
+    { nome: 'Flor de Sal',             cat: 'seco_tempero', tipo: 'entrada', tempAmb: true, valTemp: 365, semCongel: true },
+    { nome: 'Pimenta-do-Reino (pó)',   cat: 'seco_tempero', tipo: 'entrada', tempAmb: true, valTemp: 180, semCongel: true },
+    { nome: 'Pimenta-do-Reino (grão)', cat: 'seco_tempero', tipo: 'entrada', tempAmb: true, valTemp: 365, semCongel: true },
+    { nome: 'Pimenta Calabresa',       cat: 'seco_tempero', tipo: 'entrada', tempAmb: true, valTemp: 180, semCongel: true },
+    { nome: 'Pimenta de Cheiro',       cat: 'seco_tempero', tipo: 'entrada', tempAmb: true, valTemp: 7,   semCongel: true },
+    { nome: 'Cominho',                 cat: 'seco_tempero', tipo: 'entrada', tempAmb: true, valTemp: 180, semCongel: true },
+    { nome: 'Coentro (seco)',          cat: 'seco_tempero', tipo: 'entrada', tempAmb: true, valTemp: 90,  semCongel: true },
+    { nome: 'Açafrão / Cúrcuma',       cat: 'seco_tempero', tipo: 'entrada', tempAmb: true, valTemp: 180, semCongel: true },
+    { nome: 'Noz-Moscada',             cat: 'seco_tempero', tipo: 'entrada', tempAmb: true, valTemp: 180, semCongel: true },
+    { nome: 'Canela em Pó',            cat: 'seco_tempero', tipo: 'entrada', tempAmb: true, valTemp: 180, semCongel: true },
+    { nome: 'Alcaparra',               cat: 'seco_tempero', tipo: 'entrada', refrig: 90,    semCongel: true },
+    { nome: 'Páprica Defumada',        cat: 'seco_tempero', tipo: 'entrada', tempAmb: true, valTemp: 180, semCongel: true },
+    { nome: 'Orégano',                 cat: 'seco_tempero', tipo: 'entrada', tempAmb: true, valTemp: 90,  semCongel: true },
+    { nome: 'Louro',                   cat: 'seco_tempero', tipo: 'entrada', tempAmb: true, valTemp: 180, semCongel: true },
+    { nome: 'Tomilho Seco',            cat: 'seco_tempero', tipo: 'entrada', tempAmb: true, valTemp: 90,  semCongel: true },
+    { nome: 'Sal de Ervas DUE',        cat: 'seco_tempero', tipo: 'producao', refrig: 30,   semCongel: true },
+
+    // ════════════════════════════════════════════════════════════
+    // ESTOQUE SECO — LATICÍNIOS & OVOS
+    // ════════════════════════════════════════════════════════════
+    { nome: 'Leite em Pó',             cat: 'seco_latic', tipo: 'entrada', tempAmb: true, valTemp: 90,  semCongel: true },
+    { nome: 'Creme de Leite (cx)',      cat: 'seco_latic', tipo: 'entrada', tempAmb: true, valTemp: 90,  semCongel: true },
+    { nome: 'Creme de Leite (aberto)', cat: 'seco_latic', tipo: 'porcao',  refrig: 3,     semCongel: true },
+    { nome: 'Leite Integral (aberto)', cat: 'seco_latic', tipo: 'porcao',  refrig: 3,     semCongel: true },
+    { nome: 'Manteiga sem Sal',        cat: 'seco_latic', tipo: 'entrada', refrig: 30,    congel: 90 },
+    { nome: 'Creme Culinário (cx)',     cat: 'seco_latic', tipo: 'entrada', tempAmb: true, valTemp: 90,  semCongel: true },
+    { nome: 'Parmesão (peça)',         cat: 'seco_latic', tipo: 'entrada', refrig: 14,    congel: 60 },
+    { nome: 'Parmesão Ralado',         cat: 'seco_latic', tipo: 'porcao',  refrig: 5,     semCongel: true },
+    { nome: 'Queijo Coalho',           cat: 'seco_latic', tipo: 'entrada', refrig: 14,    congel: 30 },
+    { nome: 'Cream Cheese',            cat: 'seco_latic', tipo: 'entrada', refrig: 10,    semCongel: true },
+    { nome: 'Ovos (bandeja)',          cat: 'seco_latic', tipo: 'entrada', refrig: 21,    semCongel: true },
+    { nome: 'Gelatina Incolor',        cat: 'seco_latic', tipo: 'entrada', tempAmb: true, valTemp: 180, semCongel: true },
+
+    // ════════════════════════════════════════════════════════════
+    // ESTOQUE SECO — ÓLEOS & VINAGRES
+    // ════════════════════════════════════════════════════════════
+    { nome: 'Azeite Extravirgem',      cat: 'seco_oleo', tipo: 'entrada', tempAmb: true, valTemp: 180, semCongel: true },
+    { nome: 'Óleo de Fritura',         cat: 'seco_oleo', tipo: 'entrada', tempAmb: true, valTemp: 90,  semCongel: true },
+    { nome: 'Óleo de Girassol',        cat: 'seco_oleo', tipo: 'entrada', tempAmb: true, valTemp: 90,  semCongel: true },
+    { nome: 'Vinagre Vinho Tinto',     cat: 'seco_oleo', tipo: 'entrada', tempAmb: true, valTemp: 365, semCongel: true },
+    { nome: 'Vinagre Balsâmico',       cat: 'seco_oleo', tipo: 'entrada', tempAmb: true, valTemp: 365, semCongel: true },
+    { nome: 'Vinagre de Maçã',         cat: 'seco_oleo', tipo: 'entrada', tempAmb: true, valTemp: 365, semCongel: true },
+    { nome: 'Óleo de Trufa (frasco)',  cat: 'seco_oleo', tipo: 'entrada', tempAmb: true, valTemp: 90,  semCongel: true },
+
+    // ════════════════════════════════════════════════════════════
+    // ESTOQUE SECO — DOCES & CHOCOLATE
+    // ════════════════════════════════════════════════════════════
+    { nome: 'Açúcar Refinado',         cat: 'seco_doce', tipo: 'entrada', tempAmb: true, valTemp: 365, semCongel: true },
+    { nome: 'Açúcar de Confeiteiro',   cat: 'seco_doce', tipo: 'entrada', tempAmb: true, valTemp: 180, semCongel: true },
+    { nome: 'Açúcar Mascavo',          cat: 'seco_doce', tipo: 'entrada', tempAmb: true, valTemp: 180, semCongel: true },
+    { nome: 'Mel',                     cat: 'seco_doce', tipo: 'entrada', tempAmb: true, valTemp: 365, semCongel: true },
+    { nome: 'Chocolate 70% (barra)',   cat: 'seco_doce', tipo: 'entrada', tempAmb: true, valTemp: 90,  semCongel: true },
+    { nome: 'Cacau em Pó',             cat: 'seco_doce', tipo: 'entrada', tempAmb: true, valTemp: 90,  semCongel: true },
+    { nome: 'Glucose de Milho',        cat: 'seco_doce', tipo: 'entrada', tempAmb: true, valTemp: 180, semCongel: true },
+    { nome: 'Baunilha (extrato)',       cat: 'seco_doce', tipo: 'entrada', tempAmb: true, valTemp: 365, semCongel: true },
+
+    // ════════════════════════════════════════════════════════════
+    // BEBIDAS — BAR (GARRAFAS / LATAS)
+    // ════════════════════════════════════════════════════════════
+    { nome: 'Vinho Tinto (garrafa)',   cat: 'bebidas', tipo: 'entrada', tempAmb: true, valTemp: 365, semCongel: true },
+    { nome: 'Vinho Verde (garrafa)',   cat: 'bebidas', tipo: 'entrada', tempAmb: true, valTemp: 365, semCongel: true },
+    { nome: 'Vinho Branco Seco',       cat: 'bebidas', tipo: 'entrada', refrig: 7,     semCongel: true },
+    { nome: 'Espumante',               cat: 'bebidas', tipo: 'entrada', refrig: 3,     semCongel: true },
+    { nome: 'Cerveja Artesanal',       cat: 'bebidas', tipo: 'entrada', refrig: 7,     semCongel: true },
+    { nome: 'Gin',                     cat: 'bebidas', tipo: 'entrada', tempAmb: true, valTemp: 365, semCongel: true },
+    { nome: 'Cachaça',                 cat: 'bebidas', tipo: 'entrada', tempAmb: true, valTemp: 365, semCongel: true },
+    { nome: 'Rum',                     cat: 'bebidas', tipo: 'entrada', tempAmb: true, valTemp: 365, semCongel: true },
+    { nome: 'Vodka',                   cat: 'bebidas', tipo: 'entrada', tempAmb: true, valTemp: 365, semCongel: true },
+    { nome: 'Tônica (lata/garrafa)',   cat: 'bebidas', tipo: 'entrada', refrig: 7,     semCongel: true },
+    { nome: 'Refrigerante (lata)',     cat: 'bebidas', tipo: 'entrada', refrig: 7,     semCongel: true },
+    { nome: 'Água Mineral',            cat: 'bebidas', tipo: 'entrada', tempAmb: true, valTemp: 365, semCongel: true },
+    { nome: 'Água com Gás',            cat: 'bebidas', tipo: 'entrada', refrig: 7,     semCongel: true },
+    { nome: 'Café (pacote)',           cat: 'bebidas', tipo: 'entrada', tempAmb: true, valTemp: 90,  semCongel: true },
+    { nome: 'Café (aberto)',           cat: 'bebidas', tipo: 'porcao',  refrig: 7,     semCongel: true },
+
+    // ════════════════════════════════════════════════════════════
+    // HIGIENIZAÇÃO & SERVIÇOS GERAIS
+    // ════════════════════════════════════════════════════════════
+    { nome: 'Álcool 70% (frasco)',      cat: 'limpeza', tipo: 'entrada', tempAmb: true, valTemp: 365, semCongel: true },
+    { nome: 'Álcool 70% (diluído)',     cat: 'limpeza', tipo: 'producao', tempAmb: true, valTemp: 1,   semCongel: true },
+    { nome: 'Álcool Desincrustante',   cat: 'limpeza', tipo: 'entrada', tempAmb: true, valTemp: 365, semCongel: true },
+    { nome: 'Desinfetante (galão)',     cat: 'limpeza', tipo: 'entrada', tempAmb: true, valTemp: 365, semCongel: true },
+    { nome: 'Desinfetante (diluído)',   cat: 'limpeza', tipo: 'producao', tempAmb: true, valTemp: 1,   semCongel: true },
+    { nome: 'Detergente Neutro',        cat: 'limpeza', tipo: 'entrada', tempAmb: true, valTemp: 365, semCongel: true },
+    { nome: 'Detergente Desincrustante',cat: 'limpeza', tipo: 'entrada', tempAmb: true, valTemp: 365, semCongel: true },
+    { nome: 'Quaternário de Amônio',    cat: 'limpeza', tipo: 'entrada', tempAmb: true, valTemp: 365, semCongel: true },
+    { nome: 'Quat. Amônio (diluído)',   cat: 'limpeza', tipo: 'producao', tempAmb: true, valTemp: 1,   semCongel: true },
+    { nome: 'Hipoclorito de Sódio',     cat: 'limpeza', tipo: 'entrada', tempAmb: true, valTemp: 30,  semCongel: true },
+    { nome: 'Sanitizante (solução pronta)', cat: 'limpeza', tipo: 'producao', tempAmb: true, valTemp: 1, semCongel: true },
+    { nome: 'Desincrustante Ácido',     cat: 'limpeza', tipo: 'entrada', tempAmb: true, valTemp: 365, semCongel: true },
+    { nome: 'Desincrustante Alcalino',  cat: 'limpeza', tipo: 'entrada', tempAmb: true, valTemp: 365, semCongel: true },
+    { nome: 'Lustra-Inox',             cat: 'limpeza', tipo: 'entrada', tempAmb: true, valTemp: 365, semCongel: true },
+    { nome: 'Desengordurante',         cat: 'limpeza', tipo: 'entrada', tempAmb: true, valTemp: 365, semCongel: true },
+    { nome: 'Balde de Sanitização',    cat: 'limpeza', tipo: 'producao', tempAmb: true, valTemp: 1,   semCongel: true },
+    { nome: 'Solução de Higienização de Vegetais', cat: 'limpeza', tipo: 'producao', tempAmb: true, valTemp: 0, semCongel: true },
+  ],
+
+  // ── EMOJIS & NOMES DAS CATEGORIAS ─────────────────────────
+  catEmoji: {
+    tecnicas:       '⭐',
+    fundos:         '🍲',
+    molhos:         '🫙',
+    pures:          '🥕',
+    proteinas_d1:   '🐙',
+    proteinas_cruas:'🥩',
+    empanados:      '🍤',
+    sobremesas:     '🍮',
+    crocantes:      '🌾',
+    mise_frios:     '🧊',
+    bar:            '🍹',
+    bebidas:        '🍾',
+    seco_farinha:   '🌾',
+    seco_tempero:   '🌶️',
+    seco_latic:     '🧀',
+    seco_oleo:      '🫒',
+    seco_doce:      '🍫',
+    limpeza:        '🧼',
+  },
+  catNomes: {
+    tecnicas:       'Técnicas Exclusivas DUE',
+    fundos:         'Fundos & Caldos',
+    molhos:         'Molhos & Bases de Serviço',
+    pures:          'Purês & Guarnições',
+    proteinas_d1:   'Proteínas Cozidas / D-1',
+    proteinas_cruas:'Proteínas — Porcionadas Cruas',
+    empanados:      'Empanados & Pré-Fritos',
+    sobremesas:     'Sobremesas',
+    crocantes:      'Crocantes & Elementos Secos',
+    mise_frios:     'Mise en Place — Frios',
+    bar:            'Bar — Preparos & Xaropes',
+    bebidas:        'Bebidas (Garrafas / Latas)',
+    seco_farinha:   'Estoque Seco — Farinhas & Grãos',
+    seco_tempero:   'Estoque Seco — Temperos & Condimentos',
+    seco_latic:     'Estoque Seco — Laticínios & Ovos',
+    seco_oleo:      'Estoque Seco — Óleos & Vinagres',
+    seco_doce:      'Estoque Seco — Doces & Chocolate',
+    limpeza:        'Higienização & Serviços Gerais',
+  }
+};
+
+// ===== ESTADO =====
+const S = {
+  chef: null, turno: 'A',
+  tipo: 'porcao',
+  produto: null, produtoObj: null,
+  storage: 'refrig',
+  validadeDias: null,
+  qty: 1,
+  labelSize: '80',
+  btDevice: null, btChar: null, btStatus: 'off',
+  log: []
+};
+
+// ===== INIT =====
+function initChefBar() {
+  const bar = document.getElementById('chef-bar');
+  CONFIG.equipe.forEach(m => {
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'chef-btn';
+    btn.textContent = m.code;
+    btn.onclick = function() { setChef(m.code, m.turno, this); };
+    bar.appendChild(btn);
+  });
+}
+
+function buildOptgroup(cat, items) {
+  const og = document.createElement('optgroup');
+  og.label = (CONFIG.catEmoji[cat] || '') + ' ' + (CONFIG.catNomes[cat] || cat);
+  items.forEach(p => {
+    const opt = document.createElement('option');
+    opt.value = String(p.idx);
+    opt.textContent = p.nome;
+    og.appendChild(opt);
+  });
+  return og;
+}
+
+function initProdutoSelect() {
+  const sel = document.getElementById('sel-produto');
+  // Limpa opções exceto placeholder
+  while (sel.options.length > 1) sel.remove(1);
+
+  const catOrder = [];
+  const groups = {};
+  CONFIG.produtos.forEach((p, idx) => {
+    if (!groups[p.cat]) { groups[p.cat] = []; catOrder.push(p.cat); }
+    groups[p.cat].push({ ...p, idx });
+  });
+  catOrder.forEach(cat => {
+    sel.appendChild(buildOptgroup(cat, groups[cat]));
+  });
+}
+
+function filtrarProdutos() {
+  const termo = document.getElementById('search-produto').value.trim().toLowerCase();
+  const sel = document.getElementById('sel-produto');
+  // Remove tudo exceto placeholder
+  while (sel.options.length > 1) sel.remove(1);
+
+  if (!termo) {
+    // Restaura lista completa
+    const catOrder = [];
+    const groups = {};
+    CONFIG.produtos.forEach((p, idx) => {
+      if (!groups[p.cat]) { groups[p.cat] = []; catOrder.push(p.cat); }
+      groups[p.cat].push({ ...p, idx });
+    });
+    catOrder.forEach(cat => sel.appendChild(buildOptgroup(cat, groups[cat])));
+    return;
+  }
+
+  const filtrado = CONFIG.produtos
+    .map((p, idx) => ({ ...p, idx }))
+    .filter(p => p.nome.toLowerCase().includes(termo));
+
+  if (!filtrado.length) {
+    const opt = document.createElement('option');
+    opt.disabled = true;
+    opt.textContent = 'Nenhum resultado';
+    sel.appendChild(opt);
+    return;
+  }
+  const og = document.createElement('optgroup');
+  og.label = '🔍 Resultados (' + filtrado.length + ')';
+  filtrado.forEach(p => {
+    const opt = document.createElement('option');
+    opt.value = String(p.idx);
+    opt.textContent = p.nome;
+    og.appendChild(opt);
+  });
+  sel.appendChild(og);
+}
+
+// ===== CHEF =====
+function setChef(code, turno, el) {
+  S.chef = code; S.turno = turno || 'A';
+  document.querySelectorAll('.chef-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  atualizar();
+}
+
+// ===== TIPO =====
+function setTipo(tipo, el) {
+  S.tipo = tipo;
+  document.querySelectorAll('.tipo-card').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  const isP = tipo === 'personalizada';
+  document.getElementById('sel-wrap').style.display         = isP ? 'none' : 'flex';
+  document.getElementById('nome-livre-wrap').style.display  = isP ? 'flex' : 'none';
+  document.getElementById('val-manual-wrap').style.display  = isP ? 'flex' : 'none';
+  if (isP) {
+    S.produto = null; S.produtoObj = null; S.validadeDias = null; S.storage = 'refrig';
+    document.getElementById('val-wrap').style.display = 'none';
+    document.getElementById('storage-wrap').style.display = 'none';
+    document.getElementById('val-manual-chip').style.display = 'none';
+  } else {
+    document.getElementById('sel-produto').value = '';
+    document.getElementById('search-produto').value = '';
+    initProdutoSelect();
+    S.produto = null; S.produtoObj = null; S.validadeDias = null;
+    document.getElementById('val-manual-chip').style.display = 'none';
+  }
+  renderCampos();
+  atualizar();
+}
+
+// ===== TABS =====
+function setTab(id, el) {
+  document.querySelectorAll('.tab').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(d => d.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('tab-' + id).classList.add('active');
+}
+
+// ===== PRODUTO =====
+function onProduto() {
+  const sel = document.getElementById('sel-produto');
+  const val = sel.value;
+  if (!val) {
+    S.produto = null; S.produtoObj = null; S.validadeDias = null; S.storage = 'refrig';
+    document.getElementById('storage-wrap').style.display = 'none';
+    atualizar(); return;
+  }
+  const idx = parseInt(val);
+  const p = CONFIG.produtos[idx];
+  S.produto = p.nome;
+  S.produtoObj = p;
+  S.storage = p.tempAmb ? 'temp' : 'refrig';
+  resolverValidade();
+  renderStorageChips();
+  renderCampos();
+  atualizar();
+}
+
+function resolverValidade() {
+  const p = S.produtoObj;
+  if (!p) { S.validadeDias = null; return; }
+  const MAX_DIAS = 30;
+  if (S.storage === 'congel')      S.validadeDias = Math.min(p.congel || 30, MAX_DIAS);
+  else if (S.storage === 'temp')   S.validadeDias = Math.min(p.valTemp || 7, 365);
+  else                              S.validadeDias = Math.min(p.refrig || 0, MAX_DIAS);
+}
+
+// ===== STORAGE SELECTOR =====
+function renderStorageChips() {
+  const wrap = document.getElementById('storage-wrap');
+  const chips = document.getElementById('storage-chips');
+  const p = S.produtoObj;
+  if (!p) { wrap.style.display = 'none'; return; }
+
+  wrap.style.display = 'block';
+  const temRefrig = !p.tempAmb && p.refrig !== undefined;
+  const temCongel = !p.semCongel && p.congel !== undefined;
+  const temTemp   = !!p.tempAmb;
+
+  let html = '';
+
+  if (temRefrig || (!temTemp && !temCongel)) {
+    const ativo = S.storage === 'refrig' ? ' active' : '';
+    html += '<button type="button" class="storage-chip' + ativo + '" onclick="setStorage(\'refrig\')">' +
+      '<span class="storage-chip-icon">❄️</span>' +
+      '<span class="storage-chip-label">Refrig (' + (p.refrig || 0) + 'd)</span>' +
+      '</button>';
+  }
+  if (temTemp) {
+    const ativo = S.storage === 'temp' ? ' active temp' : '';
+    html += '<button type="button" class="storage-chip' + ativo + '" onclick="setStorage(\'temp\')">' +
+      '<span class="storage-chip-icon">🌡️</span>' +
+      '<span class="storage-chip-label">T. Amb (' + (p.valTemp || '—') + 'd)</span>' +
+      '</button>';
+  }
+  if (temCongel) {
+    const ativo = S.storage === 'congel' ? ' active cong' : '';
+    html += '<button type="button" class="storage-chip' + ativo + '" onclick="setStorage(\'congel\')">' +
+      '<span class="storage-chip-icon">🧊</span>' +
+      '<span class="storage-chip-label">Congel (' + (p.congel || '—') + 'd)</span>' +
+      '</button>';
+  }
+  chips.innerHTML = html;
+}
+
+function setStorage(mode) {
+  const p = S.produtoObj;
+  if (!p) return;
+  S.storage = mode;
+  resolverValidade();
+  renderStorageChips();
+  renderValidade();
+  atualizar();
+}
+
+// ===== CAMPOS DINÂMICOS =====
+function fieldHtml(id, label, type, placeholder) {
+  return '<div class="field">' +
+    '<label>' + label + '</label>' +
+    '<input type="' + type + '" id="campo-' + id + '" placeholder="' + placeholder + '" autocomplete="off" autocorrect="off" spellcheck="false">' +
+    '</div>';
+}
+
+function renderCampos() {
+  const el = document.getElementById('campos');
+  const tipo = S.tipo;
+  let html = '';
+  if (tipo === 'porcao') {
+    html += fieldHtml('peso', 'Peso / Quantidade', 'text', 'Ex: 200g, 6 unid');
+    html += fieldHtml('obs',  'Observação (opcional)', 'text', 'Ex: sem sal');
+  } else if (tipo === 'producao') {
+    html += fieldHtml('pesoBruto',   'Peso Bruto', 'text', 'Ex: 1,5kg');
+    html += fieldHtml('pesoLiquido', 'Peso Líquido / Rendimento', 'text', 'Ex: 1,2kg');
+    html += fieldHtml('obs',         'Observação (opcional)', 'text', '');
+  } else if (tipo === 'entrada') {
+    html += fieldHtml('fornecedor', 'Fornecedor', 'text', 'Ex: Peixaria Central');
+    html += fieldHtml('peso',       'Quantidade recebida', 'text', 'Ex: 5kg');
+    html += fieldHtml('obs',        'Observação (opcional)', 'text', '');
+  } else if (tipo === 'personalizada') {
+    html += fieldHtml('peso', 'Peso / Quantidade', 'text', 'Ex: 200g');
+    html += fieldHtml('obs',  'Observação (opcional)', 'text', '');
+  }
+  el.innerHTML = html;
+  el.querySelectorAll('input').forEach(inp => inp.addEventListener('input', atualizar));
+  if (tipo !== 'personalizada') renderValidade();
+}
+
+function renderValidade() {
+  const wrap = document.getElementById('val-wrap');
+  const chip = document.getElementById('val-chip');
+  if (S.validadeDias != null && S.validadeDias >= 0) {
+    const d = new Date(); d.setDate(d.getDate() + S.validadeDias);
+    const stg = S.storage === 'congel' ? 'CONG' : S.storage === 'temp' ? 'T.AMB' : 'REFR';
+    chip.textContent = 'Validade: ' + fmt(d) + ' (' + S.validadeDias + 'd · ' + stg + ')';
+    wrap.style.display = 'block';
+  } else {
+    wrap.style.display = 'none';
+  }
+}
+
+// ===== QTY =====
+function changeQty(delta) {
+  S.qty = Math.max(1, Math.min(20, S.qty + delta));
+  document.getElementById('qty-num').textContent = S.qty;
+  atualizar();
+}
+
+// ===== ATUALIZAR UI =====
+function atualizar() {
+  const btn = document.getElementById('btn-imprimir');
+  const isP = S.tipo === 'personalizada';
+  const nomeLivre = isP ? ((document.getElementById('campo-nomeLivre') || {}).value || '') : '';
+  const temProduto = isP ? nomeLivre.trim().length > 0 : !!S.produto;
+  const podeImprimir = S.chef && temProduto && S.btStatus === 'connected';
+  btn.disabled = !podeImprimir;
+  const txt  = document.getElementById('btn-text');
+  const icon = document.getElementById('btn-icon');
+  if (!S.chef)                        { txt.textContent = 'SELECIONE O CHEF';         icon.textContent = '👤'; }
+  else if (!temProduto)               { txt.textContent = isP ? 'DIGITE O NOME' : 'SELECIONE O PRODUTO'; icon.textContent = '📋'; }
+  else if (S.btStatus !== 'connected'){ txt.textContent = 'CONECTE A IMPRESSORA';      icon.textContent = '📡'; }
+  else { txt.textContent = 'IMPRIMIR ' + (S.qty > 1 ? S.qty + ' ETIQUETAS' : '1 ETIQUETA'); icon.textContent = '🖨'; }
+  document.getElementById('btn-teste').style.display = S.btStatus === 'connected' ? 'block' : 'none';
+  renderPreview();
+}
+
+// ===== PREVIEW =====
+function renderPreview() {
+  const wrap = document.getElementById('preview-wrap');
+  const agora = new Date();
+  const isP = S.tipo === 'personalizada';
+  const nomeLivre = isP ? ((document.getElementById('campo-nomeLivre')||{}).value||'').trim() : null;
+  const nomeProduto = isP ? (nomeLivre||'Nome do produto') : (S.produto||'Selecione produto');
+  const isSel = isP ? !!nomeLivre : !!S.produto;
+  let dataValStr = '—';
+  if (S.validadeDias != null && S.validadeDias >= 0) {
+    const d = new Date(); d.setDate(d.getDate() + S.validadeDias); dataValStr = fmt(d);
+  }
+  const stag = S.storage === 'congel' ? 'CONG' : S.storage === 'temp' ? 'T.AMB' : 'REFR';
+  const tipoTags = { porcao:'Porção', producao:'Produção', entrada:'Entrada', personalizada:'Custom' };
+  const pesoEl = document.getElementById('campo-peso');
+  const pesoVal = pesoEl ? pesoEl.value : '';
+  const tipoClass = S.tipo;
+
+  if (S.labelSize === '30') {
+    wrap.innerHTML = '<div class="label30">' +
+      '<div class="label30-stripe ' + tipoClass + '"></div>' +
+      '<div class="label30-header"><span class="label30-brand">DUE</span><span class="label30-tipo">' + (tipoTags[S.tipo]||S.tipo) + '</span></div>' +
+      '<div class="label30-produto" style="' + (!isSel?'color:#bbb;font-style:italic;font-size:9px':'') + '">' + escapeHtml(nomeProduto) + (pesoVal?' · '+escapeHtml(pesoVal):'') + '</div>' +
+      '<div class="label30-val-wrap"><span class="label30-val-label">VALIDADE · ' + stag + '</span><span class="label30-val-date">' + dataValStr + '</span></div>' +
+      '<div class="label30-footer"><span class="label30-footer-item">CHEF ' + (S.chef||'—') + '</span><span class="label30-footer-item">' + fmt(agora) + '</span><span class="label30-footer-item">' + agora.toTimeString().slice(0,5) + '</span></div>' +
+      '</div>';
+  } else {
+    wrap.innerHTML = '<div class="label">' +
+      '<div class="label-stripe ' + tipoClass + '"></div>' +
+      '<div class="label-header"><span class="label-brand">DUE</span><span class="label-type-tag">' + (tipoTags[S.tipo]||S.tipo) + '</span></div>' +
+      '<div class="label-produto" style="' + (!isSel?'color:#bbb;font-style:italic;font-size:10px':'') + '">' + escapeHtml(nomeProduto) + '</div>' +
+      '<div class="label-body"><div class="label-row"><span class="label-key">Peso / Qtd</span><span class="label-val big">' + (escapeHtml(pesoVal)||'—') + '</span></div>' +
+      '<div class="label-row"><span class="label-key">Prep</span><span class="label-val">' + fmt(agora) + ' ' + agora.toTimeString().slice(0,5) + '</span></div></div>' +
+      '<div class="label-validade"><span class="label-val-label">VALIDADE · ' + stag + '</span><span class="label-val-date">' + dataValStr + '</span></div>' +
+      '<div class="label-footer"><span class="label-footer-item">CHEF ' + (S.chef||'—') + '</span><span class="label-footer-item">T' + (S.turno||'—') + '</span><span class="label-footer-item">' + agora.toTimeString().slice(0,5) + '</span></div>' +
+      '</div>';
+  }
+}
+
+function escapeHtml(s) {
+  if (!s) return '';
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ===== LABEL SIZE =====
+function setLabelSize(size) {
+  S.labelSize = size;
+  document.querySelectorAll('.size-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('sz-' + size).classList.add('active');
+  const lbl = size === '30' ? '50×30mm' : '50×80mm';
+  document.getElementById('preview-size-label').textContent = lbl;
+  renderPreview();
+  atualizar();
+  showToast('Etiqueta ' + lbl, 'ok');
+}
+
+// ===== VALIDADE MANUAL (personalizada) =====
+function onValidadeManual() {
+  const inp = document.getElementById('campo-validadeManual');
+  const dias = parseInt(inp.value);
+  if (!isNaN(dias) && dias >= 0) {
+    S.validadeDias = dias;
+    const d = new Date(); d.setDate(d.getDate() + dias);
+    const chip = document.getElementById('val-manual-chip');
+    const chipTxt = document.getElementById('val-manual-chip-text');
+    chipTxt.textContent = 'Validade: ' + fmt(d) + ' (' + dias + 'd)';
+    chip.style.display = 'block';
+  } else {
+    S.validadeDias = null;
+    document.getElementById('val-manual-chip').style.display = 'none';
+  }
+  atualizar();
+}
+
+function fmt(d) {
+  return d.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: '2-digit' });
+}
+
+// ===== UTILS =====
+function semAcento(str) {
+  if (!str) return '';
+  // Substituição explícita — sem normalize, sem bytes acima de 0x7F
+  return str
+    .replace(/[áàãâä]/g,'a').replace(/[ÁÀÃÂÄ]/g,'A')
+    .replace(/[éèêë]/g,'e').replace(/[ÉÈÊË]/g,'E')
+    .replace(/[íìîï]/g,'i').replace(/[ÍÌÎÏ]/g,'I')
+    .replace(/[óòõôö]/g,'o').replace(/[ÓÒÕÔÖ]/g,'O')
+    .replace(/[úùûü]/g,'u').replace(/[ÚÙÛÜ]/g,'U')
+    .replace(/[ç]/g,'c').replace(/[Ç]/g,'C')
+    .replace(/[ñ]/g,'n').replace(/[Ñ]/g,'N')
+    .replace(/[^\x00-\x7F]/g,'?');
+}
+
+// ===== BLUETOOTH =====
+function toggleBluetooth() {
+  if (!navigator.bluetooth) { showToast('Web Bluetooth não suportado. Use Chrome Android via HTTPS.', 'error'); return; }
+  if (S.btStatus === 'connected') {
+    if (S.btDevice && S.btDevice.gatt.connected) S.btDevice.gatt.disconnect();
+    setBtStatus('off'); return;
+  }
+  document.getElementById('modal-bt').classList.add('show');
+}
+
+function fecharModal() { document.getElementById('modal-bt').classList.remove('show'); }
+
+async function conectarBluetooth() {
+  fecharModal();
+  setBtStatus('connecting');
+  try {
+    const device = await navigator.bluetooth.requestDevice({
+      acceptAllDevices: true,
+      optionalServices: [
+        '0000ff00-0000-1000-8000-00805f9b34fb',
+        '000018f0-0000-1000-8000-00805f9b34fb',
+        'e7810a71-73ae-499d-8c15-faa9aef0c3f2',
+        '00001101-0000-1000-8000-00805f9b34fb'
+      ]
+    });
+    S.btDevice = device;
+    device.addEventListener('gattserverdisconnected', onDisconnect);
+    const server = await device.gatt.connect();
+    let char = null;
+    const services = await server.getPrimaryServices();
+    for (const svc of services) {
+      try {
+        const chars = await svc.getCharacteristics();
+        for (const c of chars) {
+          if (c.properties.write || c.properties.writeWithoutResponse) { char = c; break; }
+        }
+        if (char) break;
+      } catch(e) {}
+    }
+    if (!char) throw new Error('Característica de escrita não encontrada');
+    S.btChar = char;
+    setBtStatus('connected', device.name || 'Impressora');
+    showToast('✓ Conectado: ' + (device.name || 'Impressora'), 'ok');
+    atualizar();
+  } catch(err) {
+    setBtStatus('off');
+    if (err.name !== 'NotFoundError') showToast('Erro: ' + err.message, 'error');
+    else showToast('Nenhum dispositivo selecionado', 'warn');
+  }
+}
+
+function onDisconnect() {
+  S.btChar = null; setBtStatus('off');
+  showToast('Impressora desconectada', 'warn'); atualizar();
+}
+
+function setBtStatus(status, name) {
+  S.btStatus = status;
+  const pill = document.getElementById('bt-pill');
+  const dot  = document.getElementById('bt-dot');
+  const lbl  = document.getElementById('bt-label');
+  pill.className = 'bt-pill' + (status === 'connected' ? ' connected' : status === 'connecting' ? ' connecting' : '');
+  dot.className  = 'bt-dot' + (status === 'connecting' ? ' pulse' : '');
+  lbl.textContent = status === 'connected' ? (name||'Conectado') : status === 'connecting' ? 'Conectando…' : 'Bluetooth';
+}
+
+// ===== ENVIO BLE =====
+async function enviarTSPL(tspl) {
+  if (!S.btChar) throw new Error('Impressora não conectada');
+  const data = new TextEncoder().encode(tspl);
+  const CHUNK = 20, DELAY = 30;
+  for (let i = 0; i < data.length; i += CHUNK) {
+    const chunk = data.slice(i, i + CHUNK);
+    if (S.btChar.properties.writeWithoutResponse) await S.btChar.writeValueWithoutResponse(chunk);
+    else await S.btChar.writeValue(chunk);
+    if (i + CHUNK < data.length) await sleep(DELAY);
+  }
+}
+
+function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+// ===== PROTOCOLO ESC/POS — PT-260 58mm rolo contínuo =====
+// A impressora é clone genérico com firmware ESC/POS nativo.
+// Largura real do rolo: 57-58mm. Protocolo: ESC/POS.
+// Rolo contínuo: sem gap, sem corte automático. Corte manual.
+
+function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+// ESC/POS: montar Uint8Array a partir de valores + strings
+function escpos(...args) {
+  const parts = [];
+  for (const a of args) {
+    if (typeof a === 'string') {
+      parts.push(...new TextEncoder().encode(a));
+    } else if (a instanceof Uint8Array) {
+      parts.push(...a);
+    } else {
+      parts.push(a); // número = byte raw
+    }
+  }
+  return new Uint8Array(parts);
+}
+
+// Envio BLE em chunks de 20 bytes com delay
+async function enviarTSPL(dados) {
+  if (!S.btChar) throw new Error('Impressora não conectada');
+  const bytes = typeof dados === 'string'
+    ? new TextEncoder().encode(dados)
+    : dados;
+  const CHUNK = 20, DELAY = 30;
+  for (let i = 0; i < bytes.length; i += CHUNK) {
+    const chunk = bytes.slice(i, i + CHUNK);
+    if (S.btChar.properties.writeWithoutResponse)
+      await S.btChar.writeValueWithoutResponse(chunk);
+    else
+      await S.btChar.writeValue(chunk);
+    if (i + CHUNK < bytes.length) await sleep(DELAY);
+  }
+}
+
+// Helpers de formatação
+function padC(str, w) {
+  // Centralizar texto em largura w chars
+  str = String(str || '').slice(0, w);
+  const pad = Math.max(0, Math.floor((w - str.length) / 2));
+  return ' '.repeat(pad) + str;
+}
+function padR(str, w) { str = String(str||'').slice(0,w); return str + ' '.repeat(Math.max(0,w-str.length)); }
+function padL(str, w) { str = String(str||'').slice(0,w); return ' '.repeat(Math.max(0,w-str.length)) + str; }
+function linha(w) { return '─'.repeat ? '-'.repeat(w) : '-'.repeat(w); }
+
+// Largura de impressão em chars por tamanho de fonte
+// Fonte normal (ESC/POS padrão 58mm): ~32 chars por linha
+// Fonte dupla largura: ~16 chars
+// Fonte dupla altura+largura: ~16 chars
+const COLS = 32; // caracteres por linha em fonte normal
+
+function buildTSPL(dados) {
+  const sz = S.labelSize || '30';
+  if (sz === '80') return buildESC80(dados);
+  if (sz === '60') return buildESC60(dados);
+  return buildESC30(dados);
+}
+
+function prepDados(dados) {
+  const agora = new Date();
+  const fmtD = d => d.toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit',year:'2-digit'});
+  let dataVal = 'S/VALIDADE';
+  if (dados.validadeDias != null && dados.validadeDias >= 0) {
+    const dv = new Date(); dv.setDate(dv.getDate() + dados.validadeDias);
+    dataVal = fmtD(dv);
+  }
+  const tipoMap = { porcao:'PORCAO', producao:'PRODUCAO', entrada:'ENTRADA', personalizada:'CUSTOM' };
+  const storMap = { congel:'CONGELADO', temp:'T.AMBIENTE' };
+  return {
+    prod:     semAcento(dados.produto || ''),
+    tipo:     tipoMap[dados.tipo] || (dados.tipo||'').toUpperCase(),
+    storage:  storMap[dados.storage] || 'REFRIGERADO',
+    peso:     semAcento(dados.peso || ''),
+    pesoBruto:semAcento(dados.pesoBruto || ''),
+    pesoLiq:  semAcento(dados.pesoLiquido || ''),
+    forn:     semAcento(dados.fornecedor || ''),
+    obs:      semAcento(dados.obs || ''),
+    chef:     (function() {
+      // Mapear code → nome (máx 7 chars) para a etiqueta
+      const nomes = { RAFA:'Rafael', FRAN:'Franci', JOSE:'Josiane',
+                      EDMA:'Edmar',  BEAT:'Beatriz', RAYA:'Rayane',
+                      OZAN:'Ozanne', CHEF:'Chef' };
+      const code = dados.chef || '';
+      return semAcento(nomes[code] || code);
+    })(),
+    turno:    dados.turno || '',
+    qty:      dados.qty || 1,
+    dataVal,
+    dataPrep: fmtD(agora),
+    hora:     agora.toTimeString().slice(0,5),
+  };
+}
+
+// ESC/POS bytes de controle
+const ESC = 0x1B, GS = 0x1D, LF = 0x0A, CR = 0x0D;
+
+function initPrinter()  { return escpos(ESC, 0x40); }               // ESC @ reset
+function alignLeft()    { return escpos(ESC, 0x61, 0x00); }
+function alignCenter()  { return escpos(ESC, 0x61, 0x01); }
+function alignRight()   { return escpos(ESC, 0x61, 0x02); }
+function fontNormal()   { return escpos(ESC, 0x21, 0x00); }         // normal
+function fontBold()     { return escpos(ESC, 0x21, 0x08); }         // negrito
+function fontDblH()     { return escpos(ESC, 0x21, 0x10); }         // altura dupla
+function fontDblW()     { return escpos(ESC, 0x21, 0x20); }         // largura dupla
+function fontDblWH()    { return escpos(ESC, 0x21, 0x30); }         // W+H duplos
+function fontGrande()   { return escpos(GS,  0x21, 0x11); }         // GS ! duplo seguro
+function fontDbl4x()    { return escpos(GS,  0x21, 0x33); }         // 4x (GS !)
+function invertOn()     { return escpos(GS,  0x42, 0x01); }         // fundo invertido
+function invertOff()    { return escpos(GS,  0x42, 0x00); }
+function feedLines(n)   { const a = new Uint8Array(n); a.fill(0x0A); return a; }            // avançar n linhas
+function cutPaper()     { return escpos(GS,  0x56, 0x42, 0x00); }   // corte parcial
+function nl()           { return escpos(LF); }
+
+function txt(str) { return escpos(str + '\n'); }
+function txtC(str, w) { return escpos(padC(str, w||COLS) + '\n'); }
+
+// Separador visual
+function sep(char, w) { return escpos((char||'-').repeat(w||COLS) + '\n'); }
+
+// ── LAYOUT 30mm (compacto — mise en place, temperos, porções) ──
+function buildESC30(dados) {
+  const d = prepDados(dados);
+  const parts = [];
+
+  parts.push(initPrinter());
+
+  // CABEÇALHO invertido
+  parts.push(invertOn());
+  parts.push(escpos('DUE ' + d.tipo + '\n'));
+  parts.push(invertOff());
+
+  // espaço
+  parts.push(escpos('\n'));
+
+  // PRODUTO — fonte dupla WH
+  parts.push(fontDblWH());
+  const palavras = d.prod.split(' ');
+  let linhaAtual = '';
+  for (const p of palavras) {
+    if ((linhaAtual + ' ' + p).trim().length <= 13) {
+      linhaAtual = (linhaAtual + ' ' + p).trim();
+    } else {
+      if (linhaAtual) parts.push(escpos(linhaAtual + '\n'));
+      linhaAtual = p;
+    }
+  }
+  if (linhaAtual) parts.push(escpos(linhaAtual + '\n'));
+  parts.push(fontNormal());
+
+  // espaço
+  parts.push(escpos('\n'));
+
+  // PESO (se tiver)
+  if (d.peso) parts.push(escpos(d.peso + '\n'));
+
+  // VALIDADE invertido
+  parts.push(invertOn());
+  parts.push(escpos('VALIDADE ' + d.storage.slice(0,4) + '\n'));
+  parts.push(invertOff());
+
+  // DATA validade grande
+  parts.push(fontDblWH());
+  parts.push(escpos(d.dataVal + '\n'));
+  parts.push(fontNormal());
+
+  // espaço
+  parts.push(escpos('\n'));
+
+  // RODAPÉ
+  parts.push(escpos('CHEF ' + d.chef + '  TURNO ' + d.turno + '\n'));
+  parts.push(escpos('PREP: ' + d.dataPrep + ' ' + d.hora + '\n'));
+
+  // Avançar para corte
+  parts.push(escpos('\n\n\n\n'));
+
+  const one = concat(parts);
+  return repeatBytes(one, d.qty);
+}
+
+// ── LAYOUT 60mm (intermediário — bases, produções, bar) ──
+function buildESC60(dados) {
+  const d = prepDados(dados);
+  const parts = [];
+
+  parts.push(initPrinter());
+
+  // CABEÇALHO
+  parts.push(txt('DUE  ' + d.tipo));
+
+  // PRODUTO
+  const p = d.prod.length > 24 ? d.prod.slice(0,22)+'.' : d.prod;
+  parts.push(txt(p));
+
+  // DETALHES
+  if (d.peso || d.pesoBruto) {
+    parts.push(feedLines(1));
+    if (d.pesoBruto && d.pesoLiq) {
+      parts.push(txt('BRUTO: ' + d.pesoBruto + '  LIQ: ' + d.pesoLiq));
+    } else if (d.peso) {
+      parts.push(txt('PESO: ' + d.peso));
+    }
+  }
+  if (d.forn) {
+      parts.push(txt('FORN: ' + d.forn.slice(0,26)));
+  }
+  if (d.obs) {
+      parts.push(txt('OBS: ' + d.obs.slice(0,28)));
+  }
+
+  // VALIDADE — bloco invertido
+  parts.push(feedLines(1));
+  parts.push(txt('VAL ' + d.dataVal));
+  parts.push(txt(d.storage));
+  parts.push(feedLines(1));
+
+  // RODAPÉ
+  parts.push(txt('CHEF ' + d.chef + '  T' + d.turno));
+  parts.push(txt('PREP: ' + d.dataPrep + ' ' + d.hora));
+  parts.push(feedLines(4));
+
+  const one = concat(parts);
+  return repeatBytes(one, d.qty);
+}
+
+// ── LAYOUT 80mm (completo — D-1, proteínas, entrada NF) ──
+function buildESC80(dados) {
+  const d = prepDados(dados);
+  const parts = [];
+
+  parts.push(initPrinter());
+
+  // CABEÇALHO
+  parts.push(txt('DUE  ' + d.tipo));
+  parts.push(feedLines(1));
+
+  // PRODUTO — grande
+  const p = d.prod.length > 20 ? d.prod.slice(0,18)+'.' : d.prod;
+  parts.push(txt(p));
+  parts.push(sep('─'));
+
+  // DETALHES
+  if (d.pesoBruto && d.pesoLiq) {
+    const pb = parseFloat(d.pesoBruto); const pl = parseFloat(d.pesoLiq);
+    const rend = pb > 0 ? ' (' + ((pl/pb)*100).toFixed(0) + '%)' : '';
+    parts.push(txt('BRUTO : ' + d.pesoBruto));
+    parts.push(txt('LIQ   : ' + d.pesoLiq + rend));
+  } else if (d.peso) {
+    parts.push(txt('PESO  : ' + d.peso));
+  }
+  if (d.forn) parts.push(txt('FORN  : ' + d.forn.slice(0,24)));
+  if (d.obs)  parts.push(txt('OBS   : ' + d.obs.slice(0,24)));
+
+  // VALIDADE
+  parts.push(feedLines(1));
+  parts.push(txt('VAL ' + d.dataVal));
+  parts.push(txt(d.storage));
+  parts.push(feedLines(1));
+
+  // RODAPÉ
+  parts.push(txt('CHEF ' + d.chef + '  TURNO ' + d.turno));
+  parts.push(txt('PREP: ' + d.dataPrep + ' ' + d.hora));
+  parts.push(feedLines(5));
+
+  const one = concat(parts);
+  return repeatBytes(one, d.qty);
+}
+
+// Utilitários de bytes
+function concat(parts) {
+  const total = parts.reduce((s, p) => s + p.length, 0);
+  const out = new Uint8Array(total);
+  let off = 0;
+  for (const p of parts) { out.set(p, off); off += p.length; }
+  return out;
+}
+
+function repeatBytes(bytes, n) {
+  const out = new Uint8Array(bytes.length * n);
+  for (let i = 0; i < n; i++) out.set(bytes, i * bytes.length);
+  return out;
+}
+
+// ===== TESTE MÍNIMO =====
+async function imprimirTeste() {
+  if (S.btStatus !== 'connected') return;
+  const d = {
+    produto:'TESTE DUE', tipo:'porcao', validadeDias:1,
+    storage:'refr', qty:1, chef:'CHEF', turno:'A',
+    peso:'', pesoBruto:'', pesoLiquido:'', fornecedor:'', obs:''
+  };
+  try {
+    const bytes = buildESC30(d);
+    await enviarTSPL(bytes);
+    showToast('✓ Teste enviado', 'ok');
+  } catch(err) { showToast('Erro: ' + err.message, 'error'); }
+}
+
+// ===== HELPERS LEGADO (mantidos para compatibilidade) =====
+function centrX(texto, charW) { return Math.max(0, Math.floor((400 - texto.length * charW) / 2)); }
+function quebrarLinha(texto, maxChars) {
+  const linhas = [];
+  let t = texto;
+  while (t.length > 0 && linhas.length < 3) {
+    if (t.length <= maxChars) { linhas.push(t); break; }
+    let corte = t.lastIndexOf(' ', maxChars);
+    if (corte <= 0) corte = maxChars;
+    linhas.push(t.substring(0, corte).trim());
+    t = t.substring(corte).trim();
+  }
+  return linhas;
+}
+
+// ===== BUILD TSPL 50x30mm =====
+function buildTSPL30(dados) {
+  const { produto, tipo, validadeDias, qty, chef, storage } = dados;
+  const peso = semAcento(dados.peso || '');
+  const prod = semAcento(produto);
+  const agora = new Date();
+  const dataPrep = fmt(agora);
+  const hora = agora.toTimeString().slice(0, 5);
+  let dataVal = 'S/VAL';
+  if (validadeDias != null && validadeDias >= 0) {
+    const d = new Date(); d.setDate(d.getDate() + validadeDias); dataVal = fmt(d);
+  }
+  const tipoLabel  = { porcao:'PORCAO', producao:'PRODUCAO', entrada:'ENTRADA', personalizada:'CUSTOM' }[tipo] || tipo;
+  const storageTag = storage === 'congel' ? 'CONG' : storage === 'temp' ? 'T.AMB' : 'REFR';
+  const valLabel   = 'VALIDADE . ' + storageTag;
+  const R = '\r\n', W = 400;
+  let c = '';
+  c += 'SIZE 50 mm, 30 mm' + R;
+  c += 'GAP 3 mm, 0' + R;
+  c += 'DIRECTION 1' + R;
+  c += 'REFERENCE 0,0' + R;
+  c += 'OFFSET 0 mm' + R;
+  c += 'SET PEEL OFF' + R;
+  c += 'SET CUTTER OFF' + R;
+  c += 'CLS' + R;
+  c += 'BAR 0,0,' + W + ',5' + R;
+  c += 'TEXT 10,8,"1",0,1,1,"DUE"' + R;
+  const tipoShort = semAcento(tipoLabel);
+  c += 'TEXT ' + (W - tipoShort.length * 7 - 10) + ',8,"1",0,1,1,"' + tipoShort + '"' + R;
+  c += 'BAR 10,24,' + (W-20) + ',1' + R;
+  const linhasProd = quebrarLinha(prod, 14);
+  let y = 30;
+  for (const l of linhasProd.slice(0, 2)) {
+    c += 'TEXT ' + centrX(l, 20) + ',' + y + ',"3",0,2,1,"' + l + '"' + R;
+    y += 22;
+  }
+  if (peso && linhasProd.length <= 1) {
+    const pesoTxt = semAcento(peso);
+    c += 'TEXT ' + (W - pesoTxt.length * 8 - 10) + ',52,"2",0,1,1,"' + pesoTxt + '"' + R;
+  }
+  c += 'BAR 10,76,' + (W-20) + ',1' + R;
+  c += 'TEXT ' + centrX(valLabel, 7) + ',82,"1",0,1,1,"' + valLabel + '"' + R;
+  c += 'TEXT ' + centrX(dataVal, 20) + ',96,"3",0,2,2,"' + dataVal + '"' + R;
+  c += 'BAR 10,144,' + (W-20) + ',1' + R;
+  const footLine = semAcento(chef) + '  ' + dataPrep + '  ' + hora;
+  c += 'TEXT ' + centrX(footLine, 7) + ',150,"1",0,1,1,"' + footLine + '"' + R;
+  c += 'PRINT ' + qty + ',1' + R;
+  return c;
+}
+
+// ===== IMPRIMIR (única função, unificada) =====
+async function imprimir() {
+  if (!S.chef || S.btStatus !== 'connected') return;
+
+  const isP = S.tipo === 'personalizada';
+  const getCampo = id => { const el = document.getElementById('campo-' + id); return el ? el.value.trim() : ''; };
+  const nomeLivre = isP ? getCampo('nomeLivre') : '';
+  const nomeProduto = isP ? nomeLivre : S.produto;
+
+  if (!nomeProduto) { showToast(isP ? 'Digite o nome do produto' : 'Selecione o produto', 'warn'); return; }
+
+  const dados = {
+    produto: nomeProduto, tipo: S.tipo, validadeDias: S.validadeDias,
+    storage: S.storage, qty: S.qty, chef: S.chef, turno: S.turno,
+    peso: getCampo('peso'), pesoBruto: getCampo('pesoBruto'),
+    pesoLiquido: getCampo('pesoLiquido'), fornecedor: getCampo('fornecedor'), obs: getCampo('obs'),
+  };
+
+  const tspl = buildTSPL(dados);
+  const btn  = document.getElementById('btn-imprimir');
+  const icon = document.getElementById('btn-icon');
+  const txt  = document.getElementById('btn-text');
+
+  btn.classList.add('sending'); btn.disabled = true;
+  icon.textContent = '⏳'; txt.textContent = 'ENVIANDO…';
+
+  try {
+    await enviarTSPL(tspl);
+    btn.classList.remove('sending'); btn.classList.add('success');
+    icon.textContent = '✓';
+    txt.textContent = S.qty + ' ETIQUETA' + (S.qty>1?'S':'') + ' ENVIADA' + (S.qty>1?'S':'') + '!';
+    showToast('✓ ' + S.qty + ' etiqueta' + (S.qty>1?'s':'') + ' impressa' + (S.qty>1?'s':'') + '!', 'ok');
+    const stag = S.storage === 'congel' ? 'CONG' : S.storage === 'temp' ? 'T.AMB' : 'REFR';
+    S.log.unshift({ produto: nomeProduto, tipo: S.tipo, qty: S.qty, chef: S.chef, storage: stag, size: S.labelSize+'mm', hora: new Date().toTimeString().slice(0,5) });
+    renderLog();
+    setTimeout(() => {
+      btn.classList.remove('success'); btn.disabled = false;
+      icon.textContent = '🖨';
+      txt.textContent = 'IMPRIMIR ' + (S.qty>1 ? S.qty+' ETIQUETAS' : '1 ETIQUETA');
+    }, 2500);
+  } catch(err) {
+    btn.classList.remove('sending'); btn.disabled = false;
+    icon.textContent = '📡'; txt.textContent = 'IMPRIMIR VIA BLUETOOTH';
+    showToast('Erro: ' + err.message, 'error');
+  }
+}
+
+// ===== LOG =====
+function renderLog() {
+  const el = document.getElementById('log-lista');
+  if (!S.log.length) { el.innerHTML = '<div style="text-align:center;color:var(--muted);padding:40px;font-size:13px">Nenhuma impressão ainda</div>'; return; }
+  el.innerHTML = S.log.map(l =>
+    '<div class="log-item"><div class="log-item-nome">' + l.produto + ' × ' + l.qty + '</div>' +
+    '<div class="log-item-meta">' + l.tipo + ' · ' + l.storage + ' · ' + l.chef + ' · ' + l.size + ' · ' + l.hora + '</div></div>'
+  ).join('');
+}
+
+function exportCSV() {
+  if (!S.log.length) { showToast('Nenhum dado para exportar', 'warn'); return; }
+  const rows = ['produto,tipo,storage,qty,chef,size,hora', ...S.log.map(l => [l.produto, l.tipo, l.storage, l.qty, l.chef, l.size, l.hora].join(','))];
+  const blob = new Blob([rows.join('\n')], { type: 'text/csv' });
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+  a.download = 'DUE_log_' + new Date().toISOString().slice(0,10) + '.csv'; a.click();
+}
+
+// ===== LOTE JSON/CSV =====
+function switchLoteTab(tab) {
+  document.getElementById('lote-painel-json').style.display = tab === 'json' ? 'block' : 'none';
+  document.getElementById('lote-painel-csv').style.display  = tab === 'csv'  ? 'block' : 'none';
+  ['json','csv'].forEach(t => {
+    const btn = document.getElementById('lote-tab-' + t);
+    const ativo = t === tab;
+    btn.style.background  = ativo ? 'var(--accent)'  : 'var(--surface2)';
+    btn.style.color       = ativo ? '#1a1a1a'        : 'var(--muted)';
+    btn.style.borderColor = ativo ? 'var(--accent)'  : 'var(--border)';
+  });
+}
+
+let S_lote = null;
+
+function validarLote() {
+  const txt = document.getElementById('lote-json').value.trim();
+  if (!txt) { showToast('Cole um JSON válido', 'warn'); return; }
+  try {
+    const parsed = JSON.parse(txt);
+    if (!Array.isArray(parsed) || !parsed.length) throw new Error('Array JSON vazio ou inválido');
+    for (const item of parsed) {
+      if (!item.produto) throw new Error('Campo "produto" obrigatório');
+      if (!item.chef)    throw new Error('Campo "chef" obrigatório');
+      if (!item.tipo)    throw new Error('Campo "tipo" obrigatório');
+      const idx = CONFIG.produtos.findIndex(p => p.nome.toLowerCase() === item.produto.toLowerCase());
+      if (idx < 0) throw new Error('Produto "' + item.produto + '" não encontrado');
+    }
+    S_lote = parsed;
+    renderLotePreview();
+    showToast('✓ ' + parsed.length + ' itens validados!', 'ok');
+  } catch(e) { showToast('Erro: ' + e.message, 'error'); }
+}
+
+async function carregarCSVURL() {
+  const url = document.getElementById('lote-csv-url').value.trim();
+  if (!url) { showToast('Cole a URL do Sheets', 'warn'); return; }
+  showToast('Carregando…');
+  try {
+    const proxy = 'https://api.allorigins.win/raw?url=' + encodeURIComponent(url);
+    const res = await fetch(proxy);
+    if (!res.ok) throw new Error('Falha na URL');
+    parsearCSVMobile(await res.text());
+  } catch(e) { showToast('Erro: tente o arquivo CSV', 'error'); }
+}
+
+function carregarCSVArquivo(input) {
+  const file = input.files[0]; if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => parsearCSVMobile(e.target.result);
+  reader.readAsText(file, 'UTF-8');
+}
+
+function parsearCSVMobile(text) {
+  const linhas = text.trim().split(/\r?\n/);
+  const header = linhas[0].toLowerCase().split(',').map(h => h.trim().replace(/"/g,''));
+  const iP = header.indexOf('produto'), iC = header.indexOf('chef'),
+        iT = header.indexOf('tipo'),    iW = header.indexOf('peso'),
+        iS = header.indexOf('storage'), iQ = header.indexOf('qty');
+  if (iP === -1) { showToast('CSV sem coluna "produto"', 'error'); return; }
+  const nomesLower = CONFIG.produtos.map(p => p.nome.toLowerCase().trim());
+  const validos = [], erros = [];
+  linhas.slice(1).forEach(linha => {
+    if (!linha.trim()) return;
+    const cols = linha.split(',').map(c => c.trim().replace(/^"|"$/g,''));
+    const nome = cols[iP] || '';
+    const idx = nomesLower.indexOf(nome.toLowerCase().trim());
+    if (idx === -1) { erros.push(nome); return; }
+    const prod = CONFIG.produtos[idx];
+    validos.push({ produto: prod.nome, chef: cols[iC]||'CHEF', tipo: cols[iT]||prod.tipo, peso: cols[iW]||'—', storage: cols[iS]||'refrig', qty: parseInt(cols[iQ])||1 });
+  });
+  if (!validos.length) { showToast('Nenhum produto válido no CSV', 'error'); return; }
+  S_lote = validos;
+  renderLotePreview();
+  showToast(erros.length ? `✓ ${validos.length} ok · ${erros.length} erro(s)` : `✓ ${validos.length} itens carregados`, erros.length ? 'warn' : 'ok');
+}
+
+function renderLotePreview() {
+  if (!S_lote) return;
+  const el = document.getElementById('lote-preview');
+  const items = document.getElementById('lote-items');
+  const count = document.getElementById('lote-count');
+  const btn   = document.getElementById('btn-lote-imprimir');
+  count.textContent = S_lote.length;
+  items.innerHTML = S_lote.map((item, idx) =>
+    '<div style="background:var(--surface2);padding:8px;border-radius:6px;font-size:11px">' +
+      '<div style="font-weight:700;color:var(--accent)">' + (idx+1) + '. ' + item.produto + '</div>' +
+      '<div style="color:var(--muted);margin-top:2px">' + item.chef + ' · ' + (item.tipo||'—') + ' · ' + (item.qty||1) + '×</div>' +
+    '</div>'
+  ).join('');
+  el.style.display = 'block';
+  document.getElementById('lote-btn-area').style.display = 'block';
+  btn.textContent = '🖨 Imprimir Lote (' + S_lote.length + ')';
+}
+
+function importarJSON() {
+  const input = document.createElement('input'); input.type = 'file'; input.accept = '.json';
+  input.onchange = e => {
+    const reader = new FileReader();
+    reader.onload = ev => { document.getElementById('lote-json').value = ev.target.result; validarLote(); };
+    reader.readAsText(e.target.files[0]);
+  };
+  input.click();
+}
+
+async function imprimirLote() {
+  if (!S_lote || !S_lote.length) { showToast('Nenhum lote carregado', 'warn'); return; }
+  if (S.btStatus !== 'connected') { showToast('Impressora não conectada', 'error'); return; }
+  const btn = document.getElementById('btn-lote-imprimir');
+  const progressDiv = document.getElementById('lote-progress');
+  const progressBar = document.getElementById('lote-progress-bar');
+  const progressText = document.getElementById('lote-progress-text');
+  btn.disabled = true; progressDiv.style.display = 'block';
+  let sucessos = 0, erros = 0;
+  for (let i = 0; i < S_lote.length; i++) {
+    const item = S_lote[i];
+    progressText.textContent = (i+1) + ' / ' + S_lote.length;
+    progressBar.style.width = ((i+1) / S_lote.length * 100) + '%';
+    try {
+      const prodIdx = CONFIG.produtos.findIndex(p => p.nome.toLowerCase() === item.produto.toLowerCase());
+      if (prodIdx < 0) throw new Error('Produto não encontrado');
+      const prodObj = CONFIG.produtos[prodIdx];
+      let validadeDias = item.validadeDias;
+      if (!validadeDias) {
+        const stg = item.storage || 'refrig';
+        validadeDias = stg === 'congel' ? (prodObj.congel||30) : stg === 'temp' ? (prodObj.valTemp||7) : (prodObj.refrig||0);
+        validadeDias = Math.min(validadeDias, 365);
+      }
+      const dados = { produto: item.produto, tipo: item.tipo||'porcao', validadeDias, storage: item.storage||'refrig', qty: item.qty||1, chef: item.chef, turno:'A', peso: item.peso||'', pesoBruto: item.pesoBruto||'', pesoLiquido: item.pesoLiquido||'', fornecedor: item.fornecedor||'', obs: item.obs||'' };
+      await enviarTSPL(buildTSPL(dados));
+      sucessos++;
+      S.log.unshift({ produto: item.produto, tipo: item.tipo, qty: item.qty||1, chef: item.chef, storage: item.storage||'REFR', size: S.labelSize+'mm', hora: new Date().toTimeString().slice(0,5) });
+      if (i < S_lote.length - 1) await sleep(200);
+    } catch(err) { erros++; console.error('Erro lote item ' + (i+1), err); }
+  }
+  renderLog(); btn.disabled = false;
+  showToast('✓ Lote: ' + sucessos + ' OK, ' + erros + ' erros', sucessos === S_lote.length ? 'ok' : 'warn');
+}
+
+// ===== TOAST =====
+let toastTimer = null;
+function showToast(msg, tipo) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast show' + (tipo === 'error' ? ' error' : tipo === 'warn' ? ' warn' : '');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+// ===== ANDROID GUARD =====
+(function() {
+  const ua = navigator.userAgent;
+  if (!/Android/i.test(ua)) {
+    const b = document.getElementById('desktop-block');
+    b.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+    document.body.style.pointerEvents = 'none';
+    b.style.pointerEvents = 'auto';
+  }
+})();
+
+// ===== INIT =====
+initChefBar();
+initProdutoSelect();
+renderCampos();
+renderPreview();
+atualizar();
+setInterval(renderPreview, 30000);
+</script>
+</body>
+</html>
